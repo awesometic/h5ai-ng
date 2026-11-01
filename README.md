@@ -16,17 +16,18 @@ A modern HTTP web server index for Apache httpd, lighttpd, and nginx.
 
 ## Build
 
-There are installation ready packages for the latest [releases][release] and
-[dev builds][develop]. But to build **h5ai** yourself either `git clone` or
-download the repository. From within the root folder run the following
-commands to find a fresh zipball in folder `build` (tested on linux only,
-requires [`node 10.0+`][node] to be installed, might work on other
-configurations).
+Requires [`node 24`][node]. The server needs PHP 8.3 or later. The interface
+needs Chrome/Edge 91, Firefox 90 or Safari 15; older browsers get the plain
+fallback list.
+From within the root folder run the following commands to find the built
+`_h5ai` folder in `build` (`npm run release` also creates a zipball there and
+needs `zip`).
 
 ~~~sh
-> npm install
+> npm ci
 > npm run build
 ~~~
+
 
 
 ## License

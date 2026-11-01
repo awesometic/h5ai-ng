@@ -24,5 +24,7 @@
     assert('promise', is_fn(win.Promise));
     // assert('xhr', is_fn(win.XMLHttpRequest)); // is object in safari
     assert('xhr', win.XMLHttpRequest);
+    // stands in for the build target: inset and the bundle's syntax arrive together
+    assert('inset', win.CSS && is_fn(win.CSS.supports) && win.CSS.supports('inset', '0'));
 }(this));
 /* eslint-enable */
