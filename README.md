@@ -29,6 +29,18 @@ needs `zip`).
 ~~~
 
 
+## Docker
+
+The image serves `/h5ai` with Nginx and PHP 8.5 on Alpine Linux, and keeps
+its configuration in `/config`.
+
+~~~sh
+> docker build -t h5ai-ng .
+> docker run -d -p 80:80 -v /path/to/files:/h5ai -v /path/to/config:/config h5ai-ng
+~~~
+
+`python3 docker/smoke.py h5ai-ng linux/amd64` checks a built image end to end.
+
 
 ## License
 
