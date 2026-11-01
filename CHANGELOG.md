@@ -1,6 +1,20 @@
 # Changelog
 
 
+## v0.31.0 - *unreleased*
+
+First h5ai-ng release, forked from h5ai v0.30.0.
+
+* now require PHP 8.3.0+
+* require Chrome/Edge 91, Firefox 90 or Safari 15 for the interface; older browsers get the fallback list
+* replace `ghu` build with `esbuild`, `less` and `pug` (Node 24)
+* add Docker image (Nginx, PHP 8.5) and CI workflow
+* add `H5AI_ROOT_PATH` environment override for the served root
+* Docker: deny `/_h5ai/private/` in Nginx, also in saved configurations
+
+
+## v0.30.0 - *2021-01-24*
+
 * now require PHP 7.0.0+
 * fix archive-single-item problem
 * add header/footer search stop condition
