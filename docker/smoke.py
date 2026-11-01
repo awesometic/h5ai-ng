@@ -4,6 +4,8 @@ import base64
 import http.cookiejar
 import io
 import json
+import os
+import re
 import subprocess
 import sys
 import tarfile
@@ -207,9 +209,28 @@ try:
     assert startup.returncode == 0 and not startup.stderr, startup.stderr
     for volume in volumes:
         docker("volume", "create", volume)
+    # Start from an Nginx configuration saved by docker-h5ai, which served /_h5ai/private/
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "h5ai.conf")) as conf:
+        legacy_conf = conf.read().replace("location ^~ /_h5ai/ {", "location /_h5ai/ {")
+    legacy_conf = re.sub(r"\n\n        # config and caches.*?\n        }\n", "\n", legacy_conf, flags=re.S)
+    assert "_h5ai/private" not in legacy_conf and "location /_h5ai/ {" in legacy_conf, legacy_conf
+    subprocess.run(["docker", "run", "--rm", "-i", "--platform", platform, "-v", volumes[0] + ":/config",
+                    "--entrypoint", "sh", image, "-c", "mkdir -p /config/nginx /config/h5ai"
+                    " && cat > /config/nginx/h5ai.conf"
+                    # and from an h5ai 0.30.0 application copy, which an upgrade must replace
+                    " && cp -a /usr/share/h5ai/_h5ai /config/h5ai/"
+                    " && sed -i '1s/v[0-9][^ ]*/v0.30.0/' /config/h5ai/_h5ai/private/conf/options.json"
+                    " && touch /config/h5ai/_h5ai/stale-0.30.0"],
+                   input=legacy_conf, text=True, check=True, timeout=60)
     start()
     docker("exec", name, "nginx", "-t")
     assert request("/_h5ai/private/conf/options.json")[0] == 403, "Private h5ai files are served"
+    assert docker("exec", name, "sh", "-c", "ls /config/*_h5ai.conf.bak"), "Saved Nginx configuration was not backed up"
+    docker("exec", name, "test", "!", "-e", "/config/h5ai/_h5ai/stale-0.30.0")
+    assert docker("exec", name, "sh", "-c", "ls /config/*_options.json.bak"), "Saved options were not backed up"
+    docker("exec", name, "sh", "-c", "mkdir -p /h5ai/_h5ai/private && printf '<?php echo 42;' > /h5ai/_h5ai/private/probe.php")
+    assert request("/_h5ai/private/probe.php")[0] == 403, "PHP under /_h5ai/private/ escapes the deny rule"
+    docker("exec", name, "rm", "-r", "/h5ai/_h5ai")
     startup_logs = docker_logs()
     assert "HTPASSWD_PW=test-password" not in startup_logs, "Startup logs exposed the password environment variable"
     cli = docker("exec", name, "php", "-r", "echo PHP_VERSION;")

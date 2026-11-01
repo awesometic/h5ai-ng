@@ -39,6 +39,12 @@ its configuration in `/config`.
 > docker run -d -p 80:80 -v /path/to/files:/h5ai -v /path/to/config:/config h5ai-ng
 ~~~
 
+A `/config` volume from [docker-h5ai][docker-h5ai] can be reused. At startup a
+saved `nginx/h5ai.conf` that still serves `/_h5ai/private/` is updated to deny
+it, and an older h5ai copy in `h5ai/` is replaced. Dated backups of the Nginx
+file and of the old `options.json` stay in `/config`. A saved configuration too
+customized to update stops the container with instructions.
+
 `python3 docker/smoke.py h5ai-ng linux/amd64` checks a built image end to end.
 
 
@@ -79,6 +85,7 @@ too. Exceptions are some [Material Design icons][material-design-icons] (CC BY 4
 [release]: https://release.larsjung.de/h5ai/
 [develop]: https://release.larsjung.de/h5ai/develop/
 [node]: https://nodejs.org
+[docker-h5ai]: https://github.com/awesometic/docker-h5ai
 [material-design-icons]: https://github.com/google/material-design-icons
 
 [license-img]: https://img.shields.io/badge/license-MIT-a0a060.svg?style=flat-square

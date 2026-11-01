@@ -46,6 +46,30 @@ if [ ! -f "$conf_nginx" ]; then
 else
     msg "User setup files found: $conf_nginx"
     msg "Remove image's default setup files and copy the previous version..."
+
+    # Configurations saved by older images let nginx serve /_h5ai/private/
+    # (options.json holds the admin password hash; the .htaccess guard is Apache-only)
+    if grep -q '^    location /_h5ai/ {$' "$conf_nginx" || ! grep -q '_h5ai/private/' "$conf_nginx"; then
+        if ! grep -q '^        root /usr/share/h5ai/;$' "$conf_nginx"; then
+            msg "ERROR: $conf_nginx does not deny /_h5ai/private/ and is too customized to update."
+            msg "Use 'location ^~ /_h5ai/' with a nested 'location ^~ /_h5ai/private/ { deny all; }', or remove the file to get the current default."
+            exit 1
+        fi
+        msg "Deny /_h5ai/private/ in the saved Nginx configuration..."
+        cp "$conf_nginx" "/config/$(date '+%Y%m%d_%H%M%S')_h5ai.conf.bak"
+        awk '
+            $0 == "    location /_h5ai/ {" { $0 = "    location ^~ /_h5ai/ {" }
+            { print }
+            $0 == "        root /usr/share/h5ai/;" && !done && !has_private {
+                print ""
+                print "        location ^~ /_h5ai/private/ {"
+                print "            deny all;"
+                print "        }"
+                done = 1
+            }
+        ' has_private="$(grep -c '_h5ai/private/' "$conf_nginx")" "$conf_nginx" > "$conf_nginx.tmp"
+        cat "$conf_nginx.tmp" > "$conf_nginx" && rm "$conf_nginx.tmp"
+    fi
 fi
 rm -f $orig_nginx
 ln -s $conf_nginx $orig_nginx
