@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - main
+    tags:
+      - 'v*'
   pull_request:
 
 permissions:
@@ -68,3 +70,38 @@ jobs:
           load: true
           tags: h5ai-ng:test
       - run: python3 docker/smoke.py h5ai-ng:test "${{ matrix.platform }}"
+
+  publish:
+    name: Publish image
+    needs: [build, php, docker]
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Check tag against package.json
+        id: version
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          test "$version" = "$(node -p 'require("./package.json").version')"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - uses: docker/setup-qemu-action@v4
+        with:
+          platforms: arm64,arm
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      # arm/v7 and arm/v6 are built here only; the smoke test covers amd64 and arm64
+      - uses: docker/build-push-action@v7
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6
+          pull: true
+          push: true
+          tags: |
+            awesometic/h5ai-ng:${{ steps.version.outputs.version }}
+            awesometic/h5ai-ng:latest
