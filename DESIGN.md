@@ -456,9 +456,9 @@ None of them is changed by this document.
   Still open: the tree indicators (mouse-only), selecting rows and drag selection, the context menu, an ARIA name for the breadcrumb and tree, and `aria-sort` on the column headers.
   `PRODUCT.md` records that no accessibility standard has been set.
 - **Contrast and size:** text and fill pairs of the list, bars, hints, selection and admin button were measured in Chromium against WCAG AA 4.5:1 and pass.
-  Still below it: pending fields in Ink Disabled (1.88:1).
+  Still below it: pending fields in Ink Disabled (1.88:1), the filter and search placeholder in the browser's own grey (4.41:1 on Panel Mist, audit measurement), and the admin test results (Pass Green on white 2.78:1 at 18px bold; Fail Red about 3.7:1, computed because no failing row was rendered).
   Tree summaries and the no-JavaScript header cells now use Ink Secondary (4.59:1), and the white check on the hover selector badge measures 3.57:1 against the 3:1 asked of a graphic.
-  Not measured: the viewer bar icons at 0.7 opacity, the text-preview link and code colors, and the admin test results.
+  Not measured: the viewer bar icons at 0.7 opacity and the text-preview link and code colors.
   13px body text is not checked against a size target, and `PRODUCT.md` records that no accessibility standard has been set.
 - **Touch targets:** measured in Chromium at 390px with touch emulation, every control the phone layout shows is at least 24px on both sides (tools and sidebar controls 48px, rows 44px, selector badge 24px, preview buttons 48px); the tree is hidden there.
   Above 700px the tree rows are about 27px tall and the indicator hit area 24px wide.
@@ -475,6 +475,7 @@ None of them is changed by this document.
   The admin info page text is English only and sits outside the locale files.
 - **Admin password hint:** the admin page still says the preset password is the empty string, and logging in with it works.
   Left to a separate security review; this record does not change it.
+- **Other gaps from the batch 5 audit:** the language `select` has no accessible name; the four `h1` elements are the sidebar section labels and the page has no heading of its own; the "no match" hint is not announced; the selected row is not distinguishable in forced-colors mode; no `prefers-reduced-motion` rule exists and the spinner animates continuously; every item renders all three views and thumbnails carry no `loading="lazy"`.
 - **Admin login control:** `#login` and `#logout` are clickable `span` elements and not buttons, so only Enter inside the password field logs in from the keyboard.
 - **Literals outside the palette:** `#2080FF` and `#68A9FF` (text-preview links) and `#008200` (inline code) in `lib/ext/preview-txt.less`; `#f0f0f0` in `lib/view/fallback.less`; `#f8f8f8` and `#e8e8e8` (checkerboard); and several one-off black alphas (0.03, 0.08, 0.1, 0.2, 0.4).
 - **Unused palette entries:** `lib/colors.less` defines `@col-grey-100`, `@col-border-stronger`, `@col-divider-black`, `@col-divider-white`, `@col-text-disabled-white`, and `@col-text-secondary-white`, which no style uses; they are left out of the tokens above.
