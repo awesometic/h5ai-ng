@@ -1,13 +1,13 @@
 {
-  "name": "h5ai",
+  "name": "h5ai-ng",
   "version": "0.31.0",
   "description": "Modern HTTP web server index.",
-  "homepage": "https://larsjung.de/h5ai/",
+  "homepage": "https://github.com/awesometic/h5ai-ng",
   "author": "Lars Jung <lrsjng@gmail.com> (https://larsjung.de)",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lrsjng/h5ai.git"
+    "url": "https://github.com/awesometic/h5ai-ng.git"
   },
   "scripts": {
     "lint": "eslint .",
