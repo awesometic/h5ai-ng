@@ -82,9 +82,9 @@ else
     msg "User setup files found: $conf_h5ai"
 
     msg "Check if h5ai version updated..."
-    new_ver=$(head -n 1 $orig_h5ai$options_file | awk '{print $3}' | sed 's/[^0-9]//g')
-    pre_ver=$(head -n 1 $conf_h5ai$options_file | awk '{print $3}' | sed 's/[^0-9]//g')
-    if [ $new_ver -gt $pre_ver ]; then
+    new_ver=$(head -n 1 $orig_h5ai$options_file | awk '{print $3}' | sed 's/[^0-9.]//g')
+    pre_ver=$(head -n 1 $conf_h5ai$options_file | awk '{print $3}' | sed 's/[^0-9.]//g')
+    if [ "$new_ver" != "$pre_ver" ] && [ "$(printf '%s\n' "$pre_ver" "$new_ver" | sort -V | tail -n 1)" = "$new_ver" ]; then
 		msg "New version detected. Make existing options.json backup file..."
 		cp $conf_h5ai$options_file /config/$(date '+%Y%m%d_%H%M%S')_options.json.bak
 
