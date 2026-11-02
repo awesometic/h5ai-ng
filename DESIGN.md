@@ -265,7 +265,7 @@ The page switches at **700px** (`max-width: 700px`, `lib/responsive.less`):
 - the smallest details step grows to a 44px row (5px of padding above and below, date, size and icon shifted by the same amount), the Apple HIG minimum; larger steps are already above it, and WCAG 2.5.8 asks for 24px;
 - the preview's previous and next hit areas are hidden (`lib/ext/preview.less`).
 
-Input, not width, decides one rule: `@media (hover: none)` (`lib/ext/select.less`) shows the selector badge on every item as an empty 24px box (Selection).
+Input, not width, decides one rule: `@media (hover: none)` (`lib/ext/select.less`) shows the selector badge on every item as an empty 24px box set beside the item's content instead of on its corner (Selection).
 A hybrid laptop whose primary pointer is a mouse keeps the hover behavior.
 
 The details view also reacts to its own width in JavaScript (`src/_h5ai/public/js/lib/view/view.js`): under 480px the date column is hidden and the label margin shrinks, and under 320px the size column is hidden as well.
@@ -308,7 +308,8 @@ Circles are reserved for loading: the 240px preview placeholder and the spinner 
 Borders are 1px hairlines.
 The drag-selection rectangle is the one dashed border.
 Transparent images sit on a 60px checkerboard (#f8f8f8 and #e8e8e8) in the preview.
-The selector badge is a 22px square in the top-left corner of an item (24px where the device cannot hover), rounded only at its bottom-right.
+The selector badge is a 22px square in the top-left corner of an item, rounded only at its bottom-right.
+Where the device cannot hover it is a 24px box with the 2px house radius, placed beside the content (Selection).
 
 ## Components
 
@@ -320,6 +321,10 @@ There is no keyframe animation in the styles; the spinner animates inside its ow
 Icon-only, 48px square: a 24px icon with 12px padding on a transparent fill.
 Hover is a Hover Wash.
 The sidebar toggle, view-mode toggle, filter, search, and download tools use this one shape; filter and search expand an inline 160px, 16px-type, transparent input when active.
+Filter ships on in the default `options.json` and search ships off, so a fresh install shows the filter tool; an existing install keeps whatever its own `options.json` says.
+With the default `advanced` matching, typed characters match as a subsequence, and a `re:` prefix switches to a regular expression.
+A `re:` text that is not a valid expression (for example `re:(`, or `re:(a` while it is being typed) is matched literally as typed, so the field never throws, never stays in `pending`, and a no-match result shows the usual hint.
+The check lives in `parsePattern` (`js/lib/util/misc.js`), which both tools use.
 Each tool is `role="button"` with `tabindex="0"`; Enter and Space click it (`dom.btn()` in `js/lib/util/dom.js`).
 Its name and tooltip come from the l10n key in its `l10n_lb-<key>` class (`filter`, `search`, `download`, `view`, `sidebar`), so non-English locales use their own words and fall back to English.
 The ring is inset 2px, because the bar clips overflow.
@@ -345,7 +350,11 @@ The icons view sets the icon or thumbnail in a Panel Mist landscape well above a
 
 ### Selection
 Hovering an item shows the selector badge: a Link Sky Deep square at 0.8 alpha with a white check (3.57:1), full opacity (5.03:1) when the pointer is on the badge.
-Where the device cannot hover (`@media (hover: none)`) the badge is always there, as an empty 24px box with a 1px Ink Secondary outline (4.59:1) on a Paper White fill and no check; tapping it fills it with Link Sky Deep and shows the check.
+Where the device cannot hover (`@media (hover: none)`) the badge is always there, as an empty 24px box with a 1px Ink Secondary outline (4.59:1) and a 2px radius on a Paper White fill and no check; tapping it fills it with Link Sky Deep and shows the check.
+The box sits beside the content with at least 8px of clear space to the icon and to the label text, at every size step:
+- **Details:** centred on the row, 4px from the left edge; the icon and the label start 12px further right than on a hover device.
+- **Grid:** centred on the tile at its right edge, 8px in; the label's text area is 32px narrower, so the tile keeps its width.
+- **Icons:** in the label line under the well, 4px from the left and bottom edges; the label line is 32px high and its text starts 34px in.
 A tap on the label still opens the item.
 A selected item fills with Link Sky Deep and white text (5.03:1) in every view, and its badge turns to the same fill at full opacity; the fill holds on hover.
 Selection is still pointer and touch only (badge click or tap, drag rectangle); no keyboard way to select exists yet.
@@ -443,6 +452,8 @@ None of them is changed by this document.
 - **Touch targets:** measured in Chromium at 390px with touch emulation, every control the phone layout shows is at least 24px on both sides (tools and sidebar controls 48px, rows 44px, selector badge 24px, preview buttons 48px); the tree is hidden there.
   Above 700px the tree rows are about 27px tall and the indicator hit area 24px wide.
   No touch-target rule has been set, and the 22px hover badge on desktop is below 24px by design.
+- **Regular-expression check:** `parsePattern` tests a `re:` expression with the browser's `RegExp`, while search hands the same text to PHP's PCRE, so an expression valid in JavaScript but not in PCRE (or the reverse) can still return no rows in search; the filter has no such gap.
+  No server-side message exists for it.
 - **Quoted generic family:** `"sans-serif"` is quoted in `lib/fonts.less` and in `view.fonts` in `src/_h5ai/private/conf/options.json`, so browsers read it as a family name rather than the generic fallback.
   `options.json` is an operator-facing compatibility surface, so any change there is a later decision.
 - **Fonts are not bundled:** rendering is Ubuntu-first and host-dependent.
