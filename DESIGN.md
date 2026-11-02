@@ -3,6 +3,7 @@ name: h5ai-ng
 description: A quiet, flat file index whose interface stays out of the way of the files it lists.
 colors:
   link-sky: "#42a5f5"
+  link-sky-deep: "#1976d2"
   highlighter-pink: "#ff4081"
   paper-white: "#ffffff"
   panel-mist: "#fafafa"
@@ -154,7 +155,8 @@ The visual anti-references are file-manager chrome that implies write actions (t
 - Flat at rest; shadow appears only on hover, in the preview, and in popups.
 - One chromatic accent (Link Sky) for links, hover text, selection, and the single button style.
 - Hairline borders at 5% to 7% black instead of boxes or fills.
-- Icon-only 48px tool targets; labels live in the sidebar and context menu.
+- Icon-only 48px tool targets that are keyboard buttons with a name and tooltip; section labels live in the sidebar and context menu.
+- A 2px focus ring that appears for the keyboard only.
 - A plain server-rendered list when JavaScript or the browser is missing.
 
 ## Colors
@@ -165,6 +167,9 @@ The palette is Material greys plus one blue, a pink reserved for native text sel
 ### Primary
 - **Link Sky** (#42a5f5): the only accent in the browsing UI.
   It is link and hover text, the selected-row fill, the selector badge, the default button fill, and the custom header and footer links.
+- **Link Sky Deep** (#1976d2): the 2px keyboard focus ring on light surfaces, 5.1:1 on white.
+  It is Link Sky's darker shade for places where the accent must carry contrast (`docs/decisions/2026-11-02-design-refinement-decisions.md`, decision 1).
+  Today it is the focus ring only (`@col-focus` in `lib/colors.less`); text and fill uses follow with the contrast work.
 
 ### Secondary
 - **Highlighter Pink** (#ff4081): the native text selection background (`::selection`), with white text.
@@ -176,7 +181,7 @@ The palette is Material greys plus one blue, a pink reserved for native text sel
 - **Ink** (rgba(0,0,0,0.87)): body text.
 - **Ink Secondary** (rgba(0,0,0,0.54)): hint links in the no-JavaScript bar.
 - **Ink Disabled** (rgba(0,0,0,0.26)): the "powered by" backlink, tree summaries, and a pending filter or search field.
-- **Ink Inverse** (rgba(255,255,255,1)): text on Link Sky, on the viewer bar, and on the scrim.
+- **Ink Inverse** (rgba(255,255,255,1)): text on Link Sky, on the viewer bar, and on the scrim; also the focus ring on those surfaces and on selected rows.
 - **Hover Wash** (rgba(0,0,0,0.03)): the hover fill for tool buttons, sidebar buttons, and context-menu entries.
 - **Hairline** (rgba(0,0,0,0.05)): bar and panel borders, info-panel rules, code chips.
 - **Row Rule** (rgba(0,0,0,0.07)): the rule under every details row and under the column header.
@@ -194,6 +199,10 @@ The palette is Material greys plus one blue, a pink reserved for native text sel
 Hover is blue text or a 3% black wash, selection is a blue fill; nothing else carries color.
 
 **The Pink Selection Rule.** Highlighter Pink belongs to `::selection` and nothing else.
+
+**The Visible Focus Rule.** Keyboard focus shows a 2px solid ring (`:focus-visible`), Link Sky Deep on light surfaces and white on the viewer bar and on selected rows.
+Mouse clicks do not show it.
+Nothing removes an outline without putting a visible focus style in its place.
 
 ## Typography
 
@@ -224,6 +233,7 @@ The column header is body size at 0.4 opacity, rising to full opacity and Link S
 Source: `src/_h5ai/public/css/lib/view/*.less`, `lib/ext/tree.less`, `lib/ext/info.less`, `lib/responsive.less`.
 
 The root is a full-viewport flex column: a 48px top bar, then a main row that holds the folder tree, the content, and the info panel.
+The top bar is a `header`, the content a `main`, the breadcrumb a `nav`, and the sidebar an `aside`; their ids are unchanged.
 The top bar carries the sidebar toggle and tool buttons on the left, the breadcrumb filling the middle, and the backlink on the right (36px content plus 12px padding, so 48px).
 The sidebar is absolutely positioned under the top bar (about 200px wide) and overlays the content instead of pushing it.
 The folder tree is capped at 250px; the info panel is 240px of content with 48px and 32px side padding.
@@ -297,6 +307,11 @@ There is no keyframe animation in the styles; the spinner animates inside its ow
 Icon-only, 48px square: a 24px icon with 12px padding on a transparent fill.
 Hover is a Hover Wash.
 The sidebar toggle, view-mode toggle, filter, search, and download tools use this one shape; filter and search expand an inline 160px, 16px-type, transparent input when active.
+Each tool is `role="button"` with `tabindex="0"`; Enter and Space click it (`dom.btn()` in `js/lib/util/dom.js`).
+Its name and tooltip come from the l10n key in its `l10n_lb-<key>` class (`filter`, `search`, `download`, `view`, `sidebar`), so non-English locales use their own words and fall back to English.
+The ring is inset 2px, because the bar clips overflow.
+The expanding tools report `aria-expanded`.
+While its input has focus, a 2px Link Sky Deep underline marks the field; text fields match `:focus-visible` for mouse and keyboard alike, so the underline stands in for the ring.
 
 ### Breadcrumb
 16px type on a 48px line, with 8px label padding and a 24px chevron separator between crumbs; the active crumb is bold and links turn Link Sky on hover.
@@ -306,6 +321,7 @@ Below 700px only the active crumb remains.
 ### Item rows (details view)
 The signature component.
 A white row with a Row Rule underneath, an icon square at 16px from the left, an ellipsized label, and right-aligned date and size.
+A focused row shows the focus ring inset on its link, white on a selected row.
 Hover turns the row Panel Mist, the text Link Sky, and lifts it with the Raised shadow.
 The header row shows Name, Last modified, and Size at 0.4 opacity; a sort chevron appears on the active column and rotates 180 degrees when descending.
 The parent-folder row hides its date and size.
@@ -317,12 +333,14 @@ The icons view sets the icon or thumbnail in a Panel Mist landscape well above a
 ### Selection
 Hovering an item shows the selector badge (Link Sky at 0.6 alpha, 0.8 on hover, with a white check).
 A selected item fills with Link Sky and white text, and its badge goes to full opacity; the fill holds on hover.
+Selection is still pointer-only (badge click, drag rectangle); no keyboard way to select exists yet.
 Dragging over the list draws the dashed selection rectangle (Hairline Strong border, 10% black fill) and switches the cursor to move.
 
 ### Sidebar settings
 A Panel Mist column with a hairline on its right edge and 16px padding.
 Blocks are 168px wide with a 24px bottom margin and a body-size bold heading.
-View-mode buttons are 48px, 2px-radius icon buttons with a 4px margin; the active one shows the Pressed shadow.
+View-mode buttons are 48px, 2px-radius icon buttons with a 4px margin; the active one shows the Pressed shadow and `aria-pressed="true"`.
+The info and tree toggles follow the same shape and state; every sidebar control has a name from l10n, and the sidebar is an `aside`.
 The size control is a range input with a 6px pill track (Slider Track) and a 16px pill thumb (Slider Thumb); selects are 48px tall with 8px side padding and the same hover wash.
 
 ### Folder tree
@@ -336,6 +354,10 @@ Entry hover is Link Sky text on a Hover Wash.
 
 ### Preview
 A 50% black overlay (solid Charcoal in fullscreen) with the media centered and raised, a 48px Viewer Bar along the bottom with white 24px icons at 0.7 opacity (1.0 on hover), and previous and next arrows at half opacity that become dark rounded tabs on hover.
+The overlay is a labelled modal dialog: opening it moves focus inside, the page behind is `inert` (where supported), and closing returns focus to the row.
+The bar is a flex row in tab order previous, next, fullscreen, raw file, close; filename labels stay on the left and give way first (only the first label shows at 480px and below).
+Its buttons are named from l10n, show a white ring on keyboard focus, and fullscreen reports `aria-pressed`.
+The side arrows duplicate the bar buttons and are hidden from assistive technology.
 Text previews sit on a white sheet, at most 960px wide, in mono type for source and 1.1em body type for Markdown, with links in their own blues.
 Loading shows a half-opaque circular placeholder and a 100px spinner.
 
@@ -375,6 +397,7 @@ Comity icons carry their own palette (for example #fbc02d for JavaScript); those
 - **Do** use the 2px radius for new surfaces; reach for 4px or 8px only where the code already does.
 - **Do** keep hover to a 3% black wash or blue text with the shared `all 0.2s ease-in-out` transition.
 - **Do** keep every layout change working at the 700px switch and in the no-JavaScript list.
+- **Do** build a new clickable element as a native control, or with `dom.btn()` and a name from an `l10n_lb-<key>` class, so it works from the keyboard.
 - **Do** keep the `<theme>/<type>.<ext>` icon layout and the `default` theme as the fallback.
 
 ### Don't:
@@ -384,6 +407,7 @@ Comity icons carry their own palette (for example #fbc02d for JavaScript); those
 - **Don't** add write-action chrome (upload, rename, delete) to the interface; the product is read-only.
 - **Don't** enlarge type inside the working list to create emphasis; use weight or opacity.
 - **Don't** break icon-theme compatibility: existing theme folders must keep rendering.
+- **Don't** write `outline: none` or `outline: 0` without a visible `:focus-visible` replacement, and don't use an image's `alt` for an internal id.
 
 ## Open Items
 
@@ -391,8 +415,9 @@ These are facts the code does not settle, listed so they are not mistaken for de
 None of them is changed by this document.
 
 - **Dark theme:** none exists; whether one belongs here is undecided.
-- **Focus and keyboard:** `*:focus { outline: none; }` is global (`lib/misc.less`) and no `:focus-visible` style exists, so keyboard position is invisible.
-  The markup carries no ARIA attributes, roles, or tabindex, and `PRODUCT.md` records that no accessibility standard has been set.
+- **Keyboard coverage:** the tools, sidebar controls, preview bar, and rows are keyboard-reachable with a focus ring.
+  Still open: the tree indicators (mouse-only), selecting rows and drag selection, the context menu, an ARIA name for the breadcrumb and tree, and `aria-sort` on the column headers.
+  `PRODUCT.md` records that no accessibility standard has been set.
 - **Contrast and size:** 13px body text and the 0.26 to 0.54 alpha secondary and disabled inks (and the 0.4-opacity column header) have not been checked against a contrast target.
 - **Touch targets:** tool and sidebar buttons are 48px, but tree rows are about 24px tall and tree indicators 20px; no touch-target rule has been set.
 - **Quoted generic family:** `"sans-serif"` is quoted in `lib/fonts.less` and in `view.fonts` in `src/_h5ai/private/conf/options.json`, so browsers read it as a family name rather than the generic fallback.
