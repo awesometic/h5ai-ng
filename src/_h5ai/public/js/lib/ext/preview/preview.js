@@ -1,4 +1,4 @@
-const {each, isFn, dom, includes, compact} = require('../../util');
+const {each, isFn, dom, includes, compact, touchGesture} = require('../../util');
 const event = require('../../core/event');
 const resource = require('../../core/resource');
 const allsettings = require('../../core/settings');
@@ -33,6 +33,8 @@ let spinnerIsVisible = false;
 let spinnerTimeoutId = null;
 let session = null;
 let focusBeforeEnter = null;
+let touchStart = null;
+let lastTap = 0;
 
 const centerContent = () => {
     const $container = dom('#pv-container');
@@ -156,6 +158,40 @@ const onKeydown = ev => {
     } else if (key === 70) { // f
         dropEvent(ev);
         toggleFullscreen();
+    }
+};
+
+// Swipe left or right for next and previous, double-tap for fullscreen.
+// Only touchstart and touchend are watched and nothing is cancelled while the finger moves,
+// so scrolling a text preview and pinch-zoom stay with the browser.
+const onTouchstart = ev => {
+    const {pageX, pageY} = ev.changedTouches[0];
+    // a second finger is a pinch, and a media element keeps its own seek and volume gestures
+    touchStart = ev.touches.length === 1 && !ev.target.closest('video, audio') ? {pageX, pageY, time: Date.now()} : null;
+};
+
+const onTouchend = ev => {
+    const start = touchStart;
+    touchStart = null;
+    const viewport = win.visualViewport;
+    if (!start || ev.touches.length || viewport && viewport.scale > 1) {
+        return;
+    }
+
+    const {pageX, pageY} = ev.changedTouches[0];
+    const now = Date.now();
+    const gesture = touchGesture(pageX - start.pageX, pageY - start.pageY, now - start.time);
+    if (gesture === 'tap') {
+        const isDoubleTap = now - lastTap <= 300;
+        lastTap = isDoubleTap ? 0 : now;
+        if (isDoubleTap) {
+            dropEvent(ev); // no click, no browser zoom
+            toggleFullscreen();
+        }
+    } else if (gesture) {
+        lastTap = 0;
+        dropEvent(ev);
+        (gesture === 'next' ? next : prev)();
     }
 };
 
@@ -293,6 +329,7 @@ const init = () => {
         .on('keydown', dropKeydown)
         .on('keypress', dropEvent);
 
+    dom('#pv-container').on('touchstart', onTouchstart).on('touchend', onTouchend);
     dom('#pv-spinner').hide();
     dom('#pv-bar-prev, #pv-prev-area').on('click', prev);
     dom('#pv-bar-next, #pv-next-area').on('click', next);

@@ -12,6 +12,7 @@ require('./tests/unit/core/format');
 require('./tests/unit/util/btn');
 require('./tests/unit/util/naturalCmp');
 require('./tests/unit/util/parsePatten');
+require('./tests/unit/util/touchGesture');
 
 pin_html();
 
