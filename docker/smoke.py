@@ -300,6 +300,15 @@ try:
     assert request("/sample.txt") == (200, b"h5ai smoke\n")
     listing = api({"action": "get", "items": {"href": "/", "what": 1}})
     assert "/sample.txt" in {item["href"] for item in listing["items"]}, listing
+    # a folder's items bring its own content and the folders above it without theirs
+    docker("exec", name, "sh", "-c", "mkdir -p /h5ai/up/down && touch /h5ai/up/sibling.txt /h5ai/up/down/leaf.txt")
+    nested = {item["href"]: item for item in api({"action": "get", "items": {"href": "/up/down/", "what": 1}})["items"]}
+    assert "/up/down/leaf.txt" in nested, ("Content of the requested folder", sorted(nested))
+    assert "/up/sibling.txt" not in nested and "/sample.txt" not in nested, ("Content of parent folders", sorted(nested))
+    assert all(nested[href]["managed"] for href in ("/", "/up/", "/up/down/")), ("Parent folders for the breadcrumb", nested)
+    assert not nested["/up/"]["fetched"] and nested["/up/down/"]["fetched"], nested
+    deep = {item["href"] for item in api({"action": "get", "items": {"href": "/up/down/", "what": 2}})["items"]}
+    assert {"/up/sibling.txt", "/sample.txt"} <= deep, ("Level 2 keeps the content of parent folders", sorted(deep))
     requested_thumbs = [
         {"type": kind, "href": href, "width": 320, "height": 240}
         for kind, href in [("img", "/image.png"), ("mov", "/movie.mp4")]

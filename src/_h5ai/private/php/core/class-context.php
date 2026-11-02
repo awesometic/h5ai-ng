@@ -201,9 +201,20 @@ class Context {
         }
 
         // add content of this folder and all parent folders
-        while ($what >= 1 && $folder !== null) {
+        while ($what >= 2 && $folder !== null) {
             $folder->get_content($cache);
             $folder = $folder->get_parent($cache);
+        }
+
+        // add content of this folder, and the parent folders without theirs: the breadcrumb
+        // needs the folders, reading their content costs an fstat per entry and the tree
+        // asks for it when it shows them
+        if ($what == 1 && $folder !== null) {
+            $folder->get_content($cache);
+            $parent = $folder->get_parent($cache);
+            while ($parent !== null) {
+                $parent = $parent->get_parent($cache);
+            }
         }
 
         uasort($cache, ['Item', 'cmp']);

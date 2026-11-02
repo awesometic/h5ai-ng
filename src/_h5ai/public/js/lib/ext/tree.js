@@ -116,14 +116,11 @@ const update = item => {
     return $html;
 };
 
+// resolves with the root, the folders on the way are fetched side by side
 const fetchTree = item => {
     item._treeState = 'open';
-    return item.fetchContent().then(() => {
-        if (item.parent) {
-            return fetchTree(item.parent);
-        }
-        return item;
-    });
+    return Promise.all([item.fetchContent(), item.parent && fetchTree(item.parent)])
+        .then(([, root]) => root || item);
 };
 
 const updateSettings = () => {
