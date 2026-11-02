@@ -153,7 +153,7 @@ The visual anti-references are file-manager chrome that implies write actions (t
 
 **Key Characteristics:**
 - Flat at rest; shadow appears only on hover, in the preview, and in popups.
-- One chromatic accent in two shades: Link Sky Deep for links, hover text, selection, and the single button style; Link Sky only for the hover preview of the selector badge.
+- One chromatic accent, Link Sky Deep, for links, hover text, selection, the selector badge, and the single button style; the lighter Link Sky stays defined and paints nothing.
 - Hairline borders at 5% to 7% black instead of boxes or fills.
 - Icon-only 48px tool targets that are keyboard buttons with a name and tooltip; section labels live in the sidebar and context menu.
 - A 2px focus ring that appears for the keyboard only.
@@ -165,11 +165,13 @@ Source: `src/_h5ai/public/css/lib/colors.less`, with the literals named in Open 
 The palette is Material greys plus one blue, a pink reserved for native text selection, and green and red used only on the admin info page.
 
 ### Primary
-- **Link Sky** (#42a5f5): the accent's light shade, for fills that carry no text.
-  Today that is the selector badge that appears when the pointer is over an unselected item (0.6 alpha, 0.8 on hover).
+- **Link Sky** (#42a5f5): the accent's light shade (`@col-blue-400`), for fills that carry no text or glyph.
+  Nothing paints it any more: the selector badge held it until batch 3, but a white check on it reaches only 2.65:1 at full opacity and 1.81:1 at the old 0.6 alpha, so the badge moved to Link Sky Deep.
+  The token stays in `lib/colors.less`; removing it is a separate decision.
   Its 2.65:1 against white rules out text and white text on it.
 - **Link Sky Deep** (#176fcb): the accent wherever it is text or sits under white text (`@col-blue-deep` in `lib/colors.less`).
-  It is link and hover text, the selected-row fill and the selector badge on a selected item, the default button fill, the custom header and footer links, and the 2px keyboard focus ring.
+  It is link and hover text, the selected-row fill, the selector badge (0.8 alpha while an unselected item is hovered, full on the badge itself and on a selected item), the default button fill, the custom header and footer links, and the 2px keyboard focus ring.
+  The white check on the badge measures 3.57:1 at 0.8 alpha and 5.03:1 at full opacity.
   Measured in Chromium: 5.03:1 on Paper White and as the ground for white text, 4.82:1 on Panel Mist, 4.52:1 on Panel Mist under a Hover Wash (the backlink on hover).
   The first value chosen for this shade, #1976d2, reached 4.60:1 on white but only 4.41:1 on Panel Mist and 4.13:1 under a Hover Wash, so decision 1 was revised to #176fcb (`docs/decisions/2026-11-02-design-refinement-decisions.md`).
 
@@ -181,8 +183,8 @@ The palette is Material greys plus one blue, a pink reserved for native text sel
 - **Paper White** (#ffffff): the page, item rows, the context menu, and the text preview.
 - **Panel Mist** (#fafafa): the top bar, sidebar, row hover, inputs, and the icons-view thumbnail well.
 - **Ink** (rgba(0,0,0,0.87)): body text.
-- **Ink Secondary** (rgba(0,0,0,0.54)): the "powered by" backlink, the empty-folder and no-match hints, and hint links in the no-JavaScript bar; 4.59:1 on Paper White, 4.54:1 on Panel Mist.
-- **Ink Disabled** (rgba(0,0,0,0.26)): tree summaries and a pending filter or search field (1.88:1; see Open Items).
+- **Ink Secondary** (rgba(0,0,0,0.54)): the "powered by" backlink, the empty-folder and no-match hints, tree summaries, the no-JavaScript list header cells, and hint links in the no-JavaScript bar; 4.59:1 on Paper White, 4.54:1 on Panel Mist.
+- **Ink Disabled** (rgba(0,0,0,0.26)): a pending filter or search field (1.88:1; see Open Items).
 - **Ink Inverse** (rgba(255,255,255,1)): text on Link Sky Deep (5.03:1), on the viewer bar, and on the scrim; also the focus ring on those surfaces and on selected rows.
 - **Hover Wash** (rgba(0,0,0,0.03)): the hover fill for tool buttons, sidebar buttons, and context-menu entries.
 - **Hairline** (rgba(0,0,0,0.05)): bar and panel borders, info-panel rules, code chips.
@@ -197,9 +199,9 @@ The palette is Material greys plus one blue, a pink reserved for native text sel
 - **Pass Green** (#4caf50) and **Fail Red** (#f44336): test results, and the no-JavaScript and old-browser messages (red).
 
 ### Named Rules
-**The One Voice Rule.** Link Sky, in its two shades, is the only chromatic accent in the browsing interface.
+**The One Voice Rule.** Link Sky Deep is the only chromatic accent in the browsing interface.
 Hover is blue text or a 3% black wash, selection is a blue fill; nothing else carries color.
-The deep shade carries every text and every fill that holds white text; the light shade never does.
+It carries every text, every fill that holds white text, and every glyph that must reach 3:1; the light shade (unused) never does.
 
 **The Pink Selection Rule.** Highlighter Pink belongs to `::selection` and nothing else.
 
@@ -239,7 +241,7 @@ Source: `src/_h5ai/public/css/lib/view/*.less`, `lib/ext/tree.less`, `lib/ext/in
 The root is a full-viewport flex column: a 48px top bar, then a main row that holds the folder tree, the content, and the info panel.
 The top bar is a `header`, the content a `main`, the breadcrumb a `nav`, and the sidebar an `aside`; their ids are unchanged.
 The top bar carries the sidebar toggle and tool buttons on the left, the breadcrumb filling the middle, and the backlink on the right (36px content plus 12px padding, so 48px).
-The sidebar is absolutely positioned under the top bar (about 200px wide) and overlays the content instead of pushing it.
+The sidebar is a column of about 200px at the left of the main row that pushes the tree and the content aside, so nothing is cut off at its edge; under 700px it covers the full width under the top bar instead (see Responsive).
 The folder tree is capped at 250px; the info panel is 240px of content with 48px and 32px side padding.
 
 Rhythm is built from 4, 8, 12, 16, 24, 32, and 48px.
@@ -248,18 +250,23 @@ Page margins are 32px in details and 28px in grid and icons views; tiles sit on 
 
 ### Views
 - **Details:** one rule-separated row per item, with a 16px-offset icon square, the label, a 130px date column at 116px from the right, and an 80px size column at 16px from the right.
-  The row line-height is the icon size (clamped 20 to 80px) plus 14px, so the smallest step is 34px plus a 1px rule.
+  The row line-height is the icon size (clamped 20 to 80px) plus 14px, so the smallest step is 34px plus a 1px rule, and 44px plus the rule under 700px.
 - **Grid:** floated 2px-radius tiles with a square icon (clamped 40 to 160px) beside a 180px label; dates and sizes are hidden.
 - **Icons:** floated tiles with a landscape well (icon size clamped 80 to 1000px, tile width four-thirds of that) and a centered 24px-line-height label.
 
 The size steps are the operator's `view.sizes` list in `options.json`.
-The Less defaults (16px rows, 48px grid squares, 96px icon wells) apply only until JavaScript injects the per-step rules, so the smallest step (20px) gives 34px rows and 40px grid tiles.
+The Less defaults (16px rows, 48px grid squares, 96px icon wells) apply only until JavaScript injects the per-step rules, so the smallest step (20px) gives 34px rows (44px under 700px) and 40px grid tiles.
 
 ### Responsive
 The page switches at **700px** (`max-width: 700px`, `lib/responsive.less`):
 - the breadcrumb shows only the active crumb, with its leading separator collapsed;
 - the folder tree and the info panel are hidden;
+- the sidebar covers the full width under the top bar, with no right edge, so the list or grid is never left half-visible beside it (above 700px it sits in the main row and the content is pushed right; the sidebar toggle republishes `resize` so the details view recomputes its width classes);
+- the smallest details step grows to a 44px row (5px of padding above and below, date, size and icon shifted by the same amount), the Apple HIG minimum; larger steps are already above it, and WCAG 2.5.8 asks for 24px;
 - the preview's previous and next hit areas are hidden (`lib/ext/preview.less`).
+
+Input, not width, decides one rule: `@media (hover: none)` (`lib/ext/select.less`) shows the selector badge on every item as an empty 24px box (Selection).
+A hybrid laptop whose primary pointer is a mouse keeps the hover behavior.
 
 The details view also reacts to its own width in JavaScript (`src/_h5ai/public/js/lib/view/view.js`): under 480px the date column is hidden and the label margin shrinks, and under 320px the size column is hidden as well.
 
@@ -267,6 +274,8 @@ A print stylesheet clears all backgrounds and shadows, forces black text, and hi
 
 ### No-JavaScript fallback
 `html.no-js` and `html.no-browser` turn the root into a normal scrolling page and show a plain table list, at most 960px wide, with 20px PNG icons from `src/_h5ai/public/images/fallback/` and a hint bar above it (`lib/view/fallback.less`).
+The table fills the page width and the name column takes what the date and size columns leave, ellipsized when it is too long; at 480px and below the date column is dropped, as in the details view, so the size stays visible at 390px without sideways scrolling.
+Header cells use Ink Secondary.
 `src/_h5ai/public/js/pre.js` decides which browsers get it and must stay in step with the build target.
 
 ## Elevation & Depth
@@ -299,7 +308,7 @@ Circles are reserved for loading: the 240px preview placeholder and the spinner 
 Borders are 1px hairlines.
 The drag-selection rectangle is the one dashed border.
 Transparent images sit on a 60px checkerboard (#f8f8f8 and #e8e8e8) in the preview.
-The selector badge is a 22px square in the top-left corner of an item, rounded only at its bottom-right.
+The selector badge is a 22px square in the top-left corner of an item (24px where the device cannot hover), rounded only at its bottom-right.
 
 ## Components
 
@@ -335,9 +344,11 @@ The parent-folder row hides its date and size.
 The icons view sets the icon or thumbnail in a Panel Mist landscape well above a centered label.
 
 ### Selection
-Hovering an item shows the selector badge (Link Sky at 0.6 alpha, 0.8 on hover, with a white check that reaches only 1.81:1 against it).
+Hovering an item shows the selector badge: a Link Sky Deep square at 0.8 alpha with a white check (3.57:1), full opacity (5.03:1) when the pointer is on the badge.
+Where the device cannot hover (`@media (hover: none)`) the badge is always there, as an empty 24px box with a 1px Ink Secondary outline (4.59:1) on a Paper White fill and no check; tapping it fills it with Link Sky Deep and shows the check.
+A tap on the label still opens the item.
 A selected item fills with Link Sky Deep and white text (5.03:1) in every view, and its badge turns to the same fill at full opacity; the fill holds on hover.
-Selection is still pointer-only (badge click, drag rectangle); no keyboard way to select exists yet.
+Selection is still pointer and touch only (badge click or tap, drag rectangle); no keyboard way to select exists yet.
 Dragging over the list draws the dashed selection rectangle (Hairline Strong border, 10% black fill) and switches the cursor to move.
 
 ### Sidebar settings
@@ -349,8 +360,9 @@ The size control is a range input with a 6px pill track (Slider Track) and a 16p
 
 ### Folder tree
 A 250px-max column with 32px padding (16px on the left) and body-size rows with 3px vertical padding, roughly 24px tall.
-A 20px indicator rotates 90 degrees when open, fades to 0.3 while the folder's children are unknown, and disappears when there are none.
-The active folder is bold; summaries ("more subfolders") use Ink Disabled.
+A 20px indicator rotates 90 degrees when open, fades to 0.3 while the folder's children are unknown, and disappears when there are none; its hit area is 24px wide (2px of padding offset by a negative margin, so the layout does not move) and 26px tall.
+Labels too long for the column end with an ellipsis.
+The active folder is bold; summaries ("more subfolders") use Ink Secondary.
 
 ### Context menu
 A white 2px-radius panel with the Popup shadow, 200px minimum width, 8px and 16px entry padding, a bold label row, 20px icons, and a 1px separator at 8% black.
@@ -395,7 +407,8 @@ Comity icons carry their own palette (for example #fbc02d for JavaScript); those
 
 ### Do:
 - **Do** keep surfaces flat at rest and use the Raised shadow (`0 1px 10px 0 rgba(0,0,0,0.5)`) only in response to hover or for floating layers.
-- **Do** reserve Link Sky Deep (#176fcb) for what can be acted on and carries text: links, hover text, selection, the one button; keep the light Link Sky (#42a5f5) for fills with no text on them.
+- **Do** reserve Link Sky Deep (#176fcb) for what can be acted on and carries text or a glyph: links, hover text, selection, the selector badge, the one button; the light Link Sky (#42a5f5) is unused and may only return as a fill with no text or glyph on it.
+- **Do** give anything the phone layout shows a target of at least 24px on both sides (44px for rows), and never make a function depend on hover: show it under `@media (hover: none)`.
 - **Do** build clickable tool targets as 48px squares (24px icon, 12px padding).
 - **Do** separate rows and panels with 1px hairlines at 5% to 7% black.
 - **Do** use the 2px radius for new surfaces; reach for 4px or 8px only where the code already does.
@@ -423,15 +436,18 @@ None of them is changed by this document.
   Still open: the tree indicators (mouse-only), selecting rows and drag selection, the context menu, an ARIA name for the breadcrumb and tree, and `aria-sort` on the column headers.
   `PRODUCT.md` records that no accessibility standard has been set.
 - **Contrast and size:** text and fill pairs of the list, bars, hints, selection and admin button were measured in Chromium against WCAG AA 4.5:1 and pass.
-  Still below it: tree summaries and pending fields in Ink Disabled (1.88:1), the no-JavaScript list header cells in `#aaa` (2.32:1), the white check on the hover selector badge (1.81:1, a graphic), and the `#pass` placeholder (4.4:1).
+  Still below it: pending fields in Ink Disabled (1.88:1) and the `#pass` placeholder (4.4:1).
+  Tree summaries and the no-JavaScript header cells now use Ink Secondary (4.59:1), and the white check on the hover selector badge measures 3.57:1 against the 3:1 asked of a graphic.
   Not measured: the viewer bar icons at 0.7 opacity, the text-preview link and code colors, and the admin test results.
   13px body text is not checked against a size target, and `PRODUCT.md` records that no accessibility standard has been set.
-- **Touch targets:** tool and sidebar buttons are 48px, but tree rows are about 24px tall and tree indicators 20px; no touch-target rule has been set.
+- **Touch targets:** measured in Chromium at 390px with touch emulation, every control the phone layout shows is at least 24px on both sides (tools and sidebar controls 48px, rows 44px, selector badge 24px, preview buttons 48px); the tree is hidden there.
+  Above 700px the tree rows are about 27px tall and the indicator hit area 24px wide.
+  No touch-target rule has been set, and the 22px hover badge on desktop is below 24px by design.
 - **Quoted generic family:** `"sans-serif"` is quoted in `lib/fonts.less` and in `view.fonts` in `src/_h5ai/private/conf/options.json`, so browsers read it as a family name rather than the generic fallback.
   `options.json` is an operator-facing compatibility surface, so any change there is a later decision.
 - **Fonts are not bundled:** rendering is Ubuntu-first and host-dependent.
 - **Product name in the UI:** the backlink ("powered by h5ai"), its link title, and the page titles still say h5ai, while `PRODUCT.md` commits the interface to name h5ai-ng and keep the credit to the original h5ai.
   Copy is unchanged here.
-- **Literals outside the palette:** `#2080FF` and `#68A9FF` (text-preview links) and `#008200` (inline code) in `lib/ext/preview-txt.less`; `#aaa` and `#f0f0f0` in `lib/view/fallback.less`; `#f8f8f8` and `#e8e8e8` (checkerboard); and several one-off black alphas (0.03, 0.08, 0.1, 0.2, 0.4).
+- **Literals outside the palette:** `#2080FF` and `#68A9FF` (text-preview links) and `#008200` (inline code) in `lib/ext/preview-txt.less`; `#f0f0f0` in `lib/view/fallback.less`; `#f8f8f8` and `#e8e8e8` (checkerboard); and several one-off black alphas (0.03, 0.08, 0.1, 0.2, 0.4).
 - **Unused palette entries:** `lib/colors.less` defines `@col-grey-100`, `@col-border-stronger`, `@col-divider-black`, `@col-divider-white`, `@col-text-disabled-white`, and `@col-text-secondary-white`, which no style uses; they are left out of the tokens above.
 - **Spacing has no named scale:** the `s-` keys label recurring literal values and are not variables in the code.
