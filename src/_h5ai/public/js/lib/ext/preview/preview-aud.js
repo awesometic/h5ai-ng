@@ -37,6 +37,8 @@ const load = item => {
             .attr('controls', 'controls');
         if (settings.autoplay) {
             $el.attr('autoplay', 'autoplay');
+            // Chrome ignores the attribute while the element is not in the page yet
+            $el.on('loadeddata', () => $el[0].paused && $el[0].play().catch(() => {}));
         }
         addUnloadFn($el[0]);
         $el.attr('src', item.absHref);
