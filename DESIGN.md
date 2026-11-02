@@ -391,7 +391,8 @@ The overlay is a labelled modal dialog: opening it moves focus inside, the page 
 The bar is a flex row in tab order previous, next, fullscreen, raw file, close; filename labels stay on the left and give way first (only the first label shows at 480px and below).
 Its buttons are named from l10n, show a white ring on keyboard focus, and fullscreen reports `aria-pressed`.
 The side arrows duplicate the bar buttons and are hidden from assistive technology.
-Text previews sit on a white sheet, at most 960px wide, in mono type for source and 1.1em body type for Markdown, with links in their own blues.
+On touch, a one-finger horizontal swipe moves to the previous or next item and a double-tap toggles fullscreen; video and audio controls, vertical scrolling and pinch-zoom keep their own gestures.
+Text previews sit on a white sheet, at most 960px wide, in mono type for source and 1.1em body type for Markdown, with links in their own blues; long lines wrap.
 Loading shows a half-opaque circular placeholder and a 100px spinner.
 
 ### Info panel

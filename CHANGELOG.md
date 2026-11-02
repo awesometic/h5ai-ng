@@ -20,6 +20,18 @@ First h5ai-ng release, forked from h5ai v0.30.0.
   * name the product h5ai-ng in the backlink, page titles and admin page, with credit to h5ai by Lars Jung
   * remove the PayPal donation form from the admin page and label its password field
   * `view.fonts` entries such as `sans-serif` and `monospace` are written as CSS generic families
+* upstream pull requests and fixes:
+  * thumbnails: refuse sizes the interface never requests, so requests cannot fill the cache (lrsjng/h5ai#777)
+  * thumbnails: capture videos shorter than 20 seconds at half their length (lrsjng/h5ai#765)
+  * preview: swipe to the previous or next item and double-tap for fullscreen on touch (lrsjng/h5ai#837)
+  * preview: wrap long lines in text previews (lrsjng/h5ai#855)
+  * preview: start audio and video in Chrome when `autoplay` is on (lrsjng/h5ai#786)
+  * load only the requested folder's content, not that of every parent folder (lrsjng/h5ai#771)
+  * match browser languages such as `zh-CN` and `pt-BR` with `useBrowserLang` (lrsjng/h5ai#863)
+  * update languages (`cs`, `it`, `sk`) (lrsjng/h5ai#815, lrsjng/h5ai#838)
+  * Docker: compare versions component-wise when replacing a saved h5ai copy
+* publish the Docker image as `awesometic/h5ai-ng` for amd64, arm64, armv7 and armv6
+* rewrite the README with Docker, install and docker-h5ai migration guides
 
 
 ## v0.30.0 - *2021-01-24*
