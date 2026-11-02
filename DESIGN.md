@@ -2,7 +2,6 @@
 name: h5ai-ng
 description: A quiet, flat file index whose interface stays out of the way of the files it lists.
 colors:
-  link-sky: "#42a5f5"
   link-sky-deep: "#176fcb"
   highlighter-pink: "#ff4081"
   paper-white: "#ffffff"
@@ -153,7 +152,7 @@ The visual anti-references are file-manager chrome that implies write actions (t
 
 **Key Characteristics:**
 - Flat at rest; shadow appears only on hover, in the preview, and in popups.
-- One chromatic accent, Link Sky Deep, for links, hover text, selection, the selector badge, and the single button style; the lighter Link Sky stays defined and paints nothing.
+- One chromatic accent, Link Sky Deep, for links, hover text, selection, the selector badge, and the single button style.
 - Hairline borders at 5% to 7% black instead of boxes or fills.
 - Icon-only 48px tool targets that are keyboard buttons with a name and tooltip; section labels live in the sidebar and context menu.
 - A 2px focus ring that appears for the keyboard only.
@@ -165,13 +164,10 @@ Source: `src/_h5ai/public/css/lib/colors.less`, with the literals named in Open 
 The palette is Material greys plus one blue, a pink reserved for native text selection, and green and red used only on the admin info page.
 
 ### Primary
-- **Link Sky** (#42a5f5): the accent's light shade (`@col-blue-400`), for fills that carry no text or glyph.
-  Nothing paints it any more: the selector badge held it until batch 3, but a white check on it reaches only 2.65:1 at full opacity and 1.81:1 at the old 0.6 alpha, so the badge moved to Link Sky Deep.
-  The token stays in `lib/colors.less`; removing it is a separate decision.
-  Its 2.65:1 against white rules out text and white text on it.
 - **Link Sky Deep** (#176fcb): the accent wherever it is text or sits under white text (`@col-blue-deep` in `lib/colors.less`).
   It is link and hover text, the selected-row fill, the selector badge (0.8 alpha while an unselected item is hovered, full on the badge itself and on a selected item), the default button fill, the custom header and footer links, and the 2px keyboard focus ring.
   The white check on the badge measures 3.57:1 at 0.8 alpha and 5.03:1 at full opacity.
+  It replaced the lighter Material blue #42a5f5, which reached only 2.65:1 under a white check.
   Measured in Chromium: 5.03:1 on Paper White and as the ground for white text, 4.82:1 on Panel Mist, 4.52:1 on Panel Mist under a Hover Wash (the backlink on hover).
   The first value chosen for this shade, #1976d2, reached 4.60:1 on white but only 4.41:1 on Panel Mist and 4.13:1 under a Hover Wash, so decision 1 was revised to #176fcb (`docs/decisions/2026-11-02-design-refinement-decisions.md`).
 
@@ -201,7 +197,7 @@ The palette is Material greys plus one blue, a pink reserved for native text sel
 ### Named Rules
 **The One Voice Rule.** Link Sky Deep is the only chromatic accent in the browsing interface.
 Hover is blue text or a 3% black wash, selection is a blue fill; nothing else carries color.
-It carries every text, every fill that holds white text, and every glyph that must reach 3:1; the light shade (unused) never does.
+It carries every text, every fill that holds white text, and every glyph that must reach 3:1.
 
 **The Pink Selection Rule.** Highlighter Pink belongs to `::selection` and nothing else.
 
@@ -428,7 +424,7 @@ Comity icons carry their own palette (for example #fbc02d for JavaScript); those
 
 ### Do:
 - **Do** keep surfaces flat at rest and use the Raised shadow (`0 1px 10px 0 rgba(0,0,0,0.5)`) only in response to hover or for floating layers.
-- **Do** reserve Link Sky Deep (#176fcb) for what can be acted on and carries text or a glyph: links, hover text, selection, the selector badge, the one button; the light Link Sky (#42a5f5) is unused and may only return as a fill with no text or glyph on it.
+- **Do** reserve Link Sky Deep (#176fcb) for what can be acted on and carries text or a glyph: links, hover text, selection, the selector badge, the one button.
 - **Do** give anything the phone layout shows a target of at least 24px on both sides (44px for rows), and never make a function depend on hover: show it under `@media (hover: none)`.
 - **Do** build clickable tool targets as 48px squares (24px icon, 12px padding).
 - **Do** separate rows and panels with 1px hairlines at 5% to 7% black.

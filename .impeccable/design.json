@@ -4,21 +4,6 @@
   "title": "Design System: h5ai-ng",
   "extensions": {
     "colorMeta": {
-      "link-sky": {
-        "role": "primary",
-        "displayName": "Link Sky",
-        "canonical": "#42a5f5",
-        "tonalRamp": [
-          "oklch(15% 0.022 247)",
-          "oklch(26% 0.054 247)",
-          "oklch(38% 0.092 247)",
-          "oklch(49% 0.13 247)",
-          "oklch(61% 0.13 247)",
-          "oklch(72% 0.092 247)",
-          "oklch(84% 0.054 247)",
-          "oklch(95% 0.022 247)"
-        ]
-      },
       "link-sky-deep": {
         "role": "primary",
         "displayName": "Link Sky Deep",
@@ -383,7 +368,7 @@
     "rules": [
       {
         "name": "The One Voice Rule",
-        "body": "Link Sky Deep is the only chromatic accent in the browsing interface. Hover is blue text or a 3% black wash, selection is a blue fill; nothing else carries color. It carries every text, every fill that holds white text, and every glyph that must reach 3:1; the light shade (unused) never does.",
+        "body": "Link Sky Deep is the only chromatic accent in the browsing interface. Hover is blue text or a 3% black wash, selection is a blue fill; nothing else carries color. It carries every text, every fill that holds white text, and every glyph that must reach 3:1.",
         "section": "colors"
       },
       {
@@ -409,7 +394,7 @@
     ],
     "dos": [
       "**Do** keep surfaces flat at rest and use the Raised shadow (`0 1px 10px 0 rgba(0,0,0,0.5)`) only in response to hover or for floating layers.",
-      "**Do** reserve Link Sky Deep (#176fcb) for what can be acted on and carries text or a glyph: links, hover text, selection, the selector badge, the one button; the light Link Sky (#42a5f5) is unused and may only return as a fill with no text or glyph on it.",
+      "**Do** reserve Link Sky Deep (#176fcb) for what can be acted on and carries text or a glyph: links, hover text, selection, the selector badge, the one button.",
       "**Do** build clickable tool targets as 48px squares (24px icon, 12px padding).",
       "**Do** separate rows and panels with 1px hairlines at 5% to 7% black.",
       "**Do** use the 2px radius for new surfaces; reach for 4px or 8px only where the code already does.",
