@@ -22,16 +22,16 @@
       "link-sky-deep": {
         "role": "primary",
         "displayName": "Link Sky Deep",
-        "canonical": "#1976d2",
+        "canonical": "#176fcb",
         "tonalRamp": [
-          "oklch(15% 0.022 253)",
-          "oklch(26% 0.054 253)",
-          "oklch(38% 0.092 253)",
-          "oklch(49% 0.13 253)",
-          "oklch(61% 0.13 253)",
-          "oklch(72% 0.092 253)",
-          "oklch(84% 0.054 253)",
-          "oklch(95% 0.022 253)"
+          "oklch(15% 0.022 254)",
+          "oklch(26% 0.054 254)",
+          "oklch(38% 0.092 254)",
+          "oklch(49% 0.13 254)",
+          "oklch(61% 0.13 254)",
+          "oklch(72% 0.092 254)",
+          "oklch(84% 0.054 254)",
+          "oklch(95% 0.022 254)"
         ]
       },
       "highlighter-pink": {
@@ -220,7 +220,7 @@
       },
       "hint": {
         "displayName": "Hint",
-        "purpose": "Empty-folder and no-match messages."
+        "purpose": "Empty-folder and no-match messages: 16px bold in Ink Secondary (4.59:1)."
       },
       "display": {
         "displayName": "Display",
@@ -283,31 +283,31 @@
       "refersTo": "tool-button",
       "description": "Icon-only 48px top-bar tool, a keyboard button (Enter and Space) with a tooltip name; hover is a 3% black wash, keyboard focus a 2px Link Sky Deep ring.",
       "html": "<div class=\"ds-tool\" role=\"button\" tabindex=\"0\" aria-label=\"sidebar\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M3 18h18v-2h-18v2zm0-5h18v-2h-18v2zm0-7v2h18v-2h-18z\" fill=\"#555\"/></svg></div>",
-      "css": ".ds-tool { display: inline-block; cursor: pointer; transition: all 0.2s ease-in-out; } .ds-tool svg { display: block; padding: 12px; } .ds-tool:hover { background: rgba(0,0,0,0.03); } .ds-tool:focus-visible { outline: 2px solid #1976d2; outline-offset: -2px; transition: none; }"
+      "css": ".ds-tool { display: inline-block; cursor: pointer; transition: all 0.2s ease-in-out; } .ds-tool svg { display: block; padding: 12px; } .ds-tool:hover { background: rgba(0,0,0,0.03); } .ds-tool:focus-visible { outline: 2px solid #176fcb; outline-offset: -2px; transition: none; }"
     },
     {
       "name": "Breadcrumb",
       "kind": "nav",
       "refersTo": "crumb",
-      "description": "16px crumbs on a 48px line; the active crumb is bold, hover is Link Sky.",
+      "description": "16px crumbs on a 48px line; the active crumb is bold, hover is Link Sky Deep.",
       "html": "<div class=\"ds-crumbbar\"><a class=\"ds-crumb\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M10 6l-1.4 1.4 4.6 4.6-4.6 4.6 1.4 1.4 6-6z\" fill=\"#555\"/></svg><span>releases</span></a><a class=\"ds-crumb ds-active\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M10 6l-1.4 1.4 4.6 4.6-4.6 4.6 1.4 1.4 6-6z\" fill=\"#555\"/></svg><span>2026</span></a></div>",
-      "css": ".ds-crumbbar { font-family: 'Ubuntu', 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 13px; line-height: 1.4; height: 48px; font-size: 16px; padding: 0 8px; background: #fafafa; border-bottom: 1px solid rgba(0,0,0,0.05); white-space: nowrap; } .ds-crumb { display: inline-block; color: rgba(0,0,0,0.87); cursor: pointer; text-decoration: none; transition: all 0.2s ease-in-out; } .ds-crumb svg { display: inline-block; vertical-align: top; padding: 12px 0; } .ds-crumb:first-of-type svg { width: 0; } .ds-crumb span { display: inline-block; vertical-align: top; line-height: 48px; padding: 0 8px; } .ds-crumb.ds-active { font-weight: bold; } .ds-crumb:hover { color: #42a5f5; }"
+      "css": ".ds-crumbbar { font-family: 'Ubuntu', 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 13px; line-height: 1.4; height: 48px; font-size: 16px; padding: 0 8px; background: #fafafa; border-bottom: 1px solid rgba(0,0,0,0.05); white-space: nowrap; } .ds-crumb { display: inline-block; color: rgba(0,0,0,0.87); cursor: pointer; text-decoration: none; transition: all 0.2s ease-in-out; } .ds-crumb svg { display: inline-block; vertical-align: top; padding: 12px 0; } .ds-crumb:first-of-type svg { width: 0; } .ds-crumb span { display: inline-block; vertical-align: top; line-height: 48px; padding: 0 8px; } .ds-crumb.ds-active { font-weight: bold; } .ds-crumb:hover { color: #176fcb; }"
     },
     {
       "name": "Details Row",
       "kind": "custom",
       "refersTo": "row",
-      "description": "Signature component: ruled white row that turns Panel Mist, blue, and raised on hover.",
+      "description": "Signature component: ruled white row that turns Panel Mist, Link Sky Deep, and raised on hover.",
       "html": "<div class=\"ds-row\"><span class=\"ds-row-icon\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\"><path fill=\"#555\" d=\"M2 3v14h16V5h-8L8 3z\"/></svg></span><span class=\"ds-row-label\">releases</span><span class=\"ds-row-date\">2026-11-02 10:04</span><span class=\"ds-row-size\">134 B</span></div>",
-      "css": ".ds-row { font-family: 'Ubuntu', 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 13px; line-height: 1.4; position: relative; white-space: nowrap; overflow: hidden; background: #fff; color: rgba(0,0,0,0.87); border-bottom: 1px solid rgba(0,0,0,0.07); line-height: 34px; width: 420px; cursor: pointer; } .ds-row-icon { position: absolute; left: 16px; top: 7px; line-height: 0; } .ds-row-label { display: block; margin: 0 246px 0 52px; padding: 0 8px; overflow: hidden; text-overflow: ellipsis; } .ds-row-date { position: absolute; right: 116px; top: 0; width: 130px; padding: 0 8px; text-align: right; } .ds-row-size { position: absolute; right: 16px; top: 0; width: 80px; padding: 0 8px; text-align: right; } .ds-row:hover { color: #42a5f5; background: #fafafa; box-shadow: 0 1px 10px 0 rgba(0,0,0,0.5); z-index: 1; }"
+      "css": ".ds-row { font-family: 'Ubuntu', 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 13px; line-height: 1.4; position: relative; white-space: nowrap; overflow: hidden; background: #fff; color: rgba(0,0,0,0.87); border-bottom: 1px solid rgba(0,0,0,0.07); line-height: 34px; width: 420px; cursor: pointer; } .ds-row-icon { position: absolute; left: 16px; top: 7px; line-height: 0; } .ds-row-label { display: block; margin: 0 246px 0 52px; padding: 0 8px; overflow: hidden; text-overflow: ellipsis; } .ds-row-date { position: absolute; right: 116px; top: 0; width: 130px; padding: 0 8px; text-align: right; } .ds-row-size { position: absolute; right: 16px; top: 0; width: 80px; padding: 0 8px; text-align: right; } .ds-row:hover { color: #176fcb; background: #fafafa; box-shadow: 0 1px 10px 0 rgba(0,0,0,0.5); z-index: 1; }"
     },
     {
       "name": "Selected Row",
       "kind": "custom",
       "refersTo": "row-selected",
-      "description": "Selection fills the row with Link Sky and white text; the corner badge shows a white check.",
+      "description": "Selection fills the row with Link Sky Deep and white text (5.03:1); the corner badge shows a white check on the same fill.",
       "html": "<div class=\"ds-row-sel\"><span class=\"ds-sel-badge\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\"><path d=\"M9 16.2l-4.2-4.2-1.4 1.4 5.6 5.6 12-12-1.4-1.4z\" fill=\"#fff\"/></svg></span><span class=\"ds-sel-label\">app-1.0.zip</span></div>",
-      "css": ".ds-row-sel { font-family: 'Ubuntu', 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 13px; line-height: 1.4; position: relative; width: 420px; overflow: hidden; line-height: 34px; background: #42a5f5; color: #fff; } .ds-sel-badge { position: absolute; left: 0; top: 0; width: 22px; height: 22px; background: #42a5f5; border-radius: 0 0 2px 0; opacity: 1; line-height: 0; } .ds-sel-label { display: block; padding: 0 8px 0 52px; }"
+      "css": ".ds-row-sel { font-family: 'Ubuntu', 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 13px; line-height: 1.4; position: relative; width: 420px; overflow: hidden; line-height: 34px; background: #176fcb; color: #fff; } .ds-sel-badge { position: absolute; left: 0; top: 0; width: 22px; height: 22px; background: #176fcb; border-radius: 0 0 2px 0; opacity: 1; line-height: 0; } .ds-sel-label { display: block; padding: 0 8px 0 52px; }"
     },
     {
       "name": "Grid Tile",
@@ -315,7 +315,7 @@
       "refersTo": "tile",
       "description": "2px-radius white tile with a square icon and 180px label; lifts on hover.",
       "html": "<div class=\"ds-tile\"><span class=\"ds-tile-sq\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\"><path fill=\"#555\" d=\"M2 3v14h16V5h-8L8 3z\"/></svg></span><span class=\"ds-tile-lbl\">photos</span></div>",
-      "css": ".ds-tile { font-family: 'Ubuntu', 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 13px; line-height: 1.4; display: inline-block; overflow: hidden; margin: 8px; border-radius: 2px; background: #fff; color: rgba(0,0,0,0.87); cursor: pointer; white-space: nowrap; } .ds-tile-sq { display: inline-block; vertical-align: top; width: 40px; height: 40px; text-align: center; line-height: 40px; } .ds-tile-lbl { display: inline-block; vertical-align: top; width: 180px; padding: 0 8px; line-height: 40px; } .ds-tile:hover { color: #42a5f5; background: #fafafa; box-shadow: 0 1px 10px 0 rgba(0,0,0,0.5); }"
+      "css": ".ds-tile { font-family: 'Ubuntu', 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 13px; line-height: 1.4; display: inline-block; overflow: hidden; margin: 8px; border-radius: 2px; background: #fff; color: rgba(0,0,0,0.87); cursor: pointer; white-space: nowrap; } .ds-tile-sq { display: inline-block; vertical-align: top; width: 40px; height: 40px; text-align: center; line-height: 40px; } .ds-tile-lbl { display: inline-block; vertical-align: top; width: 180px; padding: 0 8px; line-height: 40px; } .ds-tile:hover { color: #176fcb; background: #fafafa; box-shadow: 0 1px 10px 0 rgba(0,0,0,0.5); }"
     },
     {
       "name": "Sidebar Mode Button",
@@ -329,17 +329,17 @@
       "name": "Context Menu",
       "kind": "custom",
       "refersTo": "context-menu",
-      "description": "White 2px-radius popup with the 20px-blur shadow; entry hover is blue text on a wash.",
+      "description": "White 2px-radius popup with the 20px-blur shadow; entry hover is Link Sky Deep text on a wash.",
       "html": "<ul class=\"ds-menu\"><li class=\"ds-mlabel\">releases</li><li class=\"ds-sep\"></li><li class=\"ds-entry\">Open</li><li class=\"ds-entry\">Download</li></ul>",
-      "css": ".ds-menu { font-family: 'Ubuntu', 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 13px; line-height: 1.4; margin: 0; padding: 0; list-style: none; min-width: 200px; display: inline-block; border-radius: 2px; background: #fff; color: rgba(0,0,0,0.87); box-shadow: 0 1px 20px 0 rgba(0,0,0,0.5); } .ds-mlabel { padding: 8px 16px; font-weight: bold; white-space: nowrap; } .ds-entry { padding: 8px 16px; white-space: nowrap; cursor: pointer; } .ds-entry:hover { color: #42a5f5; background: rgba(0,0,0,0.03); } .ds-sep { height: 1px; margin: 8px 0; border-top: 1px solid rgba(0,0,0,0.08); }"
+      "css": ".ds-menu { font-family: 'Ubuntu', 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 13px; line-height: 1.4; margin: 0; padding: 0; list-style: none; min-width: 200px; display: inline-block; border-radius: 2px; background: #fff; color: rgba(0,0,0,0.87); box-shadow: 0 1px 20px 0 rgba(0,0,0,0.5); } .ds-mlabel { padding: 8px 16px; font-weight: bold; white-space: nowrap; } .ds-entry { padding: 8px 16px; white-space: nowrap; cursor: pointer; } .ds-entry:hover { color: #176fcb; background: rgba(0,0,0,0.03); } .ds-sep { height: 1px; margin: 8px 0; border-top: 1px solid rgba(0,0,0,0.08); }"
     },
     {
       "name": "Default Button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "The one button style (admin info page): Link Sky fill, white text, raised on hover.",
+      "description": "The one button style (admin info page): Link Sky Deep fill, white text (5.03:1), raised on hover.",
       "html": "<span class=\"ds-btn\">Login</span>",
-      "css": ".ds-btn { font-family: 'Ubuntu', 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 13px; line-height: 1.4; display: inline-block; padding: 0 12px; line-height: 28px; border-radius: 2px; color: #fff; background: #42a5f5; cursor: pointer; transition: all 0.2s ease-in-out; } .ds-btn:hover { box-shadow: 0 1px 10px 0 rgba(0,0,0,0.5); }"
+      "css": ".ds-btn { font-family: 'Ubuntu', 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 13px; line-height: 1.4; display: inline-block; padding: 0 12px; line-height: 28px; border-radius: 2px; color: #fff; background: #176fcb; cursor: pointer; transition: all 0.2s ease-in-out; } .ds-btn:hover { box-shadow: 0 1px 10px 0 rgba(0,0,0,0.5); }"
     },
     {
       "name": "Text Input",
@@ -362,7 +362,7 @@
     "overview": "**Creative North Star: \"The Quiet Ledger\"**\n\nThe interface is a ruled ledger of files: white rows separated by hairlines, a pale panel for chrome, and one blue for everything that can be acted on.\nThe files are the content, so the index recedes.\nIt reads as the Material-2014 era it descends from: flat at rest, 13px type, 48px bars, 2px corners, and shadows only as a response to the pointer.\n\nDensity is compact by default and adjustable by the visitor.\nThree views (details, grid, icons) share one palette and one hover grammar, and a size slider changes only the icon and row scale.\nThe interface has no light and dark pair; it is one light surface.\n\nThe visual anti-references are file-manager chrome that implies write actions (the product is read-only) and marketing-style heroes, gradients, or decorative color.",
     "keyCharacteristics": [
       "Flat at rest; shadow appears only on hover, in the preview, and in popups.",
-      "One chromatic accent (Link Sky) for links, hover text, selection, and the single button style.",
+      "One chromatic accent in two shades: Link Sky Deep for links, hover text, selection, and the single button style; Link Sky only for the hover preview of the selector badge.",
       "Hairline borders at 5% to 7% black instead of boxes or fills.",
       "Icon-only 48px tool targets that are keyboard buttons with a name and tooltip; section labels live in the sidebar and context menu.",
       "A 2px focus ring that appears for the keyboard only.",
@@ -371,7 +371,7 @@
     "rules": [
       {
         "name": "The One Voice Rule",
-        "body": "Link Sky is the only chromatic accent in the browsing interface. Hover is blue text or a 3% black wash, selection is a blue fill; nothing else carries color.",
+        "body": "Link Sky, in its two shades, is the only chromatic accent in the browsing interface. Hover is blue text or a 3% black wash, selection is a blue fill; nothing else carries color. The deep shade carries every text and every fill that holds white text; the light shade never does.",
         "section": "colors"
       },
       {
@@ -397,7 +397,7 @@
     ],
     "dos": [
       "**Do** keep surfaces flat at rest and use the Raised shadow (`0 1px 10px 0 rgba(0,0,0,0.5)`) only in response to hover or for floating layers.",
-      "**Do** reserve Link Sky (#42a5f5) for what can be acted on: links, hover text, selection, the one button.",
+      "**Do** reserve Link Sky Deep (#176fcb) for what can be acted on and carries text: links, hover text, selection, the one button; keep the light Link Sky (#42a5f5) for fills with no text on them.",
       "**Do** build clickable tool targets as 48px squares (24px icon, 12px padding).",
       "**Do** separate rows and panels with 1px hairlines at 5% to 7% black.",
       "**Do** use the 2px radius for new surfaces; reach for 4px or 8px only where the code already does.",

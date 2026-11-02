@@ -3,7 +3,7 @@ name: h5ai-ng
 description: A quiet, flat file index whose interface stays out of the way of the files it lists.
 colors:
   link-sky: "#42a5f5"
-  link-sky-deep: "#1976d2"
+  link-sky-deep: "#176fcb"
   highlighter-pink: "#ff4081"
   paper-white: "#ffffff"
   panel-mist: "#fafafa"
@@ -40,7 +40,7 @@ typography:
     lineHeight: 1.4
   hint:
     fontFamily: '"Ubuntu", "Roboto", "Helvetica", "Arial", "sans-serif"'
-    fontSize: "65px"
+    fontSize: "16px"
     fontWeight: 700
     lineHeight: 1.4
   display:
@@ -79,7 +79,7 @@ components:
     height: "{spacing.bar}"
     padding: "0 8px"
   crumb-hover:
-    textColor: "{colors.link-sky}"
+    textColor: "{colors.link-sky-deep}"
   row:
     backgroundColor: "{colors.paper-white}"
     textColor: "{colors.ink}"
@@ -87,9 +87,9 @@ components:
     height: "34px"
   row-hover:
     backgroundColor: "{colors.panel-mist}"
-    textColor: "{colors.link-sky}"
+    textColor: "{colors.link-sky-deep}"
   row-selected:
-    backgroundColor: "{colors.link-sky}"
+    backgroundColor: "{colors.link-sky-deep}"
     textColor: "{colors.ink-inverse}"
   tile:
     backgroundColor: "{colors.paper-white}"
@@ -112,13 +112,13 @@ components:
     padding: "8px 16px"
   context-menu-entry-hover:
     backgroundColor: "{colors.hover-wash}"
-    textColor: "{colors.link-sky}"
+    textColor: "{colors.link-sky-deep}"
   viewer-bar:
     backgroundColor: "{colors.viewer-bar}"
     textColor: "{colors.ink-inverse}"
     height: "{spacing.bar}"
   button-primary:
-    backgroundColor: "{colors.link-sky}"
+    backgroundColor: "{colors.link-sky-deep}"
     textColor: "{colors.ink-inverse}"
     rounded: "{rounded.sm}"
     padding: "0 12px"
@@ -153,7 +153,7 @@ The visual anti-references are file-manager chrome that implies write actions (t
 
 **Key Characteristics:**
 - Flat at rest; shadow appears only on hover, in the preview, and in popups.
-- One chromatic accent (Link Sky) for links, hover text, selection, and the single button style.
+- One chromatic accent in two shades: Link Sky Deep for links, hover text, selection, and the single button style; Link Sky only for the hover preview of the selector badge.
 - Hairline borders at 5% to 7% black instead of boxes or fills.
 - Icon-only 48px tool targets that are keyboard buttons with a name and tooltip; section labels live in the sidebar and context menu.
 - A 2px focus ring that appears for the keyboard only.
@@ -165,11 +165,13 @@ Source: `src/_h5ai/public/css/lib/colors.less`, with the literals named in Open 
 The palette is Material greys plus one blue, a pink reserved for native text selection, and green and red used only on the admin info page.
 
 ### Primary
-- **Link Sky** (#42a5f5): the only accent in the browsing UI.
-  It is link and hover text, the selected-row fill, the selector badge, the default button fill, and the custom header and footer links.
-- **Link Sky Deep** (#1976d2): the 2px keyboard focus ring on light surfaces, 5.1:1 on white.
-  It is Link Sky's darker shade for places where the accent must carry contrast (`docs/decisions/2026-11-02-design-refinement-decisions.md`, decision 1).
-  Today it is the focus ring only (`@col-focus` in `lib/colors.less`); text and fill uses follow with the contrast work.
+- **Link Sky** (#42a5f5): the accent's light shade, for fills that carry no text.
+  Today that is the selector badge that appears when the pointer is over an unselected item (0.6 alpha, 0.8 on hover).
+  Its 2.65:1 against white rules out text and white text on it.
+- **Link Sky Deep** (#176fcb): the accent wherever it is text or sits under white text (`@col-blue-deep` in `lib/colors.less`).
+  It is link and hover text, the selected-row fill and the selector badge on a selected item, the default button fill, the custom header and footer links, and the 2px keyboard focus ring.
+  Measured in Chromium: 5.03:1 on Paper White and as the ground for white text, 4.82:1 on Panel Mist, 4.52:1 on Panel Mist under a Hover Wash (the backlink on hover).
+  The first value chosen for this shade, #1976d2, reached 4.60:1 on white but only 4.41:1 on Panel Mist and 4.13:1 under a Hover Wash, so decision 1 was revised to #176fcb (`docs/decisions/2026-11-02-design-refinement-decisions.md`).
 
 ### Secondary
 - **Highlighter Pink** (#ff4081): the native text selection background (`::selection`), with white text.
@@ -179,9 +181,9 @@ The palette is Material greys plus one blue, a pink reserved for native text sel
 - **Paper White** (#ffffff): the page, item rows, the context menu, and the text preview.
 - **Panel Mist** (#fafafa): the top bar, sidebar, row hover, inputs, and the icons-view thumbnail well.
 - **Ink** (rgba(0,0,0,0.87)): body text.
-- **Ink Secondary** (rgba(0,0,0,0.54)): hint links in the no-JavaScript bar.
-- **Ink Disabled** (rgba(0,0,0,0.26)): the "powered by" backlink, tree summaries, and a pending filter or search field.
-- **Ink Inverse** (rgba(255,255,255,1)): text on Link Sky, on the viewer bar, and on the scrim; also the focus ring on those surfaces and on selected rows.
+- **Ink Secondary** (rgba(0,0,0,0.54)): the "powered by" backlink, the empty-folder and no-match hints, and hint links in the no-JavaScript bar; 4.59:1 on Paper White, 4.54:1 on Panel Mist.
+- **Ink Disabled** (rgba(0,0,0,0.26)): tree summaries and a pending filter or search field (1.88:1; see Open Items).
+- **Ink Inverse** (rgba(255,255,255,1)): text on Link Sky Deep (5.03:1), on the viewer bar, and on the scrim; also the focus ring on those surfaces and on selected rows.
 - **Hover Wash** (rgba(0,0,0,0.03)): the hover fill for tool buttons, sidebar buttons, and context-menu entries.
 - **Hairline** (rgba(0,0,0,0.05)): bar and panel borders, info-panel rules, code chips.
 - **Row Rule** (rgba(0,0,0,0.07)): the rule under every details row and under the column header.
@@ -195,8 +197,9 @@ The palette is Material greys plus one blue, a pink reserved for native text sel
 - **Pass Green** (#4caf50) and **Fail Red** (#f44336): test results, and the no-JavaScript and old-browser messages (red).
 
 ### Named Rules
-**The One Voice Rule.** Link Sky is the only chromatic accent in the browsing interface.
+**The One Voice Rule.** Link Sky, in its two shades, is the only chromatic accent in the browsing interface.
 Hover is blue text or a 3% black wash, selection is a blue fill; nothing else carries color.
+The deep shade carries every text and every fill that holds white text; the light shade never does.
 
 **The Pink Selection Rule.** Highlighter Pink belongs to `::selection` and nothing else.
 
@@ -213,17 +216,18 @@ Source: `src/_h5ai/public/css/lib/fonts.less`, `lib/view/root.less`, `lib/misc.l
 The operator can replace both stacks through `view.fonts` and `view.fontsMono` in `options.json`; the server injects them with `!important` (`src/_h5ai/private/php/core/class-context.php`).
 
 **Character:** a humanist sans at a small, steady size.
-Hierarchy comes from weight and opacity, not from size jumps; the only large type is the empty-state hint and the admin page title.
+Hierarchy comes from weight and opacity, not from size jumps; the only large type is the admin page title.
 
 ### Hierarchy
 - **Body** (400, 13px, line-height 1.4): rows, tree, sidebar, menus, and the item list at every size.
 - **Title** (400, 16px, line-height 48px): breadcrumb labels, with the active crumb in bold (700); also the filter and search fields and the info-panel name.
 - **Mono** (400, 15px): code and preformatted text, including the text preview.
-- **Hint** (700, 65px, Hairline color): the empty-folder and no-match messages, centered with a 36px top margin.
+- **Hint** (700, 16px, Ink Secondary, 4.59:1): the empty-folder and no-match messages, centered with a 36px top margin.
+  The size is the Title step and the bold weight carries it; it was 65px in the 5% black of a Hairline (1.12:1).
 - **Display** (300, 52px): the admin info page title only.
 
 Row labels, dates, and sizes use the body size; the row line-height is the icon size plus 14px.
-The column header is body size at 0.4 opacity, rising to full opacity and Link Sky on hover.
+The column header is body size at 0.65 opacity (5.04:1 on Paper White), rising to full opacity and Link Sky Deep on hover.
 
 ### Named Rules
 **The Weight, Not Size Rule.** Emphasis is bold (active crumb, active tree folder, menu labels) or opacity, never a larger size inside the working list.
@@ -314,7 +318,7 @@ The expanding tools report `aria-expanded`.
 While its input has focus, a 2px Link Sky Deep underline marks the field; text fields match `:focus-visible` for mouse and keyboard alike, so the underline stands in for the ring.
 
 ### Breadcrumb
-16px type on a 48px line, with 8px label padding and a 24px chevron separator between crumbs; the active crumb is bold and links turn Link Sky on hover.
+16px type on a 48px line, with 8px label padding and a 24px chevron separator between crumbs; the active crumb is bold and links turn Link Sky Deep on hover.
 A page-hint icon follows folders that carry their own index page.
 Below 700px only the active crumb remains.
 
@@ -322,8 +326,8 @@ Below 700px only the active crumb remains.
 The signature component.
 A white row with a Row Rule underneath, an icon square at 16px from the left, an ellipsized label, and right-aligned date and size.
 A focused row shows the focus ring inset on its link, white on a selected row.
-Hover turns the row Panel Mist, the text Link Sky, and lifts it with the Raised shadow.
-The header row shows Name, Last modified, and Size at 0.4 opacity; a sort chevron appears on the active column and rotates 180 degrees when descending.
+Hover turns the row Panel Mist, the text Link Sky Deep (4.82:1), and lifts it with the Raised shadow.
+The header row shows Name, Last modified, and Size at 0.65 opacity; a sort chevron appears on the active column and rotates 180 degrees when descending.
 The parent-folder row hides its date and size.
 
 ### Tiles (grid and icons views)
@@ -331,8 +335,8 @@ The parent-folder row hides its date and size.
 The icons view sets the icon or thumbnail in a Panel Mist landscape well above a centered label.
 
 ### Selection
-Hovering an item shows the selector badge (Link Sky at 0.6 alpha, 0.8 on hover, with a white check).
-A selected item fills with Link Sky and white text, and its badge goes to full opacity; the fill holds on hover.
+Hovering an item shows the selector badge (Link Sky at 0.6 alpha, 0.8 on hover, with a white check that reaches only 1.81:1 against it).
+A selected item fills with Link Sky Deep and white text (5.03:1) in every view, and its badge turns to the same fill at full opacity; the fill holds on hover.
 Selection is still pointer-only (badge click, drag rectangle); no keyboard way to select exists yet.
 Dragging over the list draws the dashed selection rectangle (Hairline Strong border, 10% black fill) and switches the cursor to move.
 
@@ -350,7 +354,7 @@ The active folder is bold; summaries ("more subfolders") use Ink Disabled.
 
 ### Context menu
 A white 2px-radius panel with the Popup shadow, 200px minimum width, 8px and 16px entry padding, a bold label row, 20px icons, and a 1px separator at 8% black.
-Entry hover is Link Sky text on a Hover Wash.
+Entry hover is Link Sky Deep text on a Hover Wash (4.70:1 over Paper White, from the token values; the menu is off in the default configuration and was not rendered).
 
 ### Preview
 A 50% black overlay (solid Charcoal in fullscreen) with the media centered and raised, a 48px Viewer Bar along the bottom with white 24px icons at 0.7 opacity (1.0 on hover), and previous and next arrows at half opacity that become dark rounded tabs on hover.
@@ -369,10 +373,10 @@ Hidden below 700px.
 A top-centered 200px toast: white text on 20% black, 4px bottom corners, 3px and 6px padding, above everything at z-index 100.
 
 ### Custom header and footer
-Operator HTML in 16px-margin, 8px-padding blocks above and below the list; links are Link Sky and turn Charcoal on hover.
+Operator HTML in 16px-margin, 8px-padding blocks above and below the list; links are Link Sky Deep (5.03:1) and turn Charcoal on hover.
 
 ### Admin info page controls
-The only place the shared form controls appear: a Link Sky 2px-radius button (white text, 28px line, 12px side padding, Raised shadow on hover) and a 2px-radius input on Panel Mist with a Hairline border.
+The only place the shared form controls appear: a Link Sky Deep 2px-radius button (white text at 5.03:1, 28px line, 12px side padding, Raised shadow on hover) and a 2px-radius input on Panel Mist with a Hairline border.
 Test results are 1.4em, with the status in bold Pass Green or Fail Red.
 
 ### Icons
@@ -391,7 +395,7 @@ Comity icons carry their own palette (for example #fbc02d for JavaScript); those
 
 ### Do:
 - **Do** keep surfaces flat at rest and use the Raised shadow (`0 1px 10px 0 rgba(0,0,0,0.5)`) only in response to hover or for floating layers.
-- **Do** reserve Link Sky (#42a5f5) for what can be acted on: links, hover text, selection, the one button.
+- **Do** reserve Link Sky Deep (#176fcb) for what can be acted on and carries text: links, hover text, selection, the one button; keep the light Link Sky (#42a5f5) for fills with no text on them.
 - **Do** build clickable tool targets as 48px squares (24px icon, 12px padding).
 - **Do** separate rows and panels with 1px hairlines at 5% to 7% black.
 - **Do** use the 2px radius for new surfaces; reach for 4px or 8px only where the code already does.
@@ -418,7 +422,10 @@ None of them is changed by this document.
 - **Keyboard coverage:** the tools, sidebar controls, preview bar, and rows are keyboard-reachable with a focus ring.
   Still open: the tree indicators (mouse-only), selecting rows and drag selection, the context menu, an ARIA name for the breadcrumb and tree, and `aria-sort` on the column headers.
   `PRODUCT.md` records that no accessibility standard has been set.
-- **Contrast and size:** 13px body text and the 0.26 to 0.54 alpha secondary and disabled inks (and the 0.4-opacity column header) have not been checked against a contrast target.
+- **Contrast and size:** text and fill pairs of the list, bars, hints, selection and admin button were measured in Chromium against WCAG AA 4.5:1 and pass.
+  Still below it: tree summaries and pending fields in Ink Disabled (1.88:1), the no-JavaScript list header cells in `#aaa` (2.32:1), the white check on the hover selector badge (1.81:1, a graphic), and the `#pass` placeholder (4.4:1).
+  Not measured: the viewer bar icons at 0.7 opacity, the text-preview link and code colors, and the admin test results.
+  13px body text is not checked against a size target, and `PRODUCT.md` records that no accessibility standard has been set.
 - **Touch targets:** tool and sidebar buttons are 48px, but tree rows are about 24px tall and tree indicators 20px; no touch-target rule has been set.
 - **Quoted generic family:** `"sans-serif"` is quoted in `lib/fonts.less` and in `view.fonts` in `src/_h5ai/private/conf/options.json`, so browsers read it as a family name rather than the generic fallback.
   `options.json` is an operator-facing compatibility surface, so any change there is a later decision.
