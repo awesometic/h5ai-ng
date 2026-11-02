@@ -9,6 +9,10 @@ class Context {
         'pt-br', 'pt-pt', 'ro', 'ru', 'sk', 'sl', 'sr', 'sv', 'tr', 'uk',
         'zh-cn', 'zh-tw'
     );
+    private static $GENERIC_FONT_FAMILIES = array(
+        'serif', 'sans-serif', 'monospace', 'cursive', 'fantasy',
+        'system-ui', 'ui-sans-serif', 'ui-serif', 'ui-monospace'
+    );
 
     private $session;
     private $request;
@@ -264,6 +268,18 @@ class Context {
         return $this->setup->get('PUBLIC_HREF') . 'ext/' . $href;
     }
 
+    // generic family keywords must stay unquoted, a quoted one names a font
+    private function get_font_family_css($fonts) {
+        $css = [];
+
+        foreach ($fonts as $font) {
+            $generic = strtolower($font);
+            $css[] = in_array($generic, Context::$GENERIC_FONT_FAMILIES, true) ? $generic : '"' . $font . '"';
+        }
+
+        return implode(',', $css);
+    }
+
     private function get_fonts_html() {
         $fonts = $this->query_option('view.fonts', []);
         $fonts_mono = $this->query_option('view.fontsMono', []);
@@ -271,11 +287,11 @@ class Context {
         $html = '<style class="x-head">';
 
         if (sizeof($fonts) > 0) {
-            $html .= '#root,input,select{font-family:"' . implode('","', $fonts) . '"!important}';
+            $html .= '#root,input,select{font-family:' . $this->get_font_family_css($fonts) . '!important}';
         }
 
         if (sizeof($fonts_mono) > 0) {
-            $html .= 'pre,code{font-family:"' . implode('","', $fonts_mono) . '"!important}';
+            $html .= 'pre,code{font-family:' . $this->get_font_family_css($fonts_mono) . '!important}';
         }
 
         $html .= '</style>';

@@ -76,7 +76,10 @@ THE SOFTWARE.
 ## References
 
 **h5ai** profits from other projects, all of them licensed under the MIT license
-too. Exceptions are some [Material Design icons][material-design-icons] (CC BY 4.0).
+too. Exceptions are some [Material Design icons][material-design-icons] (CC BY 4.0)
+and the Ubuntu and Ubuntu Mono fonts ([`@fontsource/ubuntu`][fontsource-ubuntu] and
+[`@fontsource/ubuntu-mono`][fontsource-ubuntu-mono] 5.3.0, Ubuntu Font Licence 1.0),
+which are bundled unmodified in `_h5ai/public/fonts/` together with the licence.
 
 
 [web]: https://larsjung.de/h5ai/
@@ -87,6 +90,8 @@ too. Exceptions are some [Material Design icons][material-design-icons] (CC BY 4
 [node]: https://nodejs.org
 [docker-h5ai]: https://github.com/awesometic/docker-h5ai
 [material-design-icons]: https://github.com/google/material-design-icons
+[fontsource-ubuntu]: https://www.npmjs.com/package/@fontsource/ubuntu
+[fontsource-ubuntu-mono]: https://www.npmjs.com/package/@fontsource/ubuntu-mono
 
 [license-img]: https://img.shields.io/badge/license-MIT-a0a060.svg?style=flat-square
 [web-img]: https://img.shields.io/badge/web-larsjung.de/h5ai-a0a060.svg?style=flat-square
