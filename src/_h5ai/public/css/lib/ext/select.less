@@ -78,11 +78,52 @@ html.drag-select, html.drag-select * {
             width: 24px;
             height: 24px;
             border: 1px solid @col-text-secondary-black;
+            border-radius: 2px;
             background: @col-back-paper;
             opacity: 1;
 
             img {
                 visibility: hidden;
+            }
+        }
+
+        // the box sits beside the row content instead of on the icon's corner: 4px from the edge, 8px of clear space to the icon or text
+        &.view-details {
+            .item .selector {
+                top: 50%;
+                left: 4px;
+                margin-top: -12px;
+            }
+            .item .square {
+                left: 28px;
+            }
+            .item .label {
+                padding-left: 20px;
+            }
+        }
+
+        &.view-grid {
+            .item .selector {
+                top: 50%;
+                left: auto;
+                right: 8px;
+                margin-top: -12px;
+            }
+            .item .label {
+                width: 148px;
+                padding-right: 40px;
+            }
+        }
+
+        &.view-icons {
+            .item .selector {
+                top: auto;
+                bottom: 4px;
+                left: 4px;
+            }
+            .item .label {
+                line-height: 32px;
+                padding: 0 6px 0 34px;
             }
         }
     }

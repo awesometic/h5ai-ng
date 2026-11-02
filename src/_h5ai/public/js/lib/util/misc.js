@@ -8,7 +8,14 @@ const parse_pattern = (sequence, advanced) => {
     }
 
     if (sequence.substr(0, 3) === 're:') {
-        return sequence.substr(3);
+        const re = sequence.substr(3);
+        try {
+            RegExp(re);
+            return re;
+        } catch (err) {
+            // not a valid expression (yet): match the typed text literally, so filter and search stay usable
+            return esc_pattern(sequence);
+        }
     }
 
     return sequence.trim().split(/\s+/).map(part => {
