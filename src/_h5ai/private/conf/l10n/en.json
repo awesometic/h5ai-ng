@@ -2,6 +2,7 @@
 {
     "lang": "english",
 
+    "close": "close",
     "dateFormat": "YYYY-MM-DD HH:mm",
     "details": "details",
     "download": "download",
@@ -9,14 +10,20 @@
     "files": "files",
     "filter": "filter",
     "folders": "folders",
+    "fullscreen": "fullscreen",
     "grid": "grid",
     "icons": "icons",
+    "info": "Info",
     "language": "Language",
     "lastModified": "Last modified",
     "name": "Name",
+    "next": "next",
     "noMatch": "no match",
     "parentDirectory": "Parent Directory",
+    "previous": "previous",
+    "raw": "raw file",
     "search": "search",
+    "sidebar": "sidebar",
     "size": "Size",
     "tree": "Tree",
     "view": "View"

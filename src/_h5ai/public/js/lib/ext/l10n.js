@@ -18,19 +18,26 @@ const defaultTranslations = {
 
     dateFormat: 'YYYY-MM-DD HH:mm',
     details: 'details',
+    close: 'close',
     download: 'download',
     empty: 'empty',
     files: 'files',
     filter: 'filter',
     folders: 'folders',
+    fullscreen: 'fullscreen',
     grid: 'grid',
     icons: 'icons',
+    info: 'Info',
     language: 'Language',
     lastModified: 'Last modified',
     name: 'Name',
+    next: 'next',
     noMatch: 'no match',
     parentDirectory: 'Parent Directory',
+    previous: 'previous',
+    raw: 'raw file',
     search: 'search',
+    sidebar: 'sidebar',
     size: 'Size',
     tree: 'Tree',
     view: 'View'
@@ -62,6 +69,7 @@ const update = lang => {
     each(currentLang, (value, key) => {
         dom('.l10n-' + key).text(value);
         dom('.l10n_ph-' + key).attr('placeholder', value);
+        dom('.l10n_lb-' + key).attr('title', value).attr('aria-label', value);
     });
     format.setDefaultDateFormat(currentLang.dateFormat);
 

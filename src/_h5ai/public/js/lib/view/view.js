@@ -164,7 +164,7 @@ const createHtml = item => {
         }
         $html.addCls('folder-parent');
     }
-    $iconImg.attr('src', item.icon).attr('alt', item.type);
+    $iconImg.attr('src', item.icon).attr('alt', '');
 
     item.$view = $html;
     $html[0]._item = item;

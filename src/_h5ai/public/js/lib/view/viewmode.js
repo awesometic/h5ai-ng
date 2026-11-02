@@ -13,22 +13,22 @@ const settings = Object.assign({
 const settingsTpl =
         '<div id="viewmode-settings" class="block"><h1 class="l10n-view">View</h1></div>';
 const modeTpl =
-        `<div id="viewmode-[MODE]" class="button mode">
-            <img src="${resource.image('view-[MODE]')}" alt="viewmode-[MODE]"/>
+        `<div id="viewmode-[MODE]" class="button mode l10n_lb-[MODE]">
+            <img src="${resource.image('view-[MODE]')}" alt=""/>
         </div>`;
 const sizeTpl =
-        '<input id="viewmode-size" type="range" min="0" max="0" value="0">';
+        '<input id="viewmode-size" class="l10n_lb-size" type="range" min="0" max="0" value="0">';
 const toggleTpl =
-        `<div id="viewmode-toggle" class="tool">
-            <img alt="viewmode"/>
+        `<div id="viewmode-toggle" class="tool l10n_lb-view">
+            <img alt=""/>
         </div>`;
 let modes;
 let sizes;
 
 
 const onChanged = (mode, size) => {
-    dom('#viewmode-settings .mode').rmCls('active');
-    dom('#viewmode-' + mode).addCls('active');
+    dom('#viewmode-settings .mode').rmCls('active').attr('aria-pressed', 'false');
+    dom('#viewmode-' + mode).addCls('active').attr('aria-pressed', 'true');
     dom('#viewmode-size').val(sizes.indexOf(size));
 
     if (settings.modeToggle === 'next') {
@@ -47,6 +47,7 @@ const addSettings = () => {
     if (modes.length > 1) {
         each(modes, mode => {
             dom(modeTpl.replace(/\[MODE\]/g, mode))
+                .btn()
                 .on('click', () => {
                     view.setMode(mode);
                 })
@@ -77,6 +78,7 @@ const onToggle = () => {
 const addToggle = () => {
     if (settings.modeToggle && modes.length > 1) {
         dom(toggleTpl)
+            .btn()
             .on('click', onToggle)
             .appTo(base.$toolbar);
     }

@@ -9,10 +9,10 @@ const settings = Object.assign({
     disableSidebar: false
 }, allsettings.view);
 const storekey = 'sidebarIsVisible';
-const sidebarTpl = '<div id="sidebar"></div>';
+const sidebarTpl = '<aside id="sidebar"></aside>';
 const toggleTpl =
-        `<div id="sidebar-toggle" class="tool">
-            <img alt="sidebar"/>
+        `<div id="sidebar-toggle" class="tool l10n_lb-sidebar" aria-controls="sidebar">
+            <img alt=""/>
         </div>`;
 
 
@@ -30,11 +30,11 @@ const init = () => {
         }
 
         if (isVisible) {
-            $toggle.addCls('active');
+            $toggle.addCls('active').attr('aria-expanded', 'true');
             $img.attr('src', resource.image('back'));
             $sidebar.show();
         } else {
-            $toggle.rmCls('active');
+            $toggle.rmCls('active').attr('aria-expanded', 'false');
             $img.attr('src', resource.image('sidebar'));
             $sidebar.hide();
         }
@@ -42,7 +42,7 @@ const init = () => {
 
     if (!settings.disableSidebar) {
         $sidebar.appTo(base.$mainrow);
-        $toggle.appTo(base.$toolbar).on('click', () => update(true));
+        $toggle.appTo(base.$toolbar).btn().on('click', () => update(true));
         update();
     }
 

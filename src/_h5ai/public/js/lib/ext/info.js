@@ -15,7 +15,7 @@ const settings = Object.assign({
 }, allsettings.info);
 const tpl =
         `<div id="info">
-            <div class="icon"><img/></div>
+            <div class="icon"><img alt=""/></div>
             <div class="block">
                 <div class="label"></div>
                 <div class="time"></div>
@@ -30,8 +30,8 @@ const tpl =
 const settingsTpl =
         `<div class="block">
             <h1 class="l10n-info">Info</h1>
-            <div id="view-info" class="button view">
-                <img src="${resource.image('info-toggle')}" alt="view-info"/>
+            <div id="view-info" class="button view l10n_lb-info">
+                <img src="${resource.image('info-toggle')}" alt=""/>
             </div>
         </div>`;
 const storekey = 'ext/info';
@@ -48,10 +48,10 @@ let currentFolder;
 
 const updateSettings = () => {
     if (store.get(storekey)) {
-        dom('#view-info').addCls('active');
+        dom('#view-info').addCls('active').attr('aria-pressed', 'true');
         dom('#info').show();
     } else {
-        dom('#view-info').rmCls('active');
+        dom('#view-info').rmCls('active').attr('aria-pressed', 'false');
         dom('#info').hide();
     }
 };
@@ -143,6 +143,7 @@ const init = () => {
     dom(settingsTpl)
         .appTo('#sidebar')
         .find('#view-info')
+        .btn()
         .on('click', ev => {
             store.put(storekey, !store.get(storekey));
             updateSettings();

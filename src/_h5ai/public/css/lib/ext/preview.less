@@ -79,6 +79,7 @@
 }
 
 #pv-buttons {
+    display: flex;
     list-style: none;
     list-style-image: none;
     margin: 0;
@@ -114,12 +115,33 @@
         }
     }
 
-    .bar-left {
-        float: left;
+    // keeps the buttons in tab order, labels stay on the left and give way first
+    li {
+        flex: 0 0 auto;
     }
 
-    .bar-right {
-        float: right;
+    .bar-left {
+        flex: 0 1 auto;
+        order: -1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    #pv-bar-prev {
+        margin-left: auto;
+    }
+}
+
+#pv-overlay {
+    &:focus {
+        outline: 0;
+    }
+
+    :focus-visible {
+        outline-color: @col-text-primary-white;
+        outline-offset: -2px;
     }
 }
 
@@ -144,5 +166,12 @@
 @media only screen and (max-width: 700px) {
     #pv-prev-area, #pv-next-area {
         display: none !important;
+    }
+}
+
+// only the first label fits next to the buttons
+@media only screen and (max-width: 480px) {
+    #pv-buttons .bar-left + .bar-left {
+        display: none;
     }
 }

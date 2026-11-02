@@ -16,13 +16,14 @@ const settings = Object.assign({
 }, allsettings.search);
 const tpl =
         `<div id="search" class="tool">
-            <img src="${resource.image('search')}" alt="search"/>
-            <input class="l10n_ph-search" type="text" value=""/>
+            <img class="l10n_lb-search" src="${resource.image('search')}" alt="search"/>
+            <input class="l10n_ph-search l10n_lb-search" type="text" value=""/>
         </div>`;
 let inputIsVisible = false;
 let prevPattern = '';
 let $search;
 let $input;
+let $btn;
 
 
 const search = (pattern = '') => {
@@ -55,11 +56,13 @@ const search = (pattern = '') => {
 const update = () => {
     if (inputIsVisible) {
         $search.addCls('active');
+        $btn.attr('aria-expanded', 'true');
         $input[0].focus();
         search(parsePattern($input.val(), settings.advanced));
     } else {
         search();
         $search.rmCls('active');
+        $btn.attr('aria-expanded', 'false');
     }
 };
 
@@ -82,7 +85,7 @@ const init = () => {
     $search = dom(tpl).appTo('#toolbar');
     $input = $search.find('input');
 
-    $search.find('img').on('click', toggle);
+    $btn = $search.find('img').btn().attr('aria-expanded', 'false').on('click', toggle);
     $input.on('keyup', debounce(update, settings.debounceTime));
     event.sub('location.changed', reset);
 };

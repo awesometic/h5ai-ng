@@ -16,18 +16,18 @@ const settings = Object.assign({
 const itemTpl =
         `<div class="item folder">
             <span class="indicator">
-                <img src="${resource.image('tree-indicator')}"/>
+                <img src="${resource.image('tree-indicator')}" alt=""/>
             </span>
             <a>
-                <span class="icon"><img src="${resource.icon('folder')}"/></span>
+                <span class="icon"><img src="${resource.icon('folder')}" alt=""/></span>
                 <span class="label"></span>
             </a>
         </span>`;
 const settingsTpl =
         `<div class="block">
             <h1 class="l10n-tree">Tree</h1>
-            <div id="view-tree" class="button view">
-                <img src="${resource.image('tree-toggle')}" alt="view-tree"/>
+            <div id="view-tree" class="button view l10n_lb-tree">
+                <img src="${resource.image('tree-toggle')}" alt=""/>
             </div>
         </div>`;
 const storekey = 'ext/tree';
@@ -128,10 +128,10 @@ const fetchTree = item => {
 
 const updateSettings = () => {
     if (store.get(storekey)) {
-        dom('#view-tree').addCls('active');
+        dom('#view-tree').addCls('active').attr('aria-pressed', 'true');
         dom('#tree').show();
     } else {
-        dom('#view-tree').rmCls('active');
+        dom('#view-tree').rmCls('active').attr('aria-pressed', 'false');
         dom('#tree').hide();
     }
 };
@@ -153,6 +153,7 @@ const init = () => {
     dom(settingsTpl)
         .appTo('#sidebar')
         .find('#view-tree')
+        .btn()
         .on('click', ev => {
             store.put(storekey, !store.get(storekey));
             updateSettings();
