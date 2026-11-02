@@ -250,9 +250,21 @@ class Context {
     }
 
     public function get_thumbs($requests) {
+        // only the sizes the interface requests, so clients cannot fill the cache with arbitrary sizes
+        $size = intval($this->query_option('thumbnails.size', 100));
+        $sizes = [[$size, $size], [intval(round($size * 4 / 3)), $size]];
+        $sample = intval($this->query_option('preview-img.size', 0));
+        if ($sample > 0) {
+            $sizes[] = [$sample, 0];
+        }
+
         $hrefs = [];
 
         foreach ($requests as $req) {
+            if (!in_array([intval($req['width'] ?? 0), intval($req['height'] ?? 0)], $sizes, true)) {
+                $hrefs[] = null;
+                continue;
+            }
             $thumb = new Thumb($this);
             $hrefs[] = $thumb->thumb($req['type'], $req['href'], $req['width'], $req['height']);
         }

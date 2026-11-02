@@ -301,7 +301,7 @@ try:
     listing = api({"action": "get", "items": {"href": "/", "what": 1}})
     assert "/sample.txt" in {item["href"] for item in listing["items"]}, listing
     requested_thumbs = [
-        {"type": kind, "href": href, "width": 120, "height": 80}
+        {"type": kind, "href": href, "width": 320, "height": 240}
         for kind, href in [("img", "/image.png"), ("mov", "/movie.mp4")]
     ]
     thumbs = api({"action": "get", "thumbs": requested_thumbs})["thumbs"]
@@ -317,7 +317,10 @@ try:
              "echo json_encode([imagesx($image), imagesy($image)]);"],
             input=body, timeout=60,
         )
-        assert json.loads(dimensions) == [120, 80], ("Thumbnail dimensions", thumb, dimensions)
+        assert json.loads(dimensions) == [320, 240], ("Thumbnail dimensions", thumb, dimensions)
+    # sizes the interface never requests are refused, so the cache cannot grow without bound
+    odd = api({"action": "get", "thumbs": [{"type": "img", "href": "/image.png", "width": 121, "height": 80}]})
+    assert odd["thumbs"] == [None], ("Arbitrary thumbnail size", odd)
     for kind in ("php-tar", "shell-tar", "shell-zip"):
         print("Checking " + kind, flush=True)
         status, body = request("/_h5ai/public/index.php", {
