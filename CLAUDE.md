@@ -2,3 +2,4 @@
 
 @AGENTS.md
 @PRODUCT.md
+@DESIGN.md
