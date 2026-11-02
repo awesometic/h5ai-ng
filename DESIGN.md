@@ -24,27 +24,27 @@ colors:
   fail-red: "#f44336"
 typography:
   body:
-    fontFamily: '"Ubuntu", "Roboto", "Helvetica", "Arial", "sans-serif"'
+    fontFamily: '"Ubuntu", "Roboto", "Helvetica", "Arial", sans-serif'
     fontSize: "13px"
     fontWeight: 400
     lineHeight: 1.4
   title:
-    fontFamily: '"Ubuntu", "Roboto", "Helvetica", "Arial", "sans-serif"'
+    fontFamily: '"Ubuntu", "Roboto", "Helvetica", "Arial", sans-serif'
     fontSize: "16px"
     fontWeight: 400
     lineHeight: "48px"
   mono:
-    fontFamily: '"Ubuntu Mono", "Monaco", "Lucida Sans Typewriter", "monospace"'
+    fontFamily: '"Ubuntu Mono", "Monaco", "Lucida Sans Typewriter", monospace'
     fontSize: "15px"
     fontWeight: 400
     lineHeight: 1.4
   hint:
-    fontFamily: '"Ubuntu", "Roboto", "Helvetica", "Arial", "sans-serif"'
+    fontFamily: '"Ubuntu", "Roboto", "Helvetica", "Arial", sans-serif'
     fontSize: "16px"
     fontWeight: 700
     lineHeight: 1.4
   display:
-    fontFamily: '"Ubuntu", "Roboto", "Helvetica", "Arial", "sans-serif"'
+    fontFamily: '"Ubuntu", "Roboto", "Helvetica", "Arial", sans-serif'
     fontSize: "52px"
     fontWeight: 300
     lineHeight: 1.4
@@ -213,9 +213,14 @@ Nothing removes an outline without putting a visible focus style in its place.
 
 Source: `src/_h5ai/public/css/lib/fonts.less`, `lib/view/root.less`, `lib/misc.less`, and the per-component sizes in `lib/ext/` and `lib/main/info.less`.
 
-**Body Font:** "Ubuntu", "Roboto", "Helvetica", "Arial", "sans-serif" (no font files are bundled; the visitor's installed fonts decide).
-**Mono Font:** "Ubuntu Mono", "Monaco", "Lucida Sans Typewriter", "monospace", for code and preformatted text.
-The operator can replace both stacks through `view.fonts` and `view.fontsMono` in `options.json`; the server injects them with `!important` (`src/_h5ai/private/php/core/class-context.php`).
+**Body Font:** "Ubuntu", "Roboto", "Helvetica", "Arial", sans-serif.
+**Mono Font:** "Ubuntu Mono", "Monaco", "Lucida Sans Typewriter", monospace, for code and preformatted text.
+Ubuntu (300, 400, 700) and Ubuntu Mono (400, 700) are bundled as woff2 in `src/_h5ai/public/fonts/` (`@fontsource` 5.3.0, Ubuntu Font Licence 1.0, source and checksums in the README there) and declared in `lib/fonts.less` with `font-display: swap`.
+Each face is split by `unicode-range` into Latin, Latin Extended, Cyrillic and Greek, so a page loads only the subsets its text needs: an ASCII-only folder fetches the Latin 400 and 700 files and nothing else, measured in Chromium.
+Locales in Hebrew, Hindi, Japanese, Korean and Chinese are outside Ubuntu's coverage and use the next family of the stack, so their type is host-dependent.
+The default `options.json` makes no request to a font host.
+The operator can replace both stacks through `view.fonts` and `view.fontsMono` in `options.json`; the server injects them with `!important` (`src/_h5ai/private/php/core/class-context.php`), writing CSS generic family keywords (`sans-serif`, `monospace`, and the other generic names) unquoted and every other name in quotes.
+An install that keeps an older `options.json` also keeps the Google Fonts entry in `resources.styles` until the operator removes it.
 
 **Character:** a humanist sans at a small, steady size.
 Hierarchy comes from weight and opacity, not from size jumps; the only large type is the admin page title.
@@ -240,7 +245,8 @@ Source: `src/_h5ai/public/css/lib/view/*.less`, `lib/ext/tree.less`, `lib/ext/in
 
 The root is a full-viewport flex column: a 48px top bar, then a main row that holds the folder tree, the content, and the info panel.
 The top bar is a `header`, the content a `main`, the breadcrumb a `nav`, and the sidebar an `aside`; their ids are unchanged.
-The top bar carries the sidebar toggle and tool buttons on the left, the breadcrumb filling the middle, and the backlink on the right (36px content plus 12px padding, so 48px).
+The top bar carries the sidebar toggle and tool buttons on the left, the breadcrumb filling the middle, and the backlink on the right ("powered by h5ai-ng" on two lines, 36px high plus 12px side padding, 85px wide at 1280px and 390px).
+The backlink links to the h5ai-ng repository; its tooltip adds "based on h5ai by Lars Jung" with the original site's address, and the no-JavaScript list carries the same credit.
 The sidebar is a column of about 200px at the left of the main row that pushes the tree and the content aside, so nothing is cut off at its edge; under 700px it covers the full width under the top bar instead (see Responsive).
 The folder tree is capped at 250px; the info panel is 240px of content with 48px and 32px side padding.
 
@@ -375,7 +381,9 @@ The active folder is bold; summaries ("more subfolders") use Ink Secondary.
 
 ### Context menu
 A white 2px-radius panel with the Popup shadow, 200px minimum width, 8px and 16px entry padding, a bold label row, 20px icons, and a 1px separator at 8% black.
-Entry hover is Link Sky Deep text on a Hover Wash (4.70:1 over Paper White, from the token values; the menu is off in the default configuration and was not rendered).
+Entry hover is Link Sky Deep text on a Hover Wash (4.70:1 over Paper White, from the token values).
+The menu is off by default: `contextmenu.enabled` is false in `js/lib/ext/contextmenu.js` and `options.json` has no key for it, so a fresh install shows no menu on right-click.
+This record comes from the source and the token values only; the menu was never rendered, so it has not been reviewed visually.
 
 ### Preview
 A 50% black overlay (solid Charcoal in fullscreen) with the media centered and raised, a 48px Viewer Bar along the bottom with white 24px icons at 0.7 opacity (1.0 on hover), and previous and next arrows at half opacity that become dark rounded tabs on hover.
@@ -399,10 +407,13 @@ Operator HTML in 16px-margin, 8px-padding blocks above and below the list; links
 ### Admin info page controls
 The only place the shared form controls appear: a Link Sky Deep 2px-radius button (white text at 5.03:1, 28px line, 12px side padding, Raised shadow on hover) and a 2px-radius input on Panel Mist with a Hairline border.
 Test results are 1.4em, with the status in bold Pass Green or Fail Red.
+The password field is named with `aria-label="password"` and its placeholder uses Ink Secondary at full opacity (4.54:1 on Panel Mist).
+Under the 52px page title, `h5ai-ng`, sits one line in Ink Secondary: "h5ai-ng is a fork of h5ai by Lars Jung, released under the MIT license", with "h5ai" linking to the original site in Link Sky Deep.
+The donation form that used to sit there is gone; the product takes no payments.
 
 ### Icons
 Two kinds, both SVG.
-UI icons (`src/_h5ai/public/images/ui/`, 22 files) are glyphs on a 24px grid: grey (#555) on light chrome, white for the preview bar and the selector check, and a branded PayPal button on the info page.
+UI icons (`src/_h5ai/public/images/ui/`, 21 files) are glyphs on a 24px grid: grey (#555) on light chrome, white for the preview bar and the selector check, and nothing else.
 File-type icons come from the active theme (`src/_h5ai/public/images/themes/`):
 - **default** (11 files: ar, aud, bin, file, folder, folder-page, folder-parent, img, txt, vid, x) is the monochrome #555 20px base set and the fallback for every type.
 - **comity** (15 files: ar-apk, ar-deb, ar-rpm, txt-css, txt-go, txt-html, txt-js, txt-less, txt-md, txt-php, txt-py, txt-rb, txt-rust, txt-script, x-pdf) adds colored per-format glyphs over the default set; `options.json` ships with `"theme": "comity"`.
@@ -445,7 +456,7 @@ None of them is changed by this document.
   Still open: the tree indicators (mouse-only), selecting rows and drag selection, the context menu, an ARIA name for the breadcrumb and tree, and `aria-sort` on the column headers.
   `PRODUCT.md` records that no accessibility standard has been set.
 - **Contrast and size:** text and fill pairs of the list, bars, hints, selection and admin button were measured in Chromium against WCAG AA 4.5:1 and pass.
-  Still below it: pending fields in Ink Disabled (1.88:1) and the `#pass` placeholder (4.4:1).
+  Still below it: pending fields in Ink Disabled (1.88:1).
   Tree summaries and the no-JavaScript header cells now use Ink Secondary (4.59:1), and the white check on the hover selector badge measures 3.57:1 against the 3:1 asked of a graphic.
   Not measured: the viewer bar icons at 0.7 opacity, the text-preview link and code colors, and the admin test results.
   13px body text is not checked against a size target, and `PRODUCT.md` records that no accessibility standard has been set.
@@ -454,11 +465,17 @@ None of them is changed by this document.
   No touch-target rule has been set, and the 22px hover badge on desktop is below 24px by design.
 - **Regular-expression check:** `parsePattern` tests a `re:` expression with the browser's `RegExp`, while search hands the same text to PHP's PCRE, so an expression valid in JavaScript but not in PCRE (or the reverse) can still return no rows in search; the filter has no such gap.
   No server-side message exists for it.
-- **Quoted generic family:** `"sans-serif"` is quoted in `lib/fonts.less` and in `view.fonts` in `src/_h5ai/private/conf/options.json`, so browsers read it as a family name rather than the generic fallback.
-  `options.json` is an operator-facing compatibility surface, so any change there is a later decision.
-- **Fonts are not bundled:** rendering is Ubuntu-first and host-dependent.
-- **Product name in the UI:** the backlink ("powered by h5ai"), its link title, and the page titles still say h5ai, while `PRODUCT.md` commits the interface to name h5ai-ng and keep the credit to the original h5ai.
-  Copy is unchanged here.
+- **Font lists in `options.json`:** `view.fonts` and `view.fontsMono` still list `"sans-serif"` and `"monospace"` as plain strings.
+  The server now emits them as the generic keywords, but the JSON text reads as font names; rewording it changes an operator-facing compatibility surface and is a later decision.
+- **Font loading:** the faces use `font-display: swap` and are not preloaded, so the first paint uses the fallback stack for a moment on a cold cache, and the metrics of the fallback differ from Ubuntu's.
+  No size-adjusted fallback face exists.
+- **Scripts without a bundled face:** the Hebrew, Hindi, Japanese, Korean and Chinese locales (6 of 35) render with whatever the host provides.
+- **Locale gaps:** `en.json` has 26 keys and every one of the other 34 locale files lacks 6 to 16 of them (`close`, `fullscreen`, `next`, `previous`, `raw` and `sidebar` are in none of them).
+  A missing key falls back to the English text in a locale such as `ko`, so a mixed-language interface results; the translations are not written and no machine translation was added.
+  The admin info page text is English only and sits outside the locale files.
+- **Admin password hint:** the admin page still says the preset password is the empty string, and logging in with it works.
+  Left to a separate security review; this record does not change it.
+- **Admin login control:** `#login` and `#logout` are clickable `span` elements and not buttons, so only Enter inside the password field logs in from the keyboard.
 - **Literals outside the palette:** `#2080FF` and `#68A9FF` (text-preview links) and `#008200` (inline code) in `lib/ext/preview-txt.less`; `#f0f0f0` in `lib/view/fallback.less`; `#f8f8f8` and `#e8e8e8` (checkerboard); and several one-off black alphas (0.03, 0.08, 0.1, 0.2, 0.4).
 - **Unused palette entries:** `lib/colors.less` defines `@col-grey-100`, `@col-border-stronger`, `@col-divider-black`, `@col-divider-white`, `@col-text-disabled-white`, and `@col-text-secondary-white`, which no style uses; they are left out of the tokens above.
 - **Spacing has no named scale:** the `s-` keys label recurring literal values and are not variables in the code.

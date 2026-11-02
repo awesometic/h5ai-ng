@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-02T02:07:43Z",
+  "generatedAt": "2026-11-02T12:00:00Z",
   "title": "Design System: h5ai-ng",
   "extensions": {
     "colorMeta": {
@@ -208,7 +208,7 @@
     "typographyMeta": {
       "body": {
         "displayName": "Body",
-        "purpose": "Rows, tree, sidebar, menus: the working list at every size."
+        "purpose": "Rows, tree, sidebar, menus: the working list at every size. Ubuntu is bundled as woff2 (300, 400, 700), split by unicode-range into Latin, Latin Extended, Cyrillic and Greek."
       },
       "title": {
         "displayName": "Title",
@@ -216,7 +216,7 @@
       },
       "mono": {
         "displayName": "Mono",
-        "purpose": "Code and preformatted text, including the text preview."
+        "purpose": "Code and preformatted text, including the text preview. Ubuntu Mono is bundled as woff2 (400, 700) with the same subsets."
       },
       "hint": {
         "displayName": "Hint",
@@ -341,7 +341,7 @@
       "name": "Context Menu",
       "kind": "custom",
       "refersTo": "context-menu",
-      "description": "White 2px-radius popup with the 20px-blur shadow; entry hover is Link Sky Deep text on a wash.",
+      "description": "White 2px-radius popup with the 20px-blur shadow; entry hover is Link Sky Deep text on a wash. Off by default (`contextmenu.enabled` is false, no key in options.json), so a fresh install shows none; recorded from source, never rendered.",
       "html": "<ul class=\"ds-menu\"><li class=\"ds-mlabel\">releases</li><li class=\"ds-sep\"></li><li class=\"ds-entry\">Open</li><li class=\"ds-entry\">Download</li></ul>",
       "css": ".ds-menu { font-family: 'Ubuntu', 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 13px; line-height: 1.4; margin: 0; padding: 0; list-style: none; min-width: 200px; display: inline-block; border-radius: 2px; background: #fff; color: rgba(0,0,0,0.87); box-shadow: 0 1px 20px 0 rgba(0,0,0,0.5); } .ds-mlabel { padding: 8px 16px; font-weight: bold; white-space: nowrap; } .ds-entry { padding: 8px 16px; white-space: nowrap; cursor: pointer; } .ds-entry:hover { color: #176fcb; background: rgba(0,0,0,0.03); } .ds-sep { height: 1px; margin: 8px 0; border-top: 1px solid rgba(0,0,0,0.08); }"
     },
@@ -357,9 +357,9 @@
       "name": "Text Input",
       "kind": "input",
       "refersTo": "input",
-      "description": "Admin info page field: Panel Mist fill, hairline border, 2px radius.",
-      "html": "<input class=\"ds-input\" type=\"password\" placeholder=\"password\" />",
-      "css": ".ds-input { font-family: 'Ubuntu', 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 13px; line-height: 1.4; box-sizing: content-box; width: 200px; padding: 0 12px; line-height: 28px; border-radius: 2px; border: 1px solid rgba(0,0,0,0.05); background: #fafafa; color: rgba(0,0,0,0.87); -webkit-appearance: none; appearance: none; }"
+      "description": "Admin info page field: Panel Mist fill, hairline border, 2px radius, named with aria-label, placeholder in Ink Secondary (4.54:1).",
+      "html": "<input class=\"ds-input\" type=\"password\" aria-label=\"password\" placeholder=\"password\" />",
+      "css": ".ds-input { font-family: 'Ubuntu', 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 13px; line-height: 1.4; box-sizing: content-box; width: 200px; padding: 0 12px; line-height: 28px; border-radius: 2px; border: 1px solid rgba(0,0,0,0.05); background: #fafafa; color: rgba(0,0,0,0.87); -webkit-appearance: none; appearance: none; } .ds-input::placeholder { color: rgba(0,0,0,0.54); opacity: 1; }"
     },
     {
       "name": "Notification",

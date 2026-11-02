@@ -35,13 +35,14 @@ It replaces the server's bare autoindex rather than becoming a file manager: no 
 
 ## Capabilities and Constraints
 
-- Views: details, grid, and icons, with adjustable sizes; breadcrumb and folder tree; sorting; filter and search; selection with archive download (tar, zip); file previews for images, audio, video, and text with Markdown and syntax highlighting; QR code for links; image, video, and PDF thumbnails when the server supports them; custom header and footer per folder; folder sizes; auto-refresh.
-- 35 interface locales under `_h5ai/private/conf/l10n/`.
+- Views: details, grid, and icons, with adjustable sizes; breadcrumb and folder tree; sorting; filter and search (filter is on in a fresh install's `options.json`, search is off); selection with archive download (tar, zip); file previews for images, audio, video, and text with Markdown and syntax highlighting; QR code for links; image, video, and PDF thumbnails when the server supports them; custom header and footer per folder; folder sizes; auto-refresh.
+- 35 interface locales under `_h5ai/private/conf/l10n/`; keys a locale lacks fall back to English.
+- Ubuntu and Ubuntu Mono ship with the interface as woff2 files (Ubuntu Font Licence 1.0), so the default setup makes no request to a font host or any other third party.
 - Without JavaScript, or in browsers below the build target, the page falls back to a plain server-rendered list.
 - Server: PHP 8.3 or later. Browsers: Chrome/Edge 91, Firefox 90, Safari 15.
 - Read-only by design; any write capability is out of scope.
 - Existing `options.json` files, URL structure, and icon themes (`default`, `comity`) must keep working across releases.
-- The current interface has no ARIA attributes; no accessibility standard has been set yet.
+- The toolbar, sidebar, preview and admin password field carry names and roles for assistive technology, but no accessibility standard has been set yet.
 
 ## Brand Commitments
 

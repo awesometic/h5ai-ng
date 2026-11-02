@@ -11,6 +11,15 @@ First h5ai-ng release, forked from h5ai v0.30.0.
 * add Docker image (Nginx, PHP 8.5) and CI workflow
 * add `H5AI_ROOT_PATH` environment override for the served root
 * Docker: deny `/_h5ai/private/` in Nginx, also in saved configurations
+* interface refinement:
+  * toolbar, sidebar and preview buttons work from the keyboard, show a focus ring and carry a name and tooltip
+  * darker blue for links, hover text and selection, and readable empty-folder and no-match hints
+  * phone layout: the sidebar covers the full width, rows are at least 44px high, a tap box selects items and the no-JavaScript list fits 390px without sideways scrolling
+  * the filter tool is on in a fresh `options.json`; an invalid `re:` pattern matches its text literally instead of failing
+  * bundle Ubuntu and Ubuntu Mono (Ubuntu Font Licence 1.0) and drop the Google Fonts request from the default `options.json`; an existing `options.json` keeps its `resources.styles` entry until you remove it
+  * name the product h5ai-ng in the backlink, page titles and admin page, with credit to h5ai by Lars Jung
+  * remove the PayPal donation form from the admin page and label its password field
+  * `view.fonts` entries such as `sans-serif` and `monospace` are written as CSS generic families
 
 
 ## v0.30.0 - *2021-01-24*
