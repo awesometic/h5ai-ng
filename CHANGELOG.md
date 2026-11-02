@@ -31,7 +31,7 @@ First h5ai-ng release, forked from h5ai v0.30.0.
   * update languages (`cs`, `it`, `sk`) (lrsjng/h5ai#815, lrsjng/h5ai#838)
   * Docker: compare versions component-wise when replacing a saved h5ai copy
 * publish the Docker image as `awesometic/h5ai-ng` for amd64, arm64, armv7 and armv6
-* rewrite the README with Docker, install and docker-h5ai migration guides
+* rewrite the README with Docker, install and docker-h5ai migration guides, and translate it into Korean, Spanish, Japanese and Simplified Chinese
 
 
 ## v0.30.0 - *2021-01-24*
