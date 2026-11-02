@@ -273,6 +273,10 @@
       {
         "name": "view-narrowest",
         "value": "320px"
+      },
+      {
+        "name": "hover-none",
+        "value": "(hover: none)"
       }
     ]
   },
@@ -297,7 +301,7 @@
       "name": "Details Row",
       "kind": "custom",
       "refersTo": "row",
-      "description": "Signature component: ruled white row that turns Panel Mist, Link Sky Deep, and raised on hover.",
+      "description": "Signature component: ruled white row that turns Panel Mist, Link Sky Deep, and raised on hover; 34px at the smallest step, 44px under 700px.",
       "html": "<div class=\"ds-row\"><span class=\"ds-row-icon\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\"><path fill=\"#555\" d=\"M2 3v14h16V5h-8L8 3z\"/></svg></span><span class=\"ds-row-label\">releases</span><span class=\"ds-row-date\">2026-11-02 10:04</span><span class=\"ds-row-size\">134 B</span></div>",
       "css": ".ds-row { font-family: 'Ubuntu', 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 13px; line-height: 1.4; position: relative; white-space: nowrap; overflow: hidden; background: #fff; color: rgba(0,0,0,0.87); border-bottom: 1px solid rgba(0,0,0,0.07); line-height: 34px; width: 420px; cursor: pointer; } .ds-row-icon { position: absolute; left: 16px; top: 7px; line-height: 0; } .ds-row-label { display: block; margin: 0 246px 0 52px; padding: 0 8px; overflow: hidden; text-overflow: ellipsis; } .ds-row-date { position: absolute; right: 116px; top: 0; width: 130px; padding: 0 8px; text-align: right; } .ds-row-size { position: absolute; right: 16px; top: 0; width: 80px; padding: 0 8px; text-align: right; } .ds-row:hover { color: #176fcb; background: #fafafa; box-shadow: 0 1px 10px 0 rgba(0,0,0,0.5); z-index: 1; }"
     },
@@ -305,9 +309,17 @@
       "name": "Selected Row",
       "kind": "custom",
       "refersTo": "row-selected",
-      "description": "Selection fills the row with Link Sky Deep and white text (5.03:1); the corner badge shows a white check on the same fill.",
+      "description": "Selection fills the row with Link Sky Deep and white text (5.03:1); the corner badge shows a white check on the same fill (24px where the device cannot hover).",
       "html": "<div class=\"ds-row-sel\"><span class=\"ds-sel-badge\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\"><path d=\"M9 16.2l-4.2-4.2-1.4 1.4 5.6 5.6 12-12-1.4-1.4z\" fill=\"#fff\"/></svg></span><span class=\"ds-sel-label\">app-1.0.zip</span></div>",
       "css": ".ds-row-sel { font-family: 'Ubuntu', 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 13px; line-height: 1.4; position: relative; width: 420px; overflow: hidden; line-height: 34px; background: #176fcb; color: #fff; } .ds-sel-badge { position: absolute; left: 0; top: 0; width: 22px; height: 22px; background: #176fcb; border-radius: 0 0 2px 0; opacity: 1; line-height: 0; } .ds-sel-label { display: block; padding: 0 8px 0 52px; }"
+    },
+    {
+      "name": "Selector Badge",
+      "kind": "custom",
+      "refersTo": "selector-badge",
+      "description": "Corner badge that starts a selection. With a hover-capable pointer it appears over an unselected item as a Link Sky Deep square at 0.8 alpha with a white check (3.57:1), full opacity on the badge itself. Where the device cannot hover it is always shown as an empty 24px box with a 1px Ink Secondary outline (4.59:1); a tap fills it with Link Sky Deep and shows the check.",
+      "html": "<div class=\"ds-badges\"><span class=\"ds-badge-hover\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\"><path d=\"M9 16.2l-4.2-4.2-1.4 1.4 5.6 5.6 12-12-1.4-1.4z\" fill=\"#fff\"/></svg></span><span class=\"ds-badge-touch\"></span><span class=\"ds-badge-touch ds-on\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\"><path d=\"M9 16.2l-4.2-4.2-1.4 1.4 5.6 5.6 12-12-1.4-1.4z\" fill=\"#fff\"/></svg></span></div>",
+      "css": ".ds-badges { display: flex; gap: 16px; align-items: flex-start; } .ds-badge-hover { display: block; width: 22px; height: 22px; background: #176fcb; border-radius: 0 0 2px 0; opacity: 0.8; line-height: 0; } .ds-badge-touch { display: block; box-sizing: border-box; width: 24px; height: 24px; border: 1px solid rgba(0,0,0,0.54); border-radius: 0 0 2px 0; background: #fff; line-height: 0; } .ds-badge-touch.ds-on { background: #176fcb; border-color: #176fcb; }"
     },
     {
       "name": "Grid Tile",
@@ -321,7 +333,7 @@
       "name": "Sidebar Mode Button",
       "kind": "button",
       "refersTo": "sidebar-button",
-      "description": "48px view-mode button on the sidebar; the active one is pressed (aria-pressed) with an inset shadow.",
+      "description": "48px view-mode button on the sidebar, which is a column in the main row above 700px and covers the full width below; the active button is pressed (aria-pressed) with an inset shadow.",
       "html": "<div class=\"ds-side\"><div class=\"ds-mode ds-on\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"m4 4 0 4 16 0 0-4zm0 6 0 4 16 0 0-4zm0 6 0 4 16 0 0-4z\" fill=\"#555\"/></svg></div><div class=\"ds-mode\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"m4 4 0 4 7 0 0-4zm9 0 0 4 7 0 0-4zm-9 6 0 4 7 0 0-4zm9 0 0 4 7 0 0-4zm-9 6 0 4 7 0 0-4zm9 0 0 4 7 0 0-4z\" fill=\"#555\"/></svg></div></div>",
       "css": ".ds-side { background: #fafafa; border-right: 1px solid rgba(0,0,0,0.05); padding: 16px; display: inline-block; } .ds-mode { display: inline-block; margin: 4px; border-radius: 2px; cursor: pointer; transition: all 0.2s ease-in-out; } .ds-mode svg { display: block; padding: 12px; } .ds-mode:hover { background: rgba(0,0,0,0.03); } .ds-mode.ds-on { background: rgba(0,0,0,0.03); box-shadow: inset 0 0 4px 0 rgba(0,0,0,0.4); }"
     },
@@ -362,7 +374,7 @@
     "overview": "**Creative North Star: \"The Quiet Ledger\"**\n\nThe interface is a ruled ledger of files: white rows separated by hairlines, a pale panel for chrome, and one blue for everything that can be acted on.\nThe files are the content, so the index recedes.\nIt reads as the Material-2014 era it descends from: flat at rest, 13px type, 48px bars, 2px corners, and shadows only as a response to the pointer.\n\nDensity is compact by default and adjustable by the visitor.\nThree views (details, grid, icons) share one palette and one hover grammar, and a size slider changes only the icon and row scale.\nThe interface has no light and dark pair; it is one light surface.\n\nThe visual anti-references are file-manager chrome that implies write actions (the product is read-only) and marketing-style heroes, gradients, or decorative color.",
     "keyCharacteristics": [
       "Flat at rest; shadow appears only on hover, in the preview, and in popups.",
-      "One chromatic accent in two shades: Link Sky Deep for links, hover text, selection, and the single button style; Link Sky only for the hover preview of the selector badge.",
+      "One chromatic accent, Link Sky Deep, for links, hover text, selection, the selector badge, and the single button style; the lighter Link Sky stays defined and paints nothing.",
       "Hairline borders at 5% to 7% black instead of boxes or fills.",
       "Icon-only 48px tool targets that are keyboard buttons with a name and tooltip; section labels live in the sidebar and context menu.",
       "A 2px focus ring that appears for the keyboard only.",
@@ -371,7 +383,7 @@
     "rules": [
       {
         "name": "The One Voice Rule",
-        "body": "Link Sky, in its two shades, is the only chromatic accent in the browsing interface. Hover is blue text or a 3% black wash, selection is a blue fill; nothing else carries color. The deep shade carries every text and every fill that holds white text; the light shade never does.",
+        "body": "Link Sky Deep is the only chromatic accent in the browsing interface. Hover is blue text or a 3% black wash, selection is a blue fill; nothing else carries color. It carries every text, every fill that holds white text, and every glyph that must reach 3:1; the light shade (unused) never does.",
         "section": "colors"
       },
       {
@@ -397,14 +409,15 @@
     ],
     "dos": [
       "**Do** keep surfaces flat at rest and use the Raised shadow (`0 1px 10px 0 rgba(0,0,0,0.5)`) only in response to hover or for floating layers.",
-      "**Do** reserve Link Sky Deep (#176fcb) for what can be acted on and carries text: links, hover text, selection, the one button; keep the light Link Sky (#42a5f5) for fills with no text on them.",
+      "**Do** reserve Link Sky Deep (#176fcb) for what can be acted on and carries text or a glyph: links, hover text, selection, the selector badge, the one button; the light Link Sky (#42a5f5) is unused and may only return as a fill with no text or glyph on it.",
       "**Do** build clickable tool targets as 48px squares (24px icon, 12px padding).",
       "**Do** separate rows and panels with 1px hairlines at 5% to 7% black.",
       "**Do** use the 2px radius for new surfaces; reach for 4px or 8px only where the code already does.",
       "**Do** keep hover to a 3% black wash or blue text with the shared `all 0.2s ease-in-out` transition.",
       "**Do** keep every layout change working at the 700px switch and in the no-JavaScript list.",
       "**Do** keep the `<theme>/<type>.<ext>` icon layout and the `default` theme as the fallback.",
-      "**Do** build a new clickable element as a native control, or with `dom.btn()` and a name from an `l10n_lb-<key>` class, so it works from the keyboard."
+      "**Do** build a new clickable element as a native control, or with `dom.btn()` and a name from an `l10n_lb-<key>` class, so it works from the keyboard.",
+      "**Do** give anything the phone layout shows a target of at least 24px on both sides (44px for rows), and never make a function depend on hover: show it under `@media (hover: none)`."
     ],
     "donts": [
       "**Don't** add a second accent hue, a gradient, or decorative color to the browsing UI.",

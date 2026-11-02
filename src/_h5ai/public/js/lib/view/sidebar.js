@@ -1,4 +1,5 @@
 const {dom} = require('../util');
+const event = require('../core/event');
 const resource = require('../core/resource');
 const allsettings = require('../core/settings');
 const store = require('../core/store');
@@ -38,6 +39,7 @@ const init = () => {
             $img.attr('src', resource.image('sidebar'));
             $sidebar.hide();
         }
+        event.pub('resize');
     };
 
     if (!settings.disableSidebar) {

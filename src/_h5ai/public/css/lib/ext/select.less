@@ -31,13 +31,13 @@ html.drag-select, html.drag-select * {
         top: 0;
         width: 22px;
         height: 22px;
-        background: @col-blue-400;
+        background: @col-back-selected;
         cursor: pointer;
         border-radius: 0 0 2px 0;
-        opacity: 0.6;
+        opacity: 0.8;
 
         &:hover {
-            opacity: 0.8;
+            opacity: 1;
         }
         img {
             width: 100%;
@@ -58,10 +58,32 @@ html.drag-select, html.drag-select * {
             display: block;
             opacity: 1;
             background: @col-back-selected;
+            border-color: @col-back-selected;
+
+            img {
+                visibility: visible;
+            }
         }
         &:hover {
             color: @col-text-selected;
             background: @col-back-selected;
+        }
+    }
+
+    // without hover there is nothing to reveal the badge: show it as an empty box at the 24px touch minimum
+    @media (hover: none) {
+        .selector {
+            display: block;
+            box-sizing: border-box;
+            width: 24px;
+            height: 24px;
+            border: 1px solid @col-text-secondary-black;
+            background: @col-back-paper;
+            opacity: 1;
+
+            img {
+                visibility: hidden;
+            }
         }
     }
 
