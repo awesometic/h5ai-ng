@@ -129,6 +129,17 @@ docker build -t h5ai-ng .
 逐一审阅。
 
 
+## 维护者的其他项目
+
+[ToneDial][tonedial] 是一个为编程代理赋予性格的本地 CLI。从 7 个角色中选择一个，或调整
+12 个语气维度，Claude Code、Codex 或 Antigravity 就会在你的各个项目中用这种语气回复。
+目前仍在开发中，需要 Node 22 或更高版本。
+
+~~~sh
+npm install --global tonedial
+~~~
+
+
 ## 许可证
 
 MIT 许可证。以下为英文原文。
@@ -165,6 +176,7 @@ THE SOFTWARE.
 
 
 [h5ai]: https://larsjung.de/h5ai/
+[tonedial]: https://github.com/awesometic/tonedial
 [license]: #许可证
 [ci]: https://github.com/awesometic/h5ai-ng/actions/workflows/ci.yml
 [docker-hub]: https://hub.docker.com/r/awesometic/h5ai-ng

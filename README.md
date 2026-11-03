@@ -141,6 +141,18 @@ Bugs and pull requests go to [this repository][issues]. Open pull requests
 from the original h5ai are reviewed here one at a time.
 
 
+## Also from the maintainer
+
+[ToneDial][tonedial] gives your coding agent a character. Pick one of 7
+characters or set 12 tone axes, and the local CLI applies that voice to
+Claude Code, Codex or Antigravity across your projects. It is still in
+development and needs Node 22 or later.
+
+~~~sh
+npm install --global tonedial
+~~~
+
+
 ## License
 
 The MIT License (MIT)
@@ -176,6 +188,7 @@ which are bundled unmodified in `_h5ai/public/fonts/` together with the licence.
 
 
 [h5ai]: https://larsjung.de/h5ai/
+[tonedial]: https://github.com/awesometic/tonedial
 [license]: #license
 [ci]: https://github.com/awesometic/h5ai-ng/actions/workflows/ci.yml
 [docker-hub]: https://hub.docker.com/r/awesometic/h5ai-ng

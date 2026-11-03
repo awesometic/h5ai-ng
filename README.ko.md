@@ -141,6 +141,17 @@ docker build -t h5ai-ng .
 있던 풀 리퀘스트도 이곳에서 하나씩 검토합니다.
 
 
+## 메인테이너의 다른 프로젝트
+
+[ToneDial][tonedial]은 코딩 에이전트에게 캐릭터를 입히는 로컬 CLI입니다. 캐릭터
+7종 중 하나를 고르거나 톤 축 12개를 조절하면 Claude Code·Codex·Antigravity가 여러
+프로젝트에서 그 말투로 답합니다. 아직 개발 중이며 Node 22 이상이 필요합니다.
+
+~~~sh
+npm install --global tonedial
+~~~
+
+
 ## 라이선스
 
 MIT 라이선스입니다. 원문을 그대로 싣습니다.
@@ -178,6 +189,7 @@ THE SOFTWARE.
 
 
 [h5ai]: https://larsjung.de/h5ai/
+[tonedial]: https://github.com/awesometic/tonedial
 [license]: #라이선스
 [ci]: https://github.com/awesometic/h5ai-ng/actions/workflows/ci.yml
 [docker-hub]: https://hub.docker.com/r/awesometic/h5ai-ng

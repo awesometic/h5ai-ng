@@ -141,6 +141,18 @@ docker build -t h5ai-ng .
 開いたままのプルリクエストも、ここで 1 件ずつ検討しています。
 
 
+## メンテナーのもう 1 つのプロジェクト
+
+[ToneDial][tonedial] は、コーディングエージェントにキャラクターを与えるローカル CLI です。
+7 種類のキャラクターから選ぶか 12 のトーン軸を調整すると、Claude Code、Codex、
+Antigravity がどのプロジェクトでもその口調で応答します。現在開発中で、Node 22 以降が
+必要です。
+
+~~~sh
+npm install --global tonedial
+~~~
+
+
 ## ライセンス
 
 MIT ライセンスです。英語の原文をそのまま載せています。
@@ -178,6 +190,7 @@ Ubuntu および Ubuntu Mono フォント（[`@fontsource/ubuntu`][fontsource-ub
 
 
 [h5ai]: https://larsjung.de/h5ai/
+[tonedial]: https://github.com/awesometic/tonedial
 [license]: #ライセンス
 [ci]: https://github.com/awesometic/h5ai-ng/actions/workflows/ci.yml
 [docker-hub]: https://hub.docker.com/r/awesometic/h5ai-ng

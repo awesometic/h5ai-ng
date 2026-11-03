@@ -144,6 +144,18 @@ Los errores y las pull requests van a [este repositorio][issues]. Las pull
 requests abiertas del h5ai original se revisan aquí una a una.
 
 
+## Otro proyecto del mantenedor
+
+[ToneDial][tonedial] da carácter a su agente de programación. Elija uno de los
+7 personajes o ajuste 12 ejes de tono, y esta CLI local aplica esa voz a
+Claude Code, Codex o Antigravity en todos sus proyectos. Aún está en
+desarrollo y requiere Node 22 o posterior.
+
+~~~sh
+npm install --global tonedial
+~~~
+
+
 ## Licencia
 
 Licencia MIT. Se reproduce el texto original en inglés.
@@ -181,6 +193,7 @@ que se incluyen sin modificar en `_h5ai/public/fonts/` junto con la licencia.
 
 
 [h5ai]: https://larsjung.de/h5ai/
+[tonedial]: https://github.com/awesometic/tonedial
 [license]: #licencia
 [ci]: https://github.com/awesometic/h5ai-ng/actions/workflows/ci.yml
 [docker-hub]: https://hub.docker.com/r/awesometic/h5ai-ng
