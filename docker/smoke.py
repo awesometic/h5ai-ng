@@ -254,6 +254,11 @@ try:
     # shorter than the 10 second capture point of a longer video
     docker("exec", name, "ffmpeg", "-v", "error", "-f", "lavfi", "-i",
            "color=c=blue:s=320x180:r=1:d=3", "-c:v", "mpeg4", "/h5ai/short.mp4")
+    # written by hand so the fixture does not depend on the PDF support under test
+    docker("exec", name, "sh", "-c", "printf '%s\\n' '%PDF-1.4' '1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj'"
+           " '2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj'"
+           " '3 0 obj<</Type/Page/Parent 2 0 R/MediaBox[0 0 320 180]>>endobj'"
+           " 'trailer<</Root 1 0 R>>' '%%EOF' > /h5ai/document.pdf")
     status, body = request("/runtime.php")
     assert status == 200, ("FPM runtime probe", status)
     runtime = json.loads(body)
@@ -314,7 +319,8 @@ try:
     assert {"/up/sibling.txt", "/sample.txt"} <= deep, ("Level 2 keeps the content of parent folders", sorted(deep))
     requested_thumbs = [
         {"type": kind, "href": href, "width": 320, "height": 240}
-        for kind, href in [("img", "/image.png"), ("mov", "/movie.mp4"), ("mov", "/short.mp4")]
+        for kind, href in [("img", "/image.png"), ("mov", "/movie.mp4"), ("mov", "/short.mp4"),
+                             ("doc", "/document.pdf")]
     ]
     thumbs = api({"action": "get", "thumbs": requested_thumbs})["thumbs"]
     assert isinstance(thumbs, list) and len(thumbs) == len(requested_thumbs), ("Missing thumbnails", thumbs)
