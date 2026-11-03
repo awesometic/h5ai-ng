@@ -11,6 +11,10 @@ Apache httpd、lighttpd、nginx 向けのファイル一覧ページです。訪
 h5ai-ng は、2021 年を最後にリリースが止まった Lars Jung 氏の [h5ai][h5ai] を
 引き継いで保守するフォークです。
 
+公式サイトでは次のように紹介されています。
+
+> h5ai is a modern file indexer for HTTP web servers with focus on your files. Directories are displayed in a appealing way and browsing them is enhanced by different views, a breadcrumb and a tree overview. Initially h5ai was an acronym for HTML5 Apache Index but now it supports other web servers too.
+
 ![詳細表示でフォルダーを一覧する h5ai-ng](docs/screenshot.png)
 
 
@@ -193,29 +197,8 @@ npm install --global tonedial
 
 ## ライセンス
 
-MIT ライセンスです。英語の原文をそのまま載せています。
-
-The MIT License (MIT)
-
-Copyright (c) 2020 Lars Jung (https://larsjung.de)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+MIT ライセンスで配布しています。h5ai と h5ai-ng の著作権表示を含む全文は
+[LICENSE](LICENSE) にあります。
 
 
 ## 利用しているプロジェクト
@@ -229,7 +212,7 @@ Ubuntu および Ubuntu Mono フォント（[`@fontsource/ubuntu`][fontsource-ub
 
 [h5ai]: https://larsjung.de/h5ai/
 [tonedial]: https://github.com/awesometic/tonedial
-[license]: #ライセンス
+[license]: LICENSE
 [ci]: https://github.com/awesometic/h5ai-ng/actions/workflows/ci.yml
 [docker-hub]: https://hub.docker.com/r/awesometic/h5ai-ng
 [releases]: https://github.com/awesometic/h5ai-ng/releases

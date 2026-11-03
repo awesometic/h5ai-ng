@@ -33,7 +33,7 @@ const build = async () => {
 
     fs.rmSync(BUILD, {recursive: true, force: true});
     fs.cpSync(join(SRC, '_h5ai'), H5AI, {recursive: true, filter: src => !(/\.(js|less|pug)$/).test(src)});
-    ['README.md', 'CHANGELOG.md'].forEach(name => fs.copyFileSync(join(ROOT, name), join(H5AI, name)));
+    ['README.md', 'CHANGELOG.md', 'LICENSE'].forEach(name => fs.copyFileSync(join(ROOT, name), join(H5AI, name)));
 
     const conf = join(H5AI, 'private/conf');
     fs.readdirSync(conf).filter(name => name.endsWith('.json')).forEach(name => {

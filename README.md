@@ -11,6 +11,10 @@ selection as one archive. Your files stay where they are.
 h5ai-ng is a maintained fork of [h5ai][h5ai] by Lars Jung, which stopped
 releasing in 2021.
 
+The [original site][h5ai] describes h5ai like this:
+
+> h5ai is a modern file indexer for HTTP web servers with focus on your files. Directories are displayed in a appealing way and browsing them is enhanced by different views, a breadcrumb and a tree overview. Initially h5ai was an acronym for HTML5 Apache Index but now it supports other web servers too.
+
 ![h5ai-ng listing a folder in the details view](docs/screenshot.png)
 
 
@@ -194,27 +198,8 @@ npm install --global tonedial
 
 ## License
 
-The MIT License (MIT)
-
-Copyright (c) 2020 Lars Jung (https://larsjung.de)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+Released under the MIT License. The full text, with the copyright notices of
+h5ai and h5ai-ng, is in [LICENSE](LICENSE).
 
 
 ## References
@@ -228,7 +213,7 @@ which are bundled unmodified in `_h5ai/public/fonts/` together with the licence.
 
 [h5ai]: https://larsjung.de/h5ai/
 [tonedial]: https://github.com/awesometic/tonedial
-[license]: #license
+[license]: LICENSE
 [ci]: https://github.com/awesometic/h5ai-ng/actions/workflows/ci.yml
 [docker-hub]: https://hub.docker.com/r/awesometic/h5ai-ng
 [releases]: https://github.com/awesometic/h5ai-ng/releases
