@@ -81,11 +81,13 @@ jobs:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
-      - name: Check tag against package.json
+      - name: Check tag against package.json and CHANGELOG.md
         id: version
         run: |
           version="${GITHUB_REF_NAME#v}"
           test "$version" = "$(node -p 'require("./package.json").version')"
+          # the release notes come from this section, so it must carry a date, not *unreleased*
+          grep -q "^## v$version - \*[0-9]" CHANGELOG.md
           echo "version=$version" >> "$GITHUB_OUTPUT"
       - uses: docker/setup-qemu-action@v4
         with:
@@ -105,3 +107,42 @@ jobs:
           tags: |
             awesometic/h5ai-ng:${{ steps.version.outputs.version }}
             awesometic/h5ai-ng:latest
+
+  release:
+    name: GitHub release
+    needs: publish
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run release
+      - name: Write release notes from the template and CHANGELOG.md
+        run: |
+          python3 - "${GITHUB_REF_NAME#v}" > notes.md <<'PY'
+          import re, sys
+          version = sys.argv[1]
+          log = open('CHANGELOG.md', encoding='utf-8').read()
+          m = re.search(rf'^## v{re.escape(version)} .*?\n(.*?)(?=^## |\Z)', log, re.S | re.M)
+          if not m:
+              sys.exit(f'CHANGELOG.md has no v{version} section')
+          tpl = open('.github/release-template.md', encoding='utf-8').read()
+          print(tpl.replace('{{version}}', version).replace('{{changes}}', m.group(1).strip()), end='')
+          PY
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          gh release create "$GITHUB_REF_NAME" "build/h5ai-$version.zip" \
+            --repo "$GITHUB_REPOSITORY" --verify-tag \
+            --title "h5ai-ng $version" --notes-file notes.md
