@@ -1,9 +1,6 @@
 # AGENTS Guide
 
 Operating guide for AI agents in h5ai-ng.
-It is a condensed, project-specific version of the agent-engineering harness 1.15.3.
-It is not byte-shared with that harness and is not managed by its sync tool;
-edit it here when this project's rules change.
 
 ## Project
 
@@ -49,6 +46,7 @@ Never install files from `src/` directly; they must be built.
 ## Workflow
 
 1. Read the code a change touches and trace the real flow before editing.
+   For interface work, read `PRODUCT.md` and `DESIGN.md` first.
 2. Make the smallest change that fixes the root cause.
    Prefer the platform, the standard library, or an installed dependency over new code;
    add a dependency only when a few lines cannot do the job.
@@ -57,7 +55,33 @@ Never install files from `src/` directly; they must be built.
    A successful build alone is not evidence that the service works.
 4. Report outcomes faithfully: failed or skipped checks are stated as such.
 
-Tell the user which skills and sub-agents you plan to use and which you actually used.
+Tell the user which skills and sub-agents you plan to use and which you actually used,
+with each one's source (personal, project, plugin, or built-in).
+
+## Simplicity and Cleanup
+
+- Before adding complexity for a speculative or very unlikely race or security edge case,
+  explain the concrete failure mode, its likelihood and the complexity cost, and get the user's agreement.
+  Do not widen scope silently for theoretical robustness; checks at real trust boundaries, such as request data, are not speculative.
+- Add an abstraction only when it removes complexity you have observed.
+- Give each interpretation of a value and each resource one owner.
+  Consumers use the owner's parsed result instead of reinterpreting the raw source.
+- Assess brittleness in the code you touch while implementing, debugging, reviewing or maintaining it.
+  Fix the representation or ownership rule that produces a wrong value before adding repairs downstream,
+  and normalize once, at the owning boundary, with a parser that understands the format.
+- Keep identifiers and lookup values apart from display formatting.
+  Keep the source value and an explicit unknown when normalization loses information; an unresolved value stays unknown, not absent.
+  A filesystem path, a file URL and an HTTP path have different semantics.
+- Remove superseded representations, aliases, wrappers and redundant tests once the affected consumers are checked.
+- When fixing a bug, inspect the producing boundary and its consumers for duplicated interpretation or unclear ownership.
+  Finish the directly related refactor in the same change and remove the superseded code.
+  A small cleanup inside code the fix already touches goes in the fix's commit; a larger refactor goes in its own commit before the fix.
+  A passing regression test alone does not show the brittleness is gone; if related cleanup remains, say what and why.
+- After confirming a bug, search sibling consumers, adapters and similar workflows for the same failure.
+  Verify each suspected match, note the ones that work for comparison, and group findings by root cause instead of reporting duplicates.
+- When addressing review feedback, an upstream PR included, inspect the producing boundary and its consumers the same way
+  and finish directly related refactoring in the same change.
+  Before resolving it, explain the root cause, the structural fix, the validation and any remaining cleanup.
 
 ## Required Skills
 
@@ -87,11 +111,16 @@ Reject or adapt a PR that conflicts with the constraints above, and say why.
 ## Git
 
 - Work on a branch, not `main`. Commit or push only when the user asks.
+- One commit holds one self-contained change: it builds and passes the tests on its own,
+  and a refactor, rename or move stays apart from a behavior change,
+  except a small cleanup inside code the change already touches.
 - Commit subject: `<scope>: <Imperative summary>` (for example `build: Replace ghu with esbuild`).
 - Never commit credentials, tokens, or private user data.
 
 ## Documents
 
+- Repository documents, code comments and commit messages are in English,
+  except the translated READMEs written for their readers.
 - `README.md` is the user-facing document; keep its commands in sync with `package.json`.
 - Korean text should read naturally; avoid literal translationese.
 - Agent working records stay local and are ignored by git:
