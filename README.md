@@ -62,6 +62,27 @@ thumbnails, tar and zip downloads and folder sizes. Log in to its info page
 The image serves plain HTTP. Put a reverse proxy with TLS in front of it,
 especially with `HTPASSWD`.
 
+To use another host port, change the first number of `-p`, for example
+`-p 8080:80`. Hard links and symlinks within `/h5ai` work as they are; a
+symlink that points outside `/h5ai` needs its target mounted at the same path,
+for example `-v /mnt/media:/mnt/media:ro`.
+
+To serve h5ai under a path such as `/share/`, let the reverse proxy strip the
+path and name it in `X-Forwarded-Prefix`:
+
+~~~nginx
+location /share/ {
+    proxy_pass http://127.0.0.1:8080/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-Prefix /share;
+    proxy_redirect / /share/;
+}
+~~~
+
+A `/config/nginx/h5ai.conf` saved before 0.31.1 ignores that header; remove it
+and recreate the container (`docker rm -f`, then `docker run`) to get the
+current default.
+
 
 ## Install on your own server
 

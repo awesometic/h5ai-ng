@@ -63,6 +63,26 @@ tar와 zip 다운로드, 폴더 크기 표시가 바로 동작합니다. 정보 
 이미지는 암호화하지 않은 HTTP로 응답합니다. 앞단에 TLS를 적용한 리버스
 프록시를 두세요. `HTPASSWD`를 쓴다면 더욱 그렇습니다.
 
+다른 호스트 포트를 쓰려면 `-p`의 앞 숫자를 바꾸세요(예: `-p 8080:80`).
+`/h5ai` 안을 가리키는 하드 링크와 심볼릭 링크는 그대로 동작합니다. `/h5ai`
+바깥을 가리키는 심볼릭 링크는 대상 경로를 컨테이너의 같은 위치에 마운트해야
+합니다(예: `-v /mnt/media:/mnt/media:ro`).
+
+h5ai를 `/share/` 같은 경로 아래에서 서비스하려면 리버스 프록시가 그 경로를 떼고
+`X-Forwarded-Prefix`로 알려 주게 하세요.
+
+~~~nginx
+location /share/ {
+    proxy_pass http://127.0.0.1:8080/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-Prefix /share;
+    proxy_redirect / /share/;
+}
+~~~
+
+0.31.1 이전에 저장된 `/config/nginx/h5ai.conf`는 이 헤더를 읽지 않습니다. 파일을
+지우고 컨테이너를 새로 만들면(`docker rm -f` 후 `docker run`) 현재 기본값이 생깁니다.
+
 
 ## 직접 운영하는 서버에 설치하기
 

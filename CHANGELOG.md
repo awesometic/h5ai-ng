@@ -6,6 +6,9 @@
 * Docker: add PDF thumbnails, which 0.31.0 announced but could not make (the image lacked ImageMagick's PDF support)
 * Docker: keep `options.json` when a newer image replaces the application, and read the installed version from the application code; an older `options.json` restored as the 0.31.0 README said was reset to the defaults whenever the container was recreated
 * README: drop the restore step from moving off docker-h5ai and say which other files in `_h5ai` are replaced
+* Docker: serve h5ai under a reverse proxy path such as `/share/`; the proxy strips the path and names it in `X-Forwarded-Prefix` (awesometic/docker-h5ai#20)
+* Docker: folder redirects keep a mapped host port such as `-p 8080:80`
+* README: say how to change the host port and how to serve symlinks that point outside `/h5ai` (awesometic/docker-h5ai#27, awesometic/docker-h5ai#28)
 * README: give the rule that blocks `/_h5ai/private/` for Apache httpd, lighttpd and nginx; the bundled `.htaccess` files work only with `AllowOverride All`, so a stock Debian Apache or any lighttpd install served `options.json`
 * README: say that the web server user must be able to write to the cache folders, and correct the `PUID`/`PGID` and `TZ` descriptions
 

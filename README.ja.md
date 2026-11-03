@@ -63,6 +63,27 @@ docker run -d --name h5ai -p 80:80 \
 イメージは暗号化されていない HTTP で応答します。前段に TLS 対応のリバースプロキシを
 置いてください。`HTPASSWD` を使う場合は特に必要です。
 
+別のホストポートを使うには、`-p` の最初の数字を変えます（例: `-p 8080:80`）。
+`/h5ai` 内を指すハードリンクとシンボリックリンクはそのまま動作します。`/h5ai` の
+外を指すシンボリックリンクは、リンク先をコンテナー内の同じパスにマウントする
+必要があります（例: `-v /mnt/media:/mnt/media:ro`）。
+
+h5ai を `/share/` のようなパスの下で提供するには、リバースプロキシでそのパスを
+取り除き、`X-Forwarded-Prefix` で伝えます。
+
+~~~nginx
+location /share/ {
+    proxy_pass http://127.0.0.1:8080/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-Prefix /share;
+    proxy_redirect / /share/;
+}
+~~~
+
+0.31.1 より前に保存された `/config/nginx/h5ai.conf` はこのヘッダーを読みません。
+ファイルを削除してコンテナーを作り直すと（`docker rm -f` の後に `docker run`）、
+現在の既定の設定になります。
+
 
 ## 自分のサーバーにインストールする
 

@@ -65,6 +65,27 @@ comprobaciones aparecen superadas:
 La imagen sirve HTTP sin cifrar. Ponga delante un proxy inverso con TLS,
 sobre todo si usa `HTPASSWD`.
 
+Para usar otro puerto del host, cambie el primer número de `-p`, por ejemplo
+`-p 8080:80`. Los enlaces duros y simbólicos dentro de `/h5ai` funcionan tal
+cual; un enlace simbólico que apunte fuera de `/h5ai` necesita su destino
+montado en la misma ruta, por ejemplo `-v /mnt/media:/mnt/media:ro`.
+
+Para servir h5ai bajo una ruta como `/share/`, haga que el proxy inverso quite
+la ruta y la indique en `X-Forwarded-Prefix`:
+
+~~~nginx
+location /share/ {
+    proxy_pass http://127.0.0.1:8080/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-Prefix /share;
+    proxy_redirect / /share/;
+}
+~~~
+
+Un `/config/nginx/h5ai.conf` guardado antes de 0.31.1 ignora esa cabecera;
+elimínelo y vuelva a crear el contenedor (`docker rm -f` y después
+`docker run`) para obtener el valor por defecto actual.
+
 
 ## Instalación en su propio servidor
 

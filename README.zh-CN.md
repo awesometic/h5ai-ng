@@ -56,6 +56,25 @@ docker run -d --name h5ai -p 80:80 \
 
 镜像只提供未加密的 HTTP。请在前面放一个带 TLS 的反向代理，启用 `HTPASSWD` 时尤其如此。
 
+如需使用其他主机端口，修改 `-p` 的第一个数字即可，例如 `-p 8080:80`。指向 `/h5ai`
+内部的硬链接和符号链接可以直接使用；指向 `/h5ai` 之外的符号链接，需要把目标路径
+挂载到容器中的相同位置，例如 `-v /mnt/media:/mnt/media:ro`。
+
+如需在 `/share/` 这样的路径下提供 h5ai，请让反向代理去掉该路径，并通过
+`X-Forwarded-Prefix` 告知：
+
+~~~nginx
+location /share/ {
+    proxy_pass http://127.0.0.1:8080/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-Prefix /share;
+    proxy_redirect / /share/;
+}
+~~~
+
+0.31.1 之前保存的 `/config/nginx/h5ai.conf` 不会读取该请求头；删除它并重新创建容器
+（先 `docker rm -f`，再 `docker run`），即可获得当前的默认配置。
+
 
 ## 安装到自己的服务器
 
