@@ -1,7 +1,7 @@
 # Changelog
 
 
-## v0.31.0 - *unreleased*
+## v0.31.0 - *2026-11-03*
 
 First h5ai-ng release, forked from h5ai v0.30.0.
 
