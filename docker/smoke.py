@@ -220,6 +220,9 @@ try:
                     # and from an h5ai 0.30.0 application copy, which an upgrade must replace
                     " && cp -a /usr/share/h5ai/_h5ai /config/h5ai/"
                     " && sed -i '1s/v[0-9][^ ]*/v0.30.0/' /config/h5ai/_h5ai/private/conf/options.json"
+                    " /config/h5ai/_h5ai/public/js/scripts.js"
+                    # whose options.json the upgrade keeps, old header included
+                    " && printf '\\n// smoke: kept from 0.30.0\\n' >> /config/h5ai/_h5ai/private/conf/options.json"
                     " && touch /config/h5ai/_h5ai/stale-0.30.0"],
                    input=legacy_conf, text=True, check=True, timeout=60)
     start()
@@ -228,6 +231,7 @@ try:
     assert docker("exec", name, "sh", "-c", "ls /config/*_h5ai.conf.bak"), "Saved Nginx configuration was not backed up"
     docker("exec", name, "test", "!", "-e", "/config/h5ai/_h5ai/stale-0.30.0")
     assert docker("exec", name, "sh", "-c", "ls /config/*_options.json.bak"), "Saved options were not backed up"
+    docker("exec", name, "grep", "-q", "smoke: kept from 0.30.0", "/config/h5ai/_h5ai/private/conf/options.json")
     docker("exec", name, "sh", "-c", "mkdir -p /h5ai/_h5ai/private && printf '<?php echo 42;' > /h5ai/_h5ai/private/probe.php")
     assert request("/_h5ai/private/probe.php")[0] == 403, "PHP under /_h5ai/private/ escapes the deny rule"
     docker("exec", name, "rm", "-r", "/h5ai/_h5ai")
@@ -427,6 +431,8 @@ try:
     setup = api({"action": "get", "setup": True, "refresh": True}, auth=True)["setup"]
     assert setup["AS_ADMIN"] and setup["PHP_VERSION"] == cli, ("Persisted login session", setup)
     assert docker("exec", name, "sha256sum", options) == before
+    assert len(docker("exec", name, "sh", "-c", "ls /config/*_options.json.bak").split()) == 1, (
+        "Recreating the container repeated the upgrade")
     assert docker("exec", name, "stat", "-c", "%u:%g", options) == "1234:2345"
     assert json.loads(request("/runtime.php", auth=True)[1])["timezone"] == "UTC"
     docker("rm", "-f", name)
