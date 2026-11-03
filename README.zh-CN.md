@@ -43,7 +43,7 @@ docker run -d --name h5ai -p 80:80 \
 | 卷 | 内容 |
 | --- | --- |
 | `/h5ai` | 要提供的文件。可以按需以只读方式（`:ro`）挂载。 |
-| `/config` | `h5ai/_h5ai`（程序及其 `options.json`）和 `nginx/h5ai.conf`。首次启动时创建。 |
+| `/config` | `h5ai/_h5ai`（程序及其 `options.json`）和 `nginx/h5ai.conf`。首次启动时创建；更新的镜像只替换程序，保留 `options.json`。 |
 | `/logs` | 可选。删除容器后仍会保留的 Nginx 和 PHP 日志。 |
 
 | 变量 | 默认值 | 含义 |
@@ -116,22 +116,16 @@ printf '%s' '你的密码' | sha512sum    # macOS: shasum -a 512
 2. 删除旧容器，用相同的 `-v` 和 `-e` 选项启动 `awesometic/h5ai-ng`：
    先执行 `docker rm -f h5ai`，再执行上面的 `docker run` 命令。
 3. 查看 `docker logs h5ai`。首次启动时，容器会：
-   * 用新版本替换 `/config/h5ai/_h5ai`，并把旧设置保存为
-     `/config/<date>_options.json.bak`；
+   * 用新版本替换 `/config/h5ai/_h5ai`，但保留你的 `options.json`，并把它的副本
+     保存为 `/config/<date>_options.json.bak`；
    * 在 `/config/nginx/h5ai.conf` 中屏蔽 `/_h5ai/private/`，并把旧文件保存为
      `/config/<date>_h5ai.conf.bak`。如果该文件改动过多而无法自动更新，
      容器会停止并提示需要修改的地方。
-4. 恢复设置。新的 `options.json` 从默认值开始，信息页密码也为空。若要保持原样，
-   用备份文件覆盖它并重启：
 
-   ~~~sh
-   cp /path/to/config/<date>_options.json.bak \
-      /path/to/config/h5ai/_h5ai/private/conf/options.json
-   docker restart h5ai
-   ~~~
-
-   如果你没有改过相关条目，旧文件会关闭筛选功能，并从 Google Fonts 加载字体；
-   如需采用这些新默认值，请把两个文件对比后再合并。
+`options.json` 保持原样，包括密码。如果你没有改过相关条目，它会继续关闭筛选功能，
+并从 Google Fonts 加载字体；如需采用新的默认值，请与[新的默认设置][options]对比后
+合并。你在 `_h5ai` 中改过的其他文件（如 `types.json`、主题或翻译）会被新版本替换，
+请从第 1 步的备份中重新复制。
 
 如需回退，停止容器，恢复 `/path/to/config.bak`，然后重新启动 `awesometic/h5ai`。
 
@@ -205,6 +199,7 @@ THE SOFTWARE.
 [releases]: https://github.com/awesometic/h5ai-ng/releases
 [issues]: https://github.com/awesometic/h5ai-ng/issues
 [docker-h5ai]: https://github.com/awesometic/docker-h5ai
+[options]: https://github.com/awesometic/h5ai-ng/blob/main/src/_h5ai/private/conf/options.json
 [node]: https://nodejs.org
 [material-design-icons]: https://github.com/google/material-design-icons
 [fontsource-ubuntu]: https://www.npmjs.com/package/@fontsource/ubuntu

@@ -51,7 +51,7 @@ comprobaciones aparecen superadas:
 | Volumen | Contenido |
 | --- | --- |
 | `/h5ai` | Los archivos que se sirven. Puede montarlo en solo lectura (`:ro`). |
-| `/config` | `h5ai/_h5ai` (la aplicación y su `options.json`) y `nginx/h5ai.conf`. Se crea en el primer arranque. |
+| `/config` | `h5ai/_h5ai` (la aplicación y su `options.json`) y `nginx/h5ai.conf`. Se crea en el primer arranque; una imagen más nueva sustituye la aplicación y conserva `options.json`. |
 | `/logs` | Opcional. Registros de Nginx y PHP que sobreviven al contenedor. |
 
 | Variable | Valor por defecto | Significado |
@@ -130,25 +130,19 @@ solo cambia el nombre de la imagen.
    mismas opciones `-v` y `-e`:
    `docker rm -f h5ai` y después el comando `docker run` de arriba.
 3. Lea `docker logs h5ai`. En el primer arranque, el contenedor:
-   * sustituye `/config/h5ai/_h5ai` por la nueva versión y guarda sus ajustes
-     anteriores como `/config/<date>_options.json.bak`;
+   * sustituye `/config/h5ai/_h5ai` por la nueva versión pero conserva su
+     `options.json` y guarda una copia como `/config/<date>_options.json.bak`;
    * bloquea `/_h5ai/private/` en `/config/nginx/h5ai.conf` y guarda el
      archivo anterior como `/config/<date>_h5ai.conf.bak`. Si ese archivo se
      modificó demasiado para actualizarlo, el contenedor se detiene e indica
      qué cambiar.
-4. Recupere sus ajustes. El nuevo `options.json` parte de los valores por
-   defecto, incluida la contraseña vacía de la página de información. Para
-   dejarlo todo como estaba, copie la copia de seguridad encima y reinicie:
 
-   ~~~sh
-   cp /path/to/config/<date>_options.json.bak \
-      /path/to/config/h5ai/_h5ai/private/conf/options.json
-   docker restart h5ai
-   ~~~
-
-   Salvo que cambiara esas entradas, el archivo antiguo desactiva el filtro y
-   carga las fuentes desde Google Fonts; compárelo con los nuevos valores por
-   defecto si quiere esos cambios.
+Su `options.json` queda como estaba, contraseña incluida. Salvo que cambiara
+esas entradas, mantiene el filtro desactivado y carga las fuentes desde Google
+Fonts; compárelo con los [nuevos valores por defecto][options] si quiere esos
+cambios. Los demás archivos que modificara en `_h5ai`, como `types.json`, un
+tema o una traducción, se sustituyen por la nueva versión; cópielos de nuevo
+desde la copia del paso 1.
 
 Para volver atrás, detenga el contenedor, restaure `/path/to/config.bak` y
 arranque de nuevo `awesometic/h5ai`.
@@ -225,6 +219,7 @@ que se incluyen sin modificar en `_h5ai/public/fonts/` junto con la licencia.
 [releases]: https://github.com/awesometic/h5ai-ng/releases
 [issues]: https://github.com/awesometic/h5ai-ng/issues
 [docker-h5ai]: https://github.com/awesometic/docker-h5ai
+[options]: https://github.com/awesometic/h5ai-ng/blob/main/src/_h5ai/private/conf/options.json
 [node]: https://nodejs.org
 [material-design-icons]: https://github.com/google/material-design-icons
 [fontsource-ubuntu]: https://www.npmjs.com/package/@fontsource/ubuntu

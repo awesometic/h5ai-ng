@@ -49,7 +49,7 @@ tar와 zip 다운로드, 폴더 크기 표시가 바로 동작합니다. 정보 
 | 볼륨 | 내용 |
 | --- | --- |
 | `/h5ai` | 공유할 파일. 필요하면 읽기 전용(`:ro`)으로 마운트하세요. |
-| `/config` | `h5ai/_h5ai`(애플리케이션과 `options.json`)와 `nginx/h5ai.conf`. 처음 시작할 때 만들어집니다. |
+| `/config` | `h5ai/_h5ai`(애플리케이션과 `options.json`)와 `nginx/h5ai.conf`. 처음 시작할 때 만들어지며, 새 버전 이미지는 애플리케이션만 바꾸고 `options.json`은 그대로 둡니다. |
 | `/logs` | 선택 사항. 컨테이너를 지워도 남는 Nginx와 PHP 로그. |
 
 | 변수 | 기본값 | 설명 |
@@ -128,23 +128,17 @@ printf '%s' '비밀번호' | sha512sum    # macOS: shasum -a 512
    실행합니다. `docker rm -f h5ai`를 실행한 뒤 위의 `docker run` 명령을 씁니다.
 3. `docker logs h5ai`로 로그를 확인합니다. 처음 시작할 때 컨테이너가 하는 일은
    다음과 같습니다.
-   * `/config/h5ai/_h5ai`를 새 버전으로 바꾸고 기존 설정은
-     `/config/<date>_options.json.bak`에 저장합니다.
+   * `/config/h5ai/_h5ai`를 새 버전으로 바꾸되 `options.json`은 그대로 두고,
+     그 사본을 `/config/<date>_options.json.bak`에 저장합니다.
    * `/config/nginx/h5ai.conf`에 `/_h5ai/private/` 차단 규칙을 넣고 기존 파일은
      `/config/<date>_h5ai.conf.bak`에 저장합니다. 이 파일을 많이 고쳐서 자동으로
      바꿀 수 없으면 컨테이너가 멈추고 고칠 곳을 알려 줍니다.
-4. 설정을 되살립니다. 새 `options.json`은 기본값으로 시작하므로 정보 페이지
-   비밀번호도 비어 있습니다. 예전 설정을 그대로 쓰려면 백업 파일로 덮어쓰고
-   다시 시작하세요.
 
-   ~~~sh
-   cp /path/to/config/<date>_options.json.bak \
-      /path/to/config/h5ai/_h5ai/private/conf/options.json
-   docker restart h5ai
-   ~~~
-
-   예전 파일은 따로 바꾸지 않았다면 필터가 꺼져 있고 글꼴을 Google Fonts에서
-   불러옵니다. 새 기본값을 쓰고 싶다면 두 파일을 비교해 필요한 부분만 옮기세요.
+`options.json`은 비밀번호까지 예전 그대로입니다. 해당 항목을 바꾸지 않았다면
+필터는 꺼져 있고 글꼴은 Google Fonts에서 불러옵니다. 새 기본값을 쓰고 싶다면
+[새 기본 설정][options]과 비교해 필요한 부분만 옮기세요. `types.json`, 테마,
+번역 파일처럼 `_h5ai` 안에서 고친 다른 파일은 새 버전으로 바뀌므로 1단계에서
+만든 백업에서 다시 복사하세요.
 
 되돌리려면 컨테이너를 멈추고 `/path/to/config.bak`을 복원한 뒤
 `awesometic/h5ai`를 다시 실행합니다.
@@ -220,6 +214,7 @@ THE SOFTWARE.
 [releases]: https://github.com/awesometic/h5ai-ng/releases
 [issues]: https://github.com/awesometic/h5ai-ng/issues
 [docker-h5ai]: https://github.com/awesometic/docker-h5ai
+[options]: https://github.com/awesometic/h5ai-ng/blob/main/src/_h5ai/private/conf/options.json
 [node]: https://nodejs.org
 [material-design-icons]: https://github.com/google/material-design-icons
 [fontsource-ubuntu]: https://www.npmjs.com/package/@fontsource/ubuntu

@@ -4,6 +4,8 @@
 ## v0.31.1 - *2026-11-03*
 
 * Docker: add PDF thumbnails, which 0.31.0 announced but could not make (the image lacked ImageMagick's PDF support)
+* Docker: keep `options.json` when a newer image replaces the application, and read the installed version from the application code; an older `options.json` restored as the 0.31.0 README said was reset to the defaults whenever the container was recreated
+* README: drop the restore step from moving off docker-h5ai and say which other files in `_h5ai` are replaced
 * README: give the rule that blocks `/_h5ai/private/` for Apache httpd, lighttpd and nginx; the bundled `.htaccess` files work only with `AllowOverride All`, so a stock Debian Apache or any lighttpd install served `options.json`
 * README: say that the web server user must be able to write to the cache folders, and correct the `PUID`/`PGID` and `TZ` descriptions
 

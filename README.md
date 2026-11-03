@@ -48,7 +48,7 @@ thumbnails, tar and zip downloads and folder sizes. Log in to its info page
 | Volume | Contents |
 | --- | --- |
 | `/h5ai` | The files to serve. Mount it read-only (`:ro`) if you like. |
-| `/config` | `h5ai/_h5ai` (the application and its `options.json`) and `nginx/h5ai.conf`. Created on first start. |
+| `/config` | `h5ai/_h5ai` (the application and its `options.json`) and `nginx/h5ai.conf`. Created on first start; a newer image replaces the application and keeps `options.json`. |
 | `/logs` | Optional. Nginx and PHP logs that survive the container. |
 
 | Variable | Default | Meaning |
@@ -127,24 +127,18 @@ only the image name.
    `-v` and `-e` options:
    `docker rm -f h5ai`, then the `docker run` command above.
 3. Read `docker logs h5ai`. On the first start the container:
-   * replaces `/config/h5ai/_h5ai` with the new version and saves your old
-     settings as `/config/<date>_options.json.bak`;
+   * replaces `/config/h5ai/_h5ai` with the new version but keeps your
+     `options.json`, and saves a copy of it as
+     `/config/<date>_options.json.bak`;
    * blocks `/_h5ai/private/` in `/config/nginx/h5ai.conf` and saves the old
      file as `/config/<date>_h5ai.conf.bak`. If that file was changed too much
      to update, the container stops and prints what to change.
-4. Bring your settings back. The new `options.json` starts from the defaults,
-   including the empty info page password. To keep everything as it was, copy
-   the backup over it and restart:
 
-   ~~~sh
-   cp /path/to/config/<date>_options.json.bak \
-      /path/to/config/h5ai/_h5ai/private/conf/options.json
-   docker restart h5ai
-   ~~~
-
-   Unless you changed those entries, the old file turns the filter off and
-   loads fonts from Google Fonts; compare it with the new defaults if you want
-   those changes.
+Your `options.json` stays as it was, password included. Unless you changed
+those entries, it keeps the filter off and loads fonts from Google Fonts;
+compare it with the [new defaults][options] if you want those changes. Other
+files you changed in `_h5ai`, such as `types.json`, a theme or a translation,
+are replaced by the new version; copy them back from the backup of step 1.
 
 To go back, stop the container, restore `/path/to/config.bak` and start
 `awesometic/h5ai` again.
@@ -219,6 +213,7 @@ which are bundled unmodified in `_h5ai/public/fonts/` together with the licence.
 [releases]: https://github.com/awesometic/h5ai-ng/releases
 [issues]: https://github.com/awesometic/h5ai-ng/issues
 [docker-h5ai]: https://github.com/awesometic/docker-h5ai
+[options]: https://github.com/awesometic/h5ai-ng/blob/main/src/_h5ai/private/conf/options.json
 [node]: https://nodejs.org
 [material-design-icons]: https://github.com/google/material-design-icons
 [fontsource-ubuntu]: https://www.npmjs.com/package/@fontsource/ubuntu

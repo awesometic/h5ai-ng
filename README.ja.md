@@ -49,7 +49,7 @@ docker run -d --name h5ai -p 80:80 \
 | ボリューム | 内容 |
 | --- | --- |
 | `/h5ai` | 公開するファイル。必要なら読み取り専用（`:ro`）でマウントしてください。 |
-| `/config` | `h5ai/_h5ai`（アプリケーションと `options.json`）と `nginx/h5ai.conf`。初回起動時に作られます。 |
+| `/config` | `h5ai/_h5ai`（アプリケーションと `options.json`）と `nginx/h5ai.conf`。初回起動時に作られ、新しいイメージはアプリケーションだけを置き換えて `options.json` はそのまま残します。 |
 | `/logs` | 任意。コンテナーを削除しても残る Nginx と PHP のログ。 |
 
 | 変数 | 既定値 | 意味 |
@@ -127,24 +127,17 @@ printf '%s' 'パスワード' | sha512sum    # macOS: shasum -a 512
 2. 古いコンテナーを削除し、同じ `-v` と `-e` オプションで `awesometic/h5ai-ng` を
    起動します。`docker rm -f h5ai` を実行してから、上の `docker run` コマンドを使います。
 3. `docker logs h5ai` を確認します。初回起動時、コンテナーは次のことを行います。
-   * `/config/h5ai/_h5ai` を新しいバージョンに置き換え、以前の設定を
-     `/config/<date>_options.json.bak` として保存します。
+   * `/config/h5ai/_h5ai` を新しいバージョンに置き換えますが、`options.json` は
+     そのまま残し、そのコピーを `/config/<date>_options.json.bak` として保存します。
    * `/config/nginx/h5ai.conf` で `/_h5ai/private/` をブロックし、以前のファイルを
      `/config/<date>_h5ai.conf.bak` として保存します。ファイルの変更が大きすぎて
      更新できない場合、コンテナーは停止し、直すべき箇所を表示します。
-4. 設定を戻します。新しい `options.json` は既定値から始まり、情報ページの
-   パスワードも空です。すべて以前のままにするには、バックアップで上書きして
-   再起動します。
 
-   ~~~sh
-   cp /path/to/config/<date>_options.json.bak \
-      /path/to/config/h5ai/_h5ai/private/conf/options.json
-   docker restart h5ai
-   ~~~
-
-   該当する項目を変えていなければ、以前のファイルではフィルターがオフになり、
-   フォントを Google Fonts から読み込みます。新しい既定値の変更を取り入れたい
-   場合は、両方のファイルを比べてください。
+`options.json` はパスワードも含めて以前のままです。該当する項目を変えていなければ、
+フィルターはオフのままで、フォントを Google Fonts から読み込みます。新しい既定値を
+取り入れたい場合は、[新しい既定の設定][options]と比べてください。`types.json`、
+テーマ、翻訳など `_h5ai` 内で変更したほかのファイルは新しいバージョンに置き換わる
+ので、手順 1 のバックアップからコピーし直してください。
 
 元に戻すには、コンテナーを止めて `/path/to/config.bak` を復元し、
 `awesometic/h5ai` をもう一度起動します。
@@ -221,6 +214,7 @@ Ubuntu および Ubuntu Mono フォント（[`@fontsource/ubuntu`][fontsource-ub
 [releases]: https://github.com/awesometic/h5ai-ng/releases
 [issues]: https://github.com/awesometic/h5ai-ng/issues
 [docker-h5ai]: https://github.com/awesometic/docker-h5ai
+[options]: https://github.com/awesometic/h5ai-ng/blob/main/src/_h5ai/private/conf/options.json
 [node]: https://nodejs.org
 [material-design-icons]: https://github.com/google/material-design-icons
 [fontsource-ubuntu]: https://www.npmjs.com/package/@fontsource/ubuntu
