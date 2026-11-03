@@ -1,6 +1,13 @@
 # Changelog
 
 
+## v0.31.1 - *2026-11-03*
+
+* Docker: add PDF thumbnails, which 0.31.0 announced but could not make (the image lacked ImageMagick's PDF support)
+* README: give the rule that blocks `/_h5ai/private/` for Apache httpd, lighttpd and nginx; the bundled `.htaccess` files work only with `AllowOverride All`, so a stock Debian Apache or any lighttpd install served `options.json`
+* README: say that the web server user must be able to write to the cache folders, and correct the `PUID`/`PGID` and `TZ` descriptions
+
+
 ## v0.31.0 - *2026-11-03*
 
 First h5ai-ng release, forked from h5ai v0.30.0.
