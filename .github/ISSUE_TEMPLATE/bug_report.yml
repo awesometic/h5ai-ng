@@ -1,0 +1,67 @@
+name: Bug report
+description: Something in h5ai-ng does not work as the README or options.json describes.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Remove passwords, `passhash` values, private paths and file names you do not want public from everything you paste below.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you saw, including any error text on the page.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open a folder with 300 images
+        2. Switch to the grid view
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: h5ai-ng version
+      description: The Docker tag, the release zip name, or the version on the first line of `_h5ai/private/conf/options.json`.
+      placeholder: 0.31.0
+    validations:
+      required: true
+  - type: dropdown
+    id: install
+    attributes:
+      label: How do you run it?
+      options:
+        - Docker image awesometic/h5ai-ng
+        - Apache httpd
+        - lighttpd
+        - nginx
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: php
+    attributes:
+      label: PHP version
+      description: Leave empty for the Docker image.
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and device
+      placeholder: Firefox 128 on Windows 11, Safari on iPhone
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Output of `docker logs h5ai`, the web server error log, or the failing checks on the info page (`/_h5ai/public/index.php`).
+      render: shell
