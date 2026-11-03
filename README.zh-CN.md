@@ -48,8 +48,8 @@ docker run -d --name h5ai -p 80:80 \
 
 | 变量 | 默认值 | 含义 |
 | --- | --- | --- |
-| `PUID`, `PGID` | `911` | `/config` 和服务器进程的所有者。 |
-| `TZ` | `Asia/Seoul` | 日期显示和日志轮转使用的时区。 |
+| `PUID`, `PGID` | `911` | `/config` 以及 nginx 和 PHP 工作进程的所有者。 |
+| `TZ` | `Asia/Seoul` | 容器时钟、日志及日志轮转使用的时区。列表中的日期按访客浏览器的时区显示。 |
 | `HTPASSWD` | `false` | 设为 `true` 后，所有访客都需要登录。 |
 | `HTPASSWD_USER`, `HTPASSWD_PW` | `guest`、空 | 登录账号。未设置密码时，请先用 `-it` 启动一次并输入密码。 |
 | `LOG_ROTATE_INTERVAL_DAYS`, `LOG_RETENTION_DAYS` | `1`、`30` | `/logs` 下文件的轮转间隔和保留天数。 |
@@ -66,12 +66,29 @@ docker run -d --name h5ai -p 80:80 \
    * Apache httpd：`DirectoryIndex index.html index.php /_h5ai/public/index.php`
    * lighttpd：`index-file.names += ("/_h5ai/public/index.php")`
    * nginx：`index index.html index.php /_h5ai/public/index.php;`
-4. 使用 nginx 时，请禁止访问 `/_h5ai/private/`；保护该目录的 `.htaccess`
-   文件只在 Apache httpd 上生效：
+4. 请禁止访问 `/_h5ai/private/`，其中存放着 `options.json` 和密码哈希。
+   `_h5ai` 中的 `.htaccess` 文件只在设置了 `AllowOverride All` 的 Apache httpd
+   上生效，而 Debian 软件包提供的 Apache 等默认是 `AllowOverride None`。如果网站
+   根目录没有设置 `AllowOverride All`，请为你的服务器添加相应规则：
+
+   ~~~apache
+   <Location "/_h5ai/private/">
+       Require all denied
+   </Location>
+   ~~~
+
+   ~~~lighttpd
+   $HTTP["url"] =~ "^/_h5ai/private/" { url.access-deny = ("") }
+   ~~~
 
    ~~~nginx
    location ^~ /_h5ai/private/ { deny all; }
    ~~~
+
+   lighttpd 规则需要 `mod_access`。设置后请确认
+   `curl -I http://your-server/_h5ai/private/conf/options.json` 返回 403。
+5. 让 Web 服务器用户可以写入 `_h5ai/public/cache` 和 `_h5ai/private/cache`。
+   信息页会显示是否可写。
 
 需要 PHP 8.3 或更高版本。访客需要使用 Chrome 或 Edge 91、Firefox 90 或 Safari 15
 及以上版本；更旧的浏览器会看到简单列表。

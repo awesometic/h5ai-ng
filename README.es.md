@@ -56,8 +56,8 @@ comprobaciones aparecen superadas:
 
 | Variable | Valor por defecto | Significado |
 | --- | --- | --- |
-| `PUID`, `PGID` | `911` | Propietario de `/config` y de los procesos del servidor. |
-| `TZ` | `Asia/Seoul` | Zona horaria para fechas y rotación de registros. |
+| `PUID`, `PGID` | `911` | Propietario de `/config` y de los procesos de trabajo de nginx y PHP. |
+| `TZ` | `Asia/Seoul` | Zona horaria del reloj del contenedor, los registros y su rotación. El listado muestra las fechas en la zona horaria del navegador del visitante. |
 | `HTPASSWD` | `false` | Con `true`, se pide usuario y contraseña a cada visitante. |
 | `HTPASSWD_USER`, `HTPASSWD_PW` | `guest`, vacío | Los datos de acceso. Sin contraseña, arranque una vez con `-it` para escribirla. |
 | `LOG_ROTATE_INTERVAL_DAYS`, `LOG_RETENTION_DAYS` | `1`, `30` | Rotación de los archivos en `/logs`, en días. |
@@ -75,12 +75,30 @@ sobre todo si usa `HTPASSWD`.
    * Apache httpd: `DirectoryIndex index.html index.php /_h5ai/public/index.php`
    * lighttpd: `index-file.names += ("/_h5ai/public/index.php")`
    * nginx: `index index.html index.php /_h5ai/public/index.php;`
-4. En nginx, bloquee `/_h5ai/private/`; los archivos `.htaccess` que lo
-   protegen solo funcionan en Apache httpd:
+4. Bloquee `/_h5ai/private/`, que contiene `options.json` y el hash de la
+   contraseña. Los archivos `.htaccess` de `_h5ai` solo lo hacen en Apache httpd
+   con `AllowOverride All`; el Apache empaquetado de Debian, por ejemplo, trae
+   `AllowOverride None`. Si su raíz web no tiene `AllowOverride All`, añada la
+   regla de su servidor:
+
+   ~~~apache
+   <Location "/_h5ai/private/">
+       Require all denied
+   </Location>
+   ~~~
+
+   ~~~lighttpd
+   $HTTP["url"] =~ "^/_h5ai/private/" { url.access-deny = ("") }
+   ~~~
 
    ~~~nginx
    location ^~ /_h5ai/private/ { deny all; }
    ~~~
+
+   La regla de lighttpd necesita `mod_access`. Después compruebe que
+   `curl -I http://su-servidor/_h5ai/private/conf/options.json` responde 403.
+5. Permita que el usuario del servidor web escriba en `_h5ai/public/cache` y
+   `_h5ai/private/cache`. La página de información muestra si puede.
 
 Se necesita PHP 8.3 o posterior. Los visitantes necesitan Chrome o Edge 91,
 Firefox 90 o Safari 15; los navegadores más antiguos reciben una lista simple.

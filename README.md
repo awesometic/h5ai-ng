@@ -53,8 +53,8 @@ thumbnails, tar and zip downloads and folder sizes. Log in to its info page
 
 | Variable | Default | Meaning |
 | --- | --- | --- |
-| `PUID`, `PGID` | `911` | Owner of `/config` and the server processes. |
-| `TZ` | `Asia/Seoul` | Time zone for dates and log rotation. |
+| `PUID`, `PGID` | `911` | Owner of `/config` and the nginx and PHP workers. |
+| `TZ` | `Asia/Seoul` | Time zone of the container's clock, the logs and their rotation. The listing shows dates in the visitor's browser time zone. |
 | `HTPASSWD` | `false` | `true` asks every visitor for a login. |
 | `HTPASSWD_USER`, `HTPASSWD_PW` | `guest`, empty | The login. Without a password, start once with `-it` to type it. |
 | `LOG_ROTATE_INTERVAL_DAYS`, `LOG_RETENTION_DAYS` | `1`, `30` | Rotation of the files under `/logs`. |
@@ -72,12 +72,30 @@ especially with `HTPASSWD`.
    * Apache httpd: `DirectoryIndex index.html index.php /_h5ai/public/index.php`
    * lighttpd: `index-file.names += ("/_h5ai/public/index.php")`
    * nginx: `index index.html index.php /_h5ai/public/index.php;`
-4. On nginx, block `/_h5ai/private/`; the `.htaccess` files that guard it
-   only work on Apache httpd:
+4. Block `/_h5ai/private/`, which holds `options.json` and its password hash.
+   The `.htaccess` files in `_h5ai` do this only on Apache httpd with
+   `AllowOverride All`; Debian's packaged Apache, for one, ships
+   `AllowOverride None`. Unless your web root has `AllowOverride All`, add the
+   rule for your server:
+
+   ~~~apache
+   <Location "/_h5ai/private/">
+       Require all denied
+   </Location>
+   ~~~
+
+   ~~~lighttpd
+   $HTTP["url"] =~ "^/_h5ai/private/" { url.access-deny = ("") }
+   ~~~
 
    ~~~nginx
    location ^~ /_h5ai/private/ { deny all; }
    ~~~
+
+   The lighttpd rule needs `mod_access`. Then check that
+   `curl -I http://your-server/_h5ai/private/conf/options.json` answers 403.
+5. Let the web server user write to `_h5ai/public/cache` and
+   `_h5ai/private/cache`. The info page shows whether it can.
 
 PHP 8.3 or later is required. Visitors need Chrome or Edge 91, Firefox 90 or
 Safari 15; older browsers get a plain list.

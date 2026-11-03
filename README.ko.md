@@ -54,8 +54,8 @@ tar와 zip 다운로드, 폴더 크기 표시가 바로 동작합니다. 정보 
 
 | 변수 | 기본값 | 설명 |
 | --- | --- | --- |
-| `PUID`, `PGID` | `911` | `/config`와 서버 프로세스의 소유자. |
-| `TZ` | `Asia/Seoul` | 날짜 표시와 로그 교체에 쓰는 시간대. |
+| `PUID`, `PGID` | `911` | `/config`와 nginx·PHP 워커 프로세스의 소유자. |
+| `TZ` | `Asia/Seoul` | 컨테이너의 시계, 로그, 로그 교체에 쓰는 시간대. 목록의 날짜는 방문자 브라우저의 시간대로 나옵니다. |
 | `HTPASSWD` | `false` | `true`이면 모든 방문자에게 로그인을 요구합니다. |
 | `HTPASSWD_USER`, `HTPASSWD_PW` | `guest`, 빈 값 | 로그인 계정. 비밀번호를 비워 두었다면 처음 한 번은 `-it`로 실행해 직접 입력하세요. |
 | `LOG_ROTATE_INTERVAL_DAYS`, `LOG_RETENTION_DAYS` | `1`, `30` | `/logs` 아래 파일의 교체 주기와 보관 기간(일). |
@@ -73,12 +73,30 @@ tar와 zip 다운로드, 폴더 크기 표시가 바로 동작합니다. 정보 
    * Apache httpd: `DirectoryIndex index.html index.php /_h5ai/public/index.php`
    * lighttpd: `index-file.names += ("/_h5ai/public/index.php")`
    * nginx: `index index.html index.php /_h5ai/public/index.php;`
-4. nginx라면 `/_h5ai/private/` 접근을 막으세요. 이 경로를 지키는 `.htaccess`
-   파일은 Apache httpd에서만 동작합니다.
+4. `options.json`과 비밀번호 해시가 들어 있는 `/_h5ai/private/` 접근을 막으세요.
+   `_h5ai` 안의 `.htaccess` 파일은 Apache httpd가 `AllowOverride All`일 때만
+   동작하는데, Debian 패키지의 Apache처럼 `AllowOverride None`이 기본인 경우가
+   있습니다. 웹 루트에 `AllowOverride All`을 쓰지 않는다면 서버에 맞는 규칙을
+   추가하세요.
+
+   ~~~apache
+   <Location "/_h5ai/private/">
+       Require all denied
+   </Location>
+   ~~~
+
+   ~~~lighttpd
+   $HTTP["url"] =~ "^/_h5ai/private/" { url.access-deny = ("") }
+   ~~~
 
    ~~~nginx
    location ^~ /_h5ai/private/ { deny all; }
    ~~~
+
+   lighttpd 규칙에는 `mod_access`가 필요합니다. 적용한 뒤
+   `curl -I http://your-server/_h5ai/private/conf/options.json`이 403을 돌려주는지 확인하세요.
+5. 웹 서버 사용자가 `_h5ai/public/cache`와 `_h5ai/private/cache`에 쓸 수 있게
+   하세요. 쓸 수 있는지는 정보 페이지에서 확인할 수 있습니다.
 
 서버에는 PHP 8.3 이상이 필요합니다. 방문자는 Chrome·Edge 91, Firefox 90,
 Safari 15 이상을 써야 하고 그보다 오래된 브라우저에서는 단순한 목록이 나옵니다.

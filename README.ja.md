@@ -54,8 +54,8 @@ docker run -d --name h5ai -p 80:80 \
 
 | 変数 | 既定値 | 意味 |
 | --- | --- | --- |
-| `PUID`, `PGID` | `911` | `/config` とサーバープロセスの所有者。 |
-| `TZ` | `Asia/Seoul` | 日付表示とログローテーションのタイムゾーン。 |
+| `PUID`, `PGID` | `911` | `/config` と nginx・PHP のワーカープロセスの所有者。 |
+| `TZ` | `Asia/Seoul` | コンテナーの時計、ログ、ログローテーションのタイムゾーン。一覧の日付は訪問者のブラウザーのタイムゾーンで表示されます。 |
 | `HTPASSWD` | `false` | `true` にすると、すべての訪問者にログインを求めます。 |
 | `HTPASSWD_USER`, `HTPASSWD_PW` | `guest`、空 | ログイン情報。パスワードが空なら、一度 `-it` 付きで起動して入力してください。 |
 | `LOG_ROTATE_INTERVAL_DAYS`, `LOG_RETENTION_DAYS` | `1`、`30` | `/logs` 以下のファイルのローテーション間隔と保存期間（日）。 |
@@ -73,12 +73,30 @@ docker run -d --name h5ai -p 80:80 \
    * Apache httpd: `DirectoryIndex index.html index.php /_h5ai/public/index.php`
    * lighttpd: `index-file.names += ("/_h5ai/public/index.php")`
    * nginx: `index index.html index.php /_h5ai/public/index.php;`
-4. nginx では `/_h5ai/private/` へのアクセスを禁止してください。ここを守る
-   `.htaccess` ファイルは Apache httpd でしか効きません。
+4. `options.json` とパスワードハッシュを含む `/_h5ai/private/` へのアクセスを
+   禁止してください。`_h5ai` 内の `.htaccess` ファイルが効くのは
+   `AllowOverride All` の Apache httpd だけで、Debian パッケージの Apache などは
+   `AllowOverride None` が初期値です。Web ルートが `AllowOverride All` でなければ、
+   サーバーに合わせたルールを追加します。
+
+   ~~~apache
+   <Location "/_h5ai/private/">
+       Require all denied
+   </Location>
+   ~~~
+
+   ~~~lighttpd
+   $HTTP["url"] =~ "^/_h5ai/private/" { url.access-deny = ("") }
+   ~~~
 
    ~~~nginx
    location ^~ /_h5ai/private/ { deny all; }
    ~~~
+
+   lighttpd のルールには `mod_access` が必要です。設定後、
+   `curl -I http://your-server/_h5ai/private/conf/options.json` が 403 を返すことを確認してください。
+5. Web サーバーのユーザーが `_h5ai/public/cache` と `_h5ai/private/cache` に
+   書き込めるようにします。書き込めるかどうかは情報ページで確認できます。
 
 PHP 8.3 以降が必要です。訪問者のブラウザーは Chrome または Edge 91、Firefox 90、
 Safari 15 以降が必要で、それより古いブラウザーには簡易な一覧が表示されます。
