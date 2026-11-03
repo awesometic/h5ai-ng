@@ -35,6 +35,11 @@ docker run -d --name h5ai -p 80:80 \
 打开 `http://localhost/` 即可。镜像发布了 `linux/amd64`、`linux/arm64`、
 `linux/arm/v7` 和 `linux/arm/v6` 版本。
 
+镜像已包含可选功能所需的全部组件：图片、视频和 PDF 缩略图，tar 和 zip 下载，以及文件夹
+大小。登录信息页（`/_h5ai/public/index.php`）后，所有检查项都显示通过：
+
+![Docker 镜像的信息页，所有检查项均已通过](docs/info-page.png)
+
 | 卷 | 内容 |
 | --- | --- |
 | `/h5ai` | 要提供的文件。可以按需以只读方式（`:ro`）挂载。 |

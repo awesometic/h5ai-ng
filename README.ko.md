@@ -40,6 +40,12 @@ docker run -d --name h5ai -p 80:80 \
 `http://localhost/`를 열면 됩니다. 이미지는 `linux/amd64`, `linux/arm64`,
 `linux/arm/v7`, `linux/arm/v6`용으로 배포합니다.
 
+이미지에는 부가 기능에 필요한 프로그램이 모두 들어 있어 이미지·동영상·PDF 썸네일,
+tar와 zip 다운로드, 폴더 크기 표시가 바로 동작합니다. 정보 페이지
+(`/_h5ai/public/index.php`)에 로그인하면 모든 점검 항목이 통과로 나옵니다.
+
+![모든 점검 항목을 통과한 Docker 이미지의 정보 페이지](docs/info-page.png)
+
 | 볼륨 | 내용 |
 | --- | --- |
 | `/h5ai` | 공유할 파일. 필요하면 읽기 전용(`:ro`)으로 마운트하세요. |

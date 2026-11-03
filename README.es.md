@@ -41,6 +41,13 @@ docker run -d --name h5ai -p 80:80 \
 Abra `http://localhost/`. Se publican imágenes para `linux/amd64`,
 `linux/arm64`, `linux/arm/v7` y `linux/arm/v6`.
 
+La imagen incluye lo que necesitan las funciones opcionales: miniaturas de
+imágenes, vídeo y PDF, descargas tar y zip y tamaños de carpeta. Al iniciar
+sesión en su página de información (`/_h5ai/public/index.php`), todas las
+comprobaciones aparecen superadas:
+
+![La página de información de la imagen de Docker con todas las comprobaciones superadas](docs/info-page.png)
+
 | Volumen | Contenido |
 | --- | --- |
 | `/h5ai` | Los archivos que se sirven. Puede montarlo en solo lectura (`:ro`). |
