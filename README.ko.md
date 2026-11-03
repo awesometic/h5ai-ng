@@ -2,7 +2,12 @@
 
 [English](README.md) · **한국어** · [Español](README.es.md) · [日本語](README.ja.md) · [简体中文](README.zh-CN.md)
 
-[![license][license-img]][license] [![ci][ci-img]][ci] [![docker][docker-img]][docker-hub]
+[![multiarch][arch-img]][docker-hub]
+[![build][ci-img]][ci]
+
+[![image size][size-img]][docker-hub]
+[![docker pulls][pulls-img]][docker-hub]
+[![docker stars][stars-img]][docker-hub]
 
 Apache httpd, lighttpd, nginx에서 쓰는 파일 목록 페이지입니다. 방문자는 폴더를
 둘러보고, 이미지·동영상·오디오·텍스트를 미리 보고, 이름으로 걸러 내고, 고른
@@ -211,7 +216,6 @@ MIT 라이선스로 배포합니다. h5ai와 h5ai-ng의 저작권 고지를 담�
 
 [h5ai]: https://larsjung.de/h5ai/
 [tonedial]: https://github.com/awesometic/tonedial
-[license]: LICENSE
 [ci]: https://github.com/awesometic/h5ai-ng/actions/workflows/ci.yml
 [docker-hub]: https://hub.docker.com/r/awesometic/h5ai-ng
 [releases]: https://github.com/awesometic/h5ai-ng/releases
@@ -223,6 +227,8 @@ MIT 라이선스로 배포합니다. h5ai와 h5ai-ng의 저작권 고지를 담�
 [fontsource-ubuntu]: https://www.npmjs.com/package/@fontsource/ubuntu
 [fontsource-ubuntu-mono]: https://www.npmjs.com/package/@fontsource/ubuntu-mono
 
-[license-img]: https://img.shields.io/badge/license-MIT-a0a060.svg?style=flat-square
+[arch-img]: https://img.shields.io/badge/multiarch-amd64(x86__64)%2C%20arm64%2C%20armv7%2C%20armv6-lightgrey?style=flat-square
 [ci-img]: https://img.shields.io/github/actions/workflow/status/awesometic/h5ai-ng/ci.yml?branch=main&style=flat-square
-[docker-img]: https://img.shields.io/docker/pulls/awesometic/h5ai-ng?style=flat-square
+[size-img]: https://img.shields.io/docker/image-size/awesometic/h5ai-ng/latest?style=flat-square
+[pulls-img]: https://img.shields.io/docker/pulls/awesometic/h5ai-ng?style=flat-square
+[stars-img]: https://img.shields.io/docker/stars/awesometic/h5ai-ng?style=flat-square

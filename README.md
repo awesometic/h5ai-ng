@@ -2,7 +2,12 @@
 
 **English** · [한국어](README.ko.md) · [Español](README.es.md) · [日本語](README.ja.md) · [简体中文](README.zh-CN.md)
 
-[![license][license-img]][license] [![ci][ci-img]][ci] [![docker][docker-img]][docker-hub]
+[![multiarch][arch-img]][docker-hub]
+[![build][ci-img]][ci]
+
+[![image size][size-img]][docker-hub]
+[![docker pulls][pulls-img]][docker-hub]
+[![docker stars][stars-img]][docker-hub]
 
 A file index for Apache httpd, lighttpd and nginx. Visitors browse folders,
 preview images, video, audio and text, filter by name and download a whole
@@ -213,7 +218,6 @@ which are bundled unmodified in `_h5ai/public/fonts/` together with the licence.
 
 [h5ai]: https://larsjung.de/h5ai/
 [tonedial]: https://github.com/awesometic/tonedial
-[license]: LICENSE
 [ci]: https://github.com/awesometic/h5ai-ng/actions/workflows/ci.yml
 [docker-hub]: https://hub.docker.com/r/awesometic/h5ai-ng
 [releases]: https://github.com/awesometic/h5ai-ng/releases
@@ -225,6 +229,8 @@ which are bundled unmodified in `_h5ai/public/fonts/` together with the licence.
 [fontsource-ubuntu]: https://www.npmjs.com/package/@fontsource/ubuntu
 [fontsource-ubuntu-mono]: https://www.npmjs.com/package/@fontsource/ubuntu-mono
 
-[license-img]: https://img.shields.io/badge/license-MIT-a0a060.svg?style=flat-square
+[arch-img]: https://img.shields.io/badge/multiarch-amd64(x86__64)%2C%20arm64%2C%20armv7%2C%20armv6-lightgrey?style=flat-square
 [ci-img]: https://img.shields.io/github/actions/workflow/status/awesometic/h5ai-ng/ci.yml?branch=main&style=flat-square
-[docker-img]: https://img.shields.io/docker/pulls/awesometic/h5ai-ng?style=flat-square
+[size-img]: https://img.shields.io/docker/image-size/awesometic/h5ai-ng/latest?style=flat-square
+[pulls-img]: https://img.shields.io/docker/pulls/awesometic/h5ai-ng?style=flat-square
+[stars-img]: https://img.shields.io/docker/stars/awesometic/h5ai-ng?style=flat-square

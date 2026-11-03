@@ -2,7 +2,12 @@
 
 [English](README.md) · [한국어](README.ko.md) · [Español](README.es.md) · [日本語](README.ja.md) · **简体中文**
 
-[![license][license-img]][license] [![ci][ci-img]][ci] [![docker][docker-img]][docker-hub]
+[![multiarch][arch-img]][docker-hub]
+[![build][ci-img]][ci]
+
+[![image size][size-img]][docker-hub]
+[![docker pulls][pulls-img]][docker-hub]
+[![docker stars][stars-img]][docker-hub]
 
 适用于 Apache httpd、lighttpd 和 nginx 的文件索引页面。访客可以浏览文件夹，预览图片、
 视频、音频和文本，按名称筛选，并把选中的文件打包成一个压缩包下载。文件始终留在原处。
@@ -194,7 +199,6 @@ npm install --global tonedial
 
 [h5ai]: https://larsjung.de/h5ai/
 [tonedial]: https://github.com/awesometic/tonedial
-[license]: LICENSE
 [ci]: https://github.com/awesometic/h5ai-ng/actions/workflows/ci.yml
 [docker-hub]: https://hub.docker.com/r/awesometic/h5ai-ng
 [releases]: https://github.com/awesometic/h5ai-ng/releases
@@ -206,6 +210,8 @@ npm install --global tonedial
 [fontsource-ubuntu]: https://www.npmjs.com/package/@fontsource/ubuntu
 [fontsource-ubuntu-mono]: https://www.npmjs.com/package/@fontsource/ubuntu-mono
 
-[license-img]: https://img.shields.io/badge/license-MIT-a0a060.svg?style=flat-square
+[arch-img]: https://img.shields.io/badge/multiarch-amd64(x86__64)%2C%20arm64%2C%20armv7%2C%20armv6-lightgrey?style=flat-square
 [ci-img]: https://img.shields.io/github/actions/workflow/status/awesometic/h5ai-ng/ci.yml?branch=main&style=flat-square
-[docker-img]: https://img.shields.io/docker/pulls/awesometic/h5ai-ng?style=flat-square
+[size-img]: https://img.shields.io/docker/image-size/awesometic/h5ai-ng/latest?style=flat-square
+[pulls-img]: https://img.shields.io/docker/pulls/awesometic/h5ai-ng?style=flat-square
+[stars-img]: https://img.shields.io/docker/stars/awesometic/h5ai-ng?style=flat-square
