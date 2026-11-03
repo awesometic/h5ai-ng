@@ -58,7 +58,18 @@ Never install files from `src/` directly; they must be built.
 4. Report outcomes faithfully: failed or skipped checks are stated as such.
 
 Tell the user which skills and sub-agents you plan to use and which you actually used.
-When the Ponytail plugin is installed, follow it for implementation and review.
+
+## Required Skills
+
+| Skill | Source | Use it for |
+| --- | --- | --- |
+| Ponytail (plugin) | [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) | Every implementation and review |
+| Impeccable (skill) | [pbakaus/impeccable](https://github.com/pbakaus/impeccable) | Any interface change: Less, Pug, interface JS, the preview, the admin page; it reads `PRODUCT.md`, `DESIGN.md` and `.impeccable/` |
+
+At the start of each session, check whether both are available.
+If one is missing, warn the user before the first task: name it, link its source, and say which work it covers.
+Then continue under the rules of this guide; for interface work without Impeccable, follow `DESIGN.md` directly and say so in the report.
+Do not install or enable either one yourself.
 
 ## Testing
 
