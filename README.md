@@ -48,19 +48,40 @@ thumbnails, tar and zip downloads and folder sizes. Log in to its info page
 | Volume | Contents |
 | --- | --- |
 | `/h5ai` | The files to serve. Mount it read-only (`:ro`) if you like. |
-| `/config` | `h5ai/_h5ai` (the application and its `options.json`) and `nginx/h5ai.conf`. Created on first start. |
+| `/config` | `h5ai/_h5ai` (the application and its `options.json`) and `nginx/h5ai.conf`. Created on first start; a newer image replaces the application and keeps `options.json`. |
 | `/logs` | Optional. Nginx and PHP logs that survive the container. |
 
 | Variable | Default | Meaning |
 | --- | --- | --- |
-| `PUID`, `PGID` | `911` | Owner of `/config` and the server processes. |
-| `TZ` | `Asia/Seoul` | Time zone for dates and log rotation. |
+| `PUID`, `PGID` | `911` | Owner of `/config` and the nginx and PHP workers. |
+| `TZ` | `Asia/Seoul` | Time zone of the container's clock, the logs and their rotation. The listing shows dates in the visitor's browser time zone. |
 | `HTPASSWD` | `false` | `true` asks every visitor for a login. |
 | `HTPASSWD_USER`, `HTPASSWD_PW` | `guest`, empty | The login. Without a password, start once with `-it` to type it. |
 | `LOG_ROTATE_INTERVAL_DAYS`, `LOG_RETENTION_DAYS` | `1`, `30` | Rotation of the files under `/logs`. |
 
 The image serves plain HTTP. Put a reverse proxy with TLS in front of it,
 especially with `HTPASSWD`.
+
+To use another host port, change the first number of `-p`, for example
+`-p 8080:80`. Hard links and symlinks within `/h5ai` work as they are; a
+symlink that points outside `/h5ai` needs its target mounted at the same path,
+for example `-v /mnt/media:/mnt/media:ro`.
+
+To serve h5ai under a path such as `/share/`, let the reverse proxy strip the
+path and name it in `X-Forwarded-Prefix`:
+
+~~~nginx
+location /share/ {
+    proxy_pass http://127.0.0.1:8080/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-Prefix /share;
+    proxy_redirect / /share/;
+}
+~~~
+
+A `/config/nginx/h5ai.conf` saved before 0.31.1 ignores that header; remove it
+and recreate the container (`docker rm -f`, then `docker run`) to get the
+current default.
 
 
 ## Install on your own server
@@ -72,12 +93,30 @@ especially with `HTPASSWD`.
    * Apache httpd: `DirectoryIndex index.html index.php /_h5ai/public/index.php`
    * lighttpd: `index-file.names += ("/_h5ai/public/index.php")`
    * nginx: `index index.html index.php /_h5ai/public/index.php;`
-4. On nginx, block `/_h5ai/private/`; the `.htaccess` files that guard it
-   only work on Apache httpd:
+4. Block `/_h5ai/private/`, which holds `options.json` and its password hash.
+   The `.htaccess` files in `_h5ai` do this only on Apache httpd with
+   `AllowOverride All`; Debian's packaged Apache, for one, ships
+   `AllowOverride None`. Unless your web root has `AllowOverride All`, add the
+   rule for your server:
+
+   ~~~apache
+   <Location "/_h5ai/private/">
+       Require all denied
+   </Location>
+   ~~~
+
+   ~~~lighttpd
+   $HTTP["url"] =~ "^/_h5ai/private/" { url.access-deny = ("") }
+   ~~~
 
    ~~~nginx
    location ^~ /_h5ai/private/ { deny all; }
    ~~~
+
+   The lighttpd rule needs `mod_access`. Then check that
+   `curl -I http://your-server/_h5ai/private/conf/options.json` answers 403.
+5. Let the web server user write to `_h5ai/public/cache` and
+   `_h5ai/private/cache`. The info page shows whether it can.
 
 PHP 8.3 or later is required. Visitors need Chrome or Edge 91, Firefox 90 or
 Safari 15; older browsers get a plain list.
@@ -109,24 +148,18 @@ only the image name.
    `-v` and `-e` options:
    `docker rm -f h5ai`, then the `docker run` command above.
 3. Read `docker logs h5ai`. On the first start the container:
-   * replaces `/config/h5ai/_h5ai` with the new version and saves your old
-     settings as `/config/<date>_options.json.bak`;
+   * replaces `/config/h5ai/_h5ai` with the new version but keeps your
+     `options.json`, and saves a copy of it as
+     `/config/<date>_options.json.bak`;
    * blocks `/_h5ai/private/` in `/config/nginx/h5ai.conf` and saves the old
      file as `/config/<date>_h5ai.conf.bak`. If that file was changed too much
      to update, the container stops and prints what to change.
-4. Bring your settings back. The new `options.json` starts from the defaults,
-   including the empty info page password. To keep everything as it was, copy
-   the backup over it and restart:
 
-   ~~~sh
-   cp /path/to/config/<date>_options.json.bak \
-      /path/to/config/h5ai/_h5ai/private/conf/options.json
-   docker restart h5ai
-   ~~~
-
-   Unless you changed those entries, the old file turns the filter off and
-   loads fonts from Google Fonts; compare it with the new defaults if you want
-   those changes.
+Your `options.json` stays as it was, password included. Unless you changed
+those entries, it keeps the filter off and loads fonts from Google Fonts;
+compare it with the [new defaults][options] if you want those changes. Other
+files you changed in `_h5ai`, such as `types.json`, a theme or a translation,
+are replaced by the new version; copy them back from the backup of step 1.
 
 To go back, stop the container, restore `/path/to/config.bak` and start
 `awesometic/h5ai` again.
@@ -201,6 +234,7 @@ which are bundled unmodified in `_h5ai/public/fonts/` together with the licence.
 [releases]: https://github.com/awesometic/h5ai-ng/releases
 [issues]: https://github.com/awesometic/h5ai-ng/issues
 [docker-h5ai]: https://github.com/awesometic/docker-h5ai
+[options]: https://github.com/awesometic/h5ai-ng/blob/main/src/_h5ai/private/conf/options.json
 [node]: https://nodejs.org
 [material-design-icons]: https://github.com/google/material-design-icons
 [fontsource-ubuntu]: https://www.npmjs.com/package/@fontsource/ubuntu

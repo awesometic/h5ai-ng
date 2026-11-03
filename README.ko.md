@@ -49,19 +49,39 @@ tar와 zip 다운로드, 폴더 크기 표시가 바로 동작합니다. 정보 
 | 볼륨 | 내용 |
 | --- | --- |
 | `/h5ai` | 공유할 파일. 필요하면 읽기 전용(`:ro`)으로 마운트하세요. |
-| `/config` | `h5ai/_h5ai`(애플리케이션과 `options.json`)와 `nginx/h5ai.conf`. 처음 시작할 때 만들어집니다. |
+| `/config` | `h5ai/_h5ai`(애플리케이션과 `options.json`)와 `nginx/h5ai.conf`. 처음 시작할 때 만들어지며, 새 버전 이미지는 애플리케이션만 바꾸고 `options.json`은 그대로 둡니다. |
 | `/logs` | 선택 사항. 컨테이너를 지워도 남는 Nginx와 PHP 로그. |
 
 | 변수 | 기본값 | 설명 |
 | --- | --- | --- |
-| `PUID`, `PGID` | `911` | `/config`와 서버 프로세스의 소유자. |
-| `TZ` | `Asia/Seoul` | 날짜 표시와 로그 교체에 쓰는 시간대. |
+| `PUID`, `PGID` | `911` | `/config`와 nginx·PHP 워커 프로세스의 소유자. |
+| `TZ` | `Asia/Seoul` | 컨테이너의 시계, 로그, 로그 교체에 쓰는 시간대. 목록의 날짜는 방문자 브라우저의 시간대로 나옵니다. |
 | `HTPASSWD` | `false` | `true`이면 모든 방문자에게 로그인을 요구합니다. |
 | `HTPASSWD_USER`, `HTPASSWD_PW` | `guest`, 빈 값 | 로그인 계정. 비밀번호를 비워 두었다면 처음 한 번은 `-it`로 실행해 직접 입력하세요. |
 | `LOG_ROTATE_INTERVAL_DAYS`, `LOG_RETENTION_DAYS` | `1`, `30` | `/logs` 아래 파일의 교체 주기와 보관 기간(일). |
 
 이미지는 암호화하지 않은 HTTP로 응답합니다. 앞단에 TLS를 적용한 리버스
 프록시를 두세요. `HTPASSWD`를 쓴다면 더욱 그렇습니다.
+
+다른 호스트 포트를 쓰려면 `-p`의 앞 숫자를 바꾸세요(예: `-p 8080:80`).
+`/h5ai` 안을 가리키는 하드 링크와 심볼릭 링크는 그대로 동작합니다. `/h5ai`
+바깥을 가리키는 심볼릭 링크는 대상 경로를 컨테이너의 같은 위치에 마운트해야
+합니다(예: `-v /mnt/media:/mnt/media:ro`).
+
+h5ai를 `/share/` 같은 경로 아래에서 서비스하려면 리버스 프록시가 그 경로를 떼고
+`X-Forwarded-Prefix`로 알려 주게 하세요.
+
+~~~nginx
+location /share/ {
+    proxy_pass http://127.0.0.1:8080/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-Prefix /share;
+    proxy_redirect / /share/;
+}
+~~~
+
+0.31.1 이전에 저장된 `/config/nginx/h5ai.conf`는 이 헤더를 읽지 않습니다. 파일을
+지우고 컨테이너를 새로 만들면(`docker rm -f` 후 `docker run`) 현재 기본값이 생깁니다.
 
 
 ## 직접 운영하는 서버에 설치하기
@@ -73,12 +93,30 @@ tar와 zip 다운로드, 폴더 크기 표시가 바로 동작합니다. 정보 
    * Apache httpd: `DirectoryIndex index.html index.php /_h5ai/public/index.php`
    * lighttpd: `index-file.names += ("/_h5ai/public/index.php")`
    * nginx: `index index.html index.php /_h5ai/public/index.php;`
-4. nginx라면 `/_h5ai/private/` 접근을 막으세요. 이 경로를 지키는 `.htaccess`
-   파일은 Apache httpd에서만 동작합니다.
+4. `options.json`과 비밀번호 해시가 들어 있는 `/_h5ai/private/` 접근을 막으세요.
+   `_h5ai` 안의 `.htaccess` 파일은 Apache httpd가 `AllowOverride All`일 때만
+   동작하는데, Debian 패키지의 Apache처럼 `AllowOverride None`이 기본인 경우가
+   있습니다. 웹 루트에 `AllowOverride All`을 쓰지 않는다면 서버에 맞는 규칙을
+   추가하세요.
+
+   ~~~apache
+   <Location "/_h5ai/private/">
+       Require all denied
+   </Location>
+   ~~~
+
+   ~~~lighttpd
+   $HTTP["url"] =~ "^/_h5ai/private/" { url.access-deny = ("") }
+   ~~~
 
    ~~~nginx
    location ^~ /_h5ai/private/ { deny all; }
    ~~~
+
+   lighttpd 규칙에는 `mod_access`가 필요합니다. 적용한 뒤
+   `curl -I http://your-server/_h5ai/private/conf/options.json`이 403을 돌려주는지 확인하세요.
+5. 웹 서버 사용자가 `_h5ai/public/cache`와 `_h5ai/private/cache`에 쓸 수 있게
+   하세요. 쓸 수 있는지는 정보 페이지에서 확인할 수 있습니다.
 
 서버에는 PHP 8.3 이상이 필요합니다. 방문자는 Chrome·Edge 91, Firefox 90,
 Safari 15 이상을 써야 하고 그보다 오래된 브라우저에서는 단순한 목록이 나옵니다.
@@ -110,23 +148,17 @@ printf '%s' '비밀번호' | sha512sum    # macOS: shasum -a 512
    실행합니다. `docker rm -f h5ai`를 실행한 뒤 위의 `docker run` 명령을 씁니다.
 3. `docker logs h5ai`로 로그를 확인합니다. 처음 시작할 때 컨테이너가 하는 일은
    다음과 같습니다.
-   * `/config/h5ai/_h5ai`를 새 버전으로 바꾸고 기존 설정은
-     `/config/<date>_options.json.bak`에 저장합니다.
+   * `/config/h5ai/_h5ai`를 새 버전으로 바꾸되 `options.json`은 그대로 두고,
+     그 사본을 `/config/<date>_options.json.bak`에 저장합니다.
    * `/config/nginx/h5ai.conf`에 `/_h5ai/private/` 차단 규칙을 넣고 기존 파일은
      `/config/<date>_h5ai.conf.bak`에 저장합니다. 이 파일을 많이 고쳐서 자동으로
      바꿀 수 없으면 컨테이너가 멈추고 고칠 곳을 알려 줍니다.
-4. 설정을 되살립니다. 새 `options.json`은 기본값으로 시작하므로 정보 페이지
-   비밀번호도 비어 있습니다. 예전 설정을 그대로 쓰려면 백업 파일로 덮어쓰고
-   다시 시작하세요.
 
-   ~~~sh
-   cp /path/to/config/<date>_options.json.bak \
-      /path/to/config/h5ai/_h5ai/private/conf/options.json
-   docker restart h5ai
-   ~~~
-
-   예전 파일은 따로 바꾸지 않았다면 필터가 꺼져 있고 글꼴을 Google Fonts에서
-   불러옵니다. 새 기본값을 쓰고 싶다면 두 파일을 비교해 필요한 부분만 옮기세요.
+`options.json`은 비밀번호까지 예전 그대로입니다. 해당 항목을 바꾸지 않았다면
+필터는 꺼져 있고 글꼴은 Google Fonts에서 불러옵니다. 새 기본값을 쓰고 싶다면
+[새 기본 설정][options]과 비교해 필요한 부분만 옮기세요. `types.json`, 테마,
+번역 파일처럼 `_h5ai` 안에서 고친 다른 파일은 새 버전으로 바뀌므로 1단계에서
+만든 백업에서 다시 복사하세요.
 
 되돌리려면 컨테이너를 멈추고 `/path/to/config.bak`을 복원한 뒤
 `awesometic/h5ai`를 다시 실행합니다.
@@ -202,6 +234,7 @@ THE SOFTWARE.
 [releases]: https://github.com/awesometic/h5ai-ng/releases
 [issues]: https://github.com/awesometic/h5ai-ng/issues
 [docker-h5ai]: https://github.com/awesometic/docker-h5ai
+[options]: https://github.com/awesometic/h5ai-ng/blob/main/src/_h5ai/private/conf/options.json
 [node]: https://nodejs.org
 [material-design-icons]: https://github.com/google/material-design-icons
 [fontsource-ubuntu]: https://www.npmjs.com/package/@fontsource/ubuntu

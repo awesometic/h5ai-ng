@@ -14,7 +14,7 @@ RUN apk add --no-cache \
     bash bash-completion supervisor tzdata shadow logrotate \
     'php85>=8.5.12' php85-fpm php85-session php85-json php85-xml php85-mbstring php85-exif \
     php85-intl php85-gd php85-pecl-imagick php85-zip \
-    ffmpeg imagemagick zip apache2-utils patch
+    ffmpeg imagemagick imagemagick-pdf zip apache2-utils patch
 
 # Environments
 ENV PUID=911

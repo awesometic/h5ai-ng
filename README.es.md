@@ -51,19 +51,40 @@ comprobaciones aparecen superadas:
 | Volumen | Contenido |
 | --- | --- |
 | `/h5ai` | Los archivos que se sirven. Puede montarlo en solo lectura (`:ro`). |
-| `/config` | `h5ai/_h5ai` (la aplicación y su `options.json`) y `nginx/h5ai.conf`. Se crea en el primer arranque. |
+| `/config` | `h5ai/_h5ai` (la aplicación y su `options.json`) y `nginx/h5ai.conf`. Se crea en el primer arranque; una imagen más nueva sustituye la aplicación y conserva `options.json`. |
 | `/logs` | Opcional. Registros de Nginx y PHP que sobreviven al contenedor. |
 
 | Variable | Valor por defecto | Significado |
 | --- | --- | --- |
-| `PUID`, `PGID` | `911` | Propietario de `/config` y de los procesos del servidor. |
-| `TZ` | `Asia/Seoul` | Zona horaria para fechas y rotación de registros. |
+| `PUID`, `PGID` | `911` | Propietario de `/config` y de los procesos de trabajo de nginx y PHP. |
+| `TZ` | `Asia/Seoul` | Zona horaria del reloj del contenedor, los registros y su rotación. El listado muestra las fechas en la zona horaria del navegador del visitante. |
 | `HTPASSWD` | `false` | Con `true`, se pide usuario y contraseña a cada visitante. |
 | `HTPASSWD_USER`, `HTPASSWD_PW` | `guest`, vacío | Los datos de acceso. Sin contraseña, arranque una vez con `-it` para escribirla. |
 | `LOG_ROTATE_INTERVAL_DAYS`, `LOG_RETENTION_DAYS` | `1`, `30` | Rotación de los archivos en `/logs`, en días. |
 
 La imagen sirve HTTP sin cifrar. Ponga delante un proxy inverso con TLS,
 sobre todo si usa `HTPASSWD`.
+
+Para usar otro puerto del host, cambie el primer número de `-p`, por ejemplo
+`-p 8080:80`. Los enlaces duros y simbólicos dentro de `/h5ai` funcionan tal
+cual; un enlace simbólico que apunte fuera de `/h5ai` necesita su destino
+montado en la misma ruta, por ejemplo `-v /mnt/media:/mnt/media:ro`.
+
+Para servir h5ai bajo una ruta como `/share/`, haga que el proxy inverso quite
+la ruta y la indique en `X-Forwarded-Prefix`:
+
+~~~nginx
+location /share/ {
+    proxy_pass http://127.0.0.1:8080/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-Prefix /share;
+    proxy_redirect / /share/;
+}
+~~~
+
+Un `/config/nginx/h5ai.conf` guardado antes de 0.31.1 ignora esa cabecera;
+elimínelo y vuelva a crear el contenedor (`docker rm -f` y después
+`docker run`) para obtener el valor por defecto actual.
 
 
 ## Instalación en su propio servidor
@@ -75,12 +96,30 @@ sobre todo si usa `HTPASSWD`.
    * Apache httpd: `DirectoryIndex index.html index.php /_h5ai/public/index.php`
    * lighttpd: `index-file.names += ("/_h5ai/public/index.php")`
    * nginx: `index index.html index.php /_h5ai/public/index.php;`
-4. En nginx, bloquee `/_h5ai/private/`; los archivos `.htaccess` que lo
-   protegen solo funcionan en Apache httpd:
+4. Bloquee `/_h5ai/private/`, que contiene `options.json` y el hash de la
+   contraseña. Los archivos `.htaccess` de `_h5ai` solo lo hacen en Apache httpd
+   con `AllowOverride All`; el Apache empaquetado de Debian, por ejemplo, trae
+   `AllowOverride None`. Si su raíz web no tiene `AllowOverride All`, añada la
+   regla de su servidor:
+
+   ~~~apache
+   <Location "/_h5ai/private/">
+       Require all denied
+   </Location>
+   ~~~
+
+   ~~~lighttpd
+   $HTTP["url"] =~ "^/_h5ai/private/" { url.access-deny = ("") }
+   ~~~
 
    ~~~nginx
    location ^~ /_h5ai/private/ { deny all; }
    ~~~
+
+   La regla de lighttpd necesita `mod_access`. Después compruebe que
+   `curl -I http://su-servidor/_h5ai/private/conf/options.json` responde 403.
+5. Permita que el usuario del servidor web escriba en `_h5ai/public/cache` y
+   `_h5ai/private/cache`. La página de información muestra si puede.
 
 Se necesita PHP 8.3 o posterior. Los visitantes necesitan Chrome o Edge 91,
 Firefox 90 o Safari 15; los navegadores más antiguos reciben una lista simple.
@@ -112,25 +151,19 @@ solo cambia el nombre de la imagen.
    mismas opciones `-v` y `-e`:
    `docker rm -f h5ai` y después el comando `docker run` de arriba.
 3. Lea `docker logs h5ai`. En el primer arranque, el contenedor:
-   * sustituye `/config/h5ai/_h5ai` por la nueva versión y guarda sus ajustes
-     anteriores como `/config/<date>_options.json.bak`;
+   * sustituye `/config/h5ai/_h5ai` por la nueva versión pero conserva su
+     `options.json` y guarda una copia como `/config/<date>_options.json.bak`;
    * bloquea `/_h5ai/private/` en `/config/nginx/h5ai.conf` y guarda el
      archivo anterior como `/config/<date>_h5ai.conf.bak`. Si ese archivo se
      modificó demasiado para actualizarlo, el contenedor se detiene e indica
      qué cambiar.
-4. Recupere sus ajustes. El nuevo `options.json` parte de los valores por
-   defecto, incluida la contraseña vacía de la página de información. Para
-   dejarlo todo como estaba, copie la copia de seguridad encima y reinicie:
 
-   ~~~sh
-   cp /path/to/config/<date>_options.json.bak \
-      /path/to/config/h5ai/_h5ai/private/conf/options.json
-   docker restart h5ai
-   ~~~
-
-   Salvo que cambiara esas entradas, el archivo antiguo desactiva el filtro y
-   carga las fuentes desde Google Fonts; compárelo con los nuevos valores por
-   defecto si quiere esos cambios.
+Su `options.json` queda como estaba, contraseña incluida. Salvo que cambiara
+esas entradas, mantiene el filtro desactivado y carga las fuentes desde Google
+Fonts; compárelo con los [nuevos valores por defecto][options] si quiere esos
+cambios. Los demás archivos que modificara en `_h5ai`, como `types.json`, un
+tema o una traducción, se sustituyen por la nueva versión; cópielos de nuevo
+desde la copia del paso 1.
 
 Para volver atrás, detenga el contenedor, restaure `/path/to/config.bak` y
 arranque de nuevo `awesometic/h5ai`.
@@ -207,6 +240,7 @@ que se incluyen sin modificar en `_h5ai/public/fonts/` junto con la licencia.
 [releases]: https://github.com/awesometic/h5ai-ng/releases
 [issues]: https://github.com/awesometic/h5ai-ng/issues
 [docker-h5ai]: https://github.com/awesometic/docker-h5ai
+[options]: https://github.com/awesometic/h5ai-ng/blob/main/src/_h5ai/private/conf/options.json
 [node]: https://nodejs.org
 [material-design-icons]: https://github.com/google/material-design-icons
 [fontsource-ubuntu]: https://www.npmjs.com/package/@fontsource/ubuntu

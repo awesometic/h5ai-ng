@@ -43,18 +43,37 @@ docker run -d --name h5ai -p 80:80 \
 | 卷 | 内容 |
 | --- | --- |
 | `/h5ai` | 要提供的文件。可以按需以只读方式（`:ro`）挂载。 |
-| `/config` | `h5ai/_h5ai`（程序及其 `options.json`）和 `nginx/h5ai.conf`。首次启动时创建。 |
+| `/config` | `h5ai/_h5ai`（程序及其 `options.json`）和 `nginx/h5ai.conf`。首次启动时创建；更新的镜像只替换程序，保留 `options.json`。 |
 | `/logs` | 可选。删除容器后仍会保留的 Nginx 和 PHP 日志。 |
 
 | 变量 | 默认值 | 含义 |
 | --- | --- | --- |
-| `PUID`, `PGID` | `911` | `/config` 和服务器进程的所有者。 |
-| `TZ` | `Asia/Seoul` | 日期显示和日志轮转使用的时区。 |
+| `PUID`, `PGID` | `911` | `/config` 以及 nginx 和 PHP 工作进程的所有者。 |
+| `TZ` | `Asia/Seoul` | 容器时钟、日志及日志轮转使用的时区。列表中的日期按访客浏览器的时区显示。 |
 | `HTPASSWD` | `false` | 设为 `true` 后，所有访客都需要登录。 |
 | `HTPASSWD_USER`, `HTPASSWD_PW` | `guest`、空 | 登录账号。未设置密码时，请先用 `-it` 启动一次并输入密码。 |
 | `LOG_ROTATE_INTERVAL_DAYS`, `LOG_RETENTION_DAYS` | `1`、`30` | `/logs` 下文件的轮转间隔和保留天数。 |
 
 镜像只提供未加密的 HTTP。请在前面放一个带 TLS 的反向代理，启用 `HTPASSWD` 时尤其如此。
+
+如需使用其他主机端口，修改 `-p` 的第一个数字即可，例如 `-p 8080:80`。指向 `/h5ai`
+内部的硬链接和符号链接可以直接使用；指向 `/h5ai` 之外的符号链接，需要把目标路径
+挂载到容器中的相同位置，例如 `-v /mnt/media:/mnt/media:ro`。
+
+如需在 `/share/` 这样的路径下提供 h5ai，请让反向代理去掉该路径，并通过
+`X-Forwarded-Prefix` 告知：
+
+~~~nginx
+location /share/ {
+    proxy_pass http://127.0.0.1:8080/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-Prefix /share;
+    proxy_redirect / /share/;
+}
+~~~
+
+0.31.1 之前保存的 `/config/nginx/h5ai.conf` 不会读取该请求头；删除它并重新创建容器
+（先 `docker rm -f`，再 `docker run`），即可获得当前的默认配置。
 
 
 ## 安装到自己的服务器
@@ -66,12 +85,29 @@ docker run -d --name h5ai -p 80:80 \
    * Apache httpd：`DirectoryIndex index.html index.php /_h5ai/public/index.php`
    * lighttpd：`index-file.names += ("/_h5ai/public/index.php")`
    * nginx：`index index.html index.php /_h5ai/public/index.php;`
-4. 使用 nginx 时，请禁止访问 `/_h5ai/private/`；保护该目录的 `.htaccess`
-   文件只在 Apache httpd 上生效：
+4. 请禁止访问 `/_h5ai/private/`，其中存放着 `options.json` 和密码哈希。
+   `_h5ai` 中的 `.htaccess` 文件只在设置了 `AllowOverride All` 的 Apache httpd
+   上生效，而 Debian 软件包提供的 Apache 等默认是 `AllowOverride None`。如果网站
+   根目录没有设置 `AllowOverride All`，请为你的服务器添加相应规则：
+
+   ~~~apache
+   <Location "/_h5ai/private/">
+       Require all denied
+   </Location>
+   ~~~
+
+   ~~~lighttpd
+   $HTTP["url"] =~ "^/_h5ai/private/" { url.access-deny = ("") }
+   ~~~
 
    ~~~nginx
    location ^~ /_h5ai/private/ { deny all; }
    ~~~
+
+   lighttpd 规则需要 `mod_access`。设置后请确认
+   `curl -I http://your-server/_h5ai/private/conf/options.json` 返回 403。
+5. 让 Web 服务器用户可以写入 `_h5ai/public/cache` 和 `_h5ai/private/cache`。
+   信息页会显示是否可写。
 
 需要 PHP 8.3 或更高版本。访客需要使用 Chrome 或 Edge 91、Firefox 90 或 Safari 15
 及以上版本；更旧的浏览器会看到简单列表。
@@ -99,22 +135,16 @@ printf '%s' '你的密码' | sha512sum    # macOS: shasum -a 512
 2. 删除旧容器，用相同的 `-v` 和 `-e` 选项启动 `awesometic/h5ai-ng`：
    先执行 `docker rm -f h5ai`，再执行上面的 `docker run` 命令。
 3. 查看 `docker logs h5ai`。首次启动时，容器会：
-   * 用新版本替换 `/config/h5ai/_h5ai`，并把旧设置保存为
-     `/config/<date>_options.json.bak`；
+   * 用新版本替换 `/config/h5ai/_h5ai`，但保留你的 `options.json`，并把它的副本
+     保存为 `/config/<date>_options.json.bak`；
    * 在 `/config/nginx/h5ai.conf` 中屏蔽 `/_h5ai/private/`，并把旧文件保存为
      `/config/<date>_h5ai.conf.bak`。如果该文件改动过多而无法自动更新，
      容器会停止并提示需要修改的地方。
-4. 恢复设置。新的 `options.json` 从默认值开始，信息页密码也为空。若要保持原样，
-   用备份文件覆盖它并重启：
 
-   ~~~sh
-   cp /path/to/config/<date>_options.json.bak \
-      /path/to/config/h5ai/_h5ai/private/conf/options.json
-   docker restart h5ai
-   ~~~
-
-   如果你没有改过相关条目，旧文件会关闭筛选功能，并从 Google Fonts 加载字体；
-   如需采用这些新默认值，请把两个文件对比后再合并。
+`options.json` 保持原样，包括密码。如果你没有改过相关条目，它会继续关闭筛选功能，
+并从 Google Fonts 加载字体；如需采用新的默认值，请与[新的默认设置][options]对比后
+合并。你在 `_h5ai` 中改过的其他文件（如 `types.json`、主题或翻译）会被新版本替换，
+请从第 1 步的备份中重新复制。
 
 如需回退，停止容器，恢复 `/path/to/config.bak`，然后重新启动 `awesometic/h5ai`。
 
@@ -188,6 +218,7 @@ THE SOFTWARE.
 [releases]: https://github.com/awesometic/h5ai-ng/releases
 [issues]: https://github.com/awesometic/h5ai-ng/issues
 [docker-h5ai]: https://github.com/awesometic/docker-h5ai
+[options]: https://github.com/awesometic/h5ai-ng/blob/main/src/_h5ai/private/conf/options.json
 [node]: https://nodejs.org
 [material-design-icons]: https://github.com/google/material-design-icons
 [fontsource-ubuntu]: https://www.npmjs.com/package/@fontsource/ubuntu

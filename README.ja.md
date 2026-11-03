@@ -49,19 +49,40 @@ docker run -d --name h5ai -p 80:80 \
 | ボリューム | 内容 |
 | --- | --- |
 | `/h5ai` | 公開するファイル。必要なら読み取り専用（`:ro`）でマウントしてください。 |
-| `/config` | `h5ai/_h5ai`（アプリケーションと `options.json`）と `nginx/h5ai.conf`。初回起動時に作られます。 |
+| `/config` | `h5ai/_h5ai`（アプリケーションと `options.json`）と `nginx/h5ai.conf`。初回起動時に作られ、新しいイメージはアプリケーションだけを置き換えて `options.json` はそのまま残します。 |
 | `/logs` | 任意。コンテナーを削除しても残る Nginx と PHP のログ。 |
 
 | 変数 | 既定値 | 意味 |
 | --- | --- | --- |
-| `PUID`, `PGID` | `911` | `/config` とサーバープロセスの所有者。 |
-| `TZ` | `Asia/Seoul` | 日付表示とログローテーションのタイムゾーン。 |
+| `PUID`, `PGID` | `911` | `/config` と nginx・PHP のワーカープロセスの所有者。 |
+| `TZ` | `Asia/Seoul` | コンテナーの時計、ログ、ログローテーションのタイムゾーン。一覧の日付は訪問者のブラウザーのタイムゾーンで表示されます。 |
 | `HTPASSWD` | `false` | `true` にすると、すべての訪問者にログインを求めます。 |
 | `HTPASSWD_USER`, `HTPASSWD_PW` | `guest`、空 | ログイン情報。パスワードが空なら、一度 `-it` 付きで起動して入力してください。 |
 | `LOG_ROTATE_INTERVAL_DAYS`, `LOG_RETENTION_DAYS` | `1`、`30` | `/logs` 以下のファイルのローテーション間隔と保存期間（日）。 |
 
 イメージは暗号化されていない HTTP で応答します。前段に TLS 対応のリバースプロキシを
 置いてください。`HTPASSWD` を使う場合は特に必要です。
+
+別のホストポートを使うには、`-p` の最初の数字を変えます（例: `-p 8080:80`）。
+`/h5ai` 内を指すハードリンクとシンボリックリンクはそのまま動作します。`/h5ai` の
+外を指すシンボリックリンクは、リンク先をコンテナー内の同じパスにマウントする
+必要があります（例: `-v /mnt/media:/mnt/media:ro`）。
+
+h5ai を `/share/` のようなパスの下で提供するには、リバースプロキシでそのパスを
+取り除き、`X-Forwarded-Prefix` で伝えます。
+
+~~~nginx
+location /share/ {
+    proxy_pass http://127.0.0.1:8080/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-Prefix /share;
+    proxy_redirect / /share/;
+}
+~~~
+
+0.31.1 より前に保存された `/config/nginx/h5ai.conf` はこのヘッダーを読みません。
+ファイルを削除してコンテナーを作り直すと（`docker rm -f` の後に `docker run`）、
+現在の既定の設定になります。
 
 
 ## 自分のサーバーにインストールする
@@ -73,12 +94,30 @@ docker run -d --name h5ai -p 80:80 \
    * Apache httpd: `DirectoryIndex index.html index.php /_h5ai/public/index.php`
    * lighttpd: `index-file.names += ("/_h5ai/public/index.php")`
    * nginx: `index index.html index.php /_h5ai/public/index.php;`
-4. nginx では `/_h5ai/private/` へのアクセスを禁止してください。ここを守る
-   `.htaccess` ファイルは Apache httpd でしか効きません。
+4. `options.json` とパスワードハッシュを含む `/_h5ai/private/` へのアクセスを
+   禁止してください。`_h5ai` 内の `.htaccess` ファイルが効くのは
+   `AllowOverride All` の Apache httpd だけで、Debian パッケージの Apache などは
+   `AllowOverride None` が初期値です。Web ルートが `AllowOverride All` でなければ、
+   サーバーに合わせたルールを追加します。
+
+   ~~~apache
+   <Location "/_h5ai/private/">
+       Require all denied
+   </Location>
+   ~~~
+
+   ~~~lighttpd
+   $HTTP["url"] =~ "^/_h5ai/private/" { url.access-deny = ("") }
+   ~~~
 
    ~~~nginx
    location ^~ /_h5ai/private/ { deny all; }
    ~~~
+
+   lighttpd のルールには `mod_access` が必要です。設定後、
+   `curl -I http://your-server/_h5ai/private/conf/options.json` が 403 を返すことを確認してください。
+5. Web サーバーのユーザーが `_h5ai/public/cache` と `_h5ai/private/cache` に
+   書き込めるようにします。書き込めるかどうかは情報ページで確認できます。
 
 PHP 8.3 以降が必要です。訪問者のブラウザーは Chrome または Edge 91、Firefox 90、
 Safari 15 以降が必要で、それより古いブラウザーには簡易な一覧が表示されます。
@@ -109,24 +148,17 @@ printf '%s' 'パスワード' | sha512sum    # macOS: shasum -a 512
 2. 古いコンテナーを削除し、同じ `-v` と `-e` オプションで `awesometic/h5ai-ng` を
    起動します。`docker rm -f h5ai` を実行してから、上の `docker run` コマンドを使います。
 3. `docker logs h5ai` を確認します。初回起動時、コンテナーは次のことを行います。
-   * `/config/h5ai/_h5ai` を新しいバージョンに置き換え、以前の設定を
-     `/config/<date>_options.json.bak` として保存します。
+   * `/config/h5ai/_h5ai` を新しいバージョンに置き換えますが、`options.json` は
+     そのまま残し、そのコピーを `/config/<date>_options.json.bak` として保存します。
    * `/config/nginx/h5ai.conf` で `/_h5ai/private/` をブロックし、以前のファイルを
      `/config/<date>_h5ai.conf.bak` として保存します。ファイルの変更が大きすぎて
      更新できない場合、コンテナーは停止し、直すべき箇所を表示します。
-4. 設定を戻します。新しい `options.json` は既定値から始まり、情報ページの
-   パスワードも空です。すべて以前のままにするには、バックアップで上書きして
-   再起動します。
 
-   ~~~sh
-   cp /path/to/config/<date>_options.json.bak \
-      /path/to/config/h5ai/_h5ai/private/conf/options.json
-   docker restart h5ai
-   ~~~
-
-   該当する項目を変えていなければ、以前のファイルではフィルターがオフになり、
-   フォントを Google Fonts から読み込みます。新しい既定値の変更を取り入れたい
-   場合は、両方のファイルを比べてください。
+`options.json` はパスワードも含めて以前のままです。該当する項目を変えていなければ、
+フィルターはオフのままで、フォントを Google Fonts から読み込みます。新しい既定値を
+取り入れたい場合は、[新しい既定の設定][options]と比べてください。`types.json`、
+テーマ、翻訳など `_h5ai` 内で変更したほかのファイルは新しいバージョンに置き換わる
+ので、手順 1 のバックアップからコピーし直してください。
 
 元に戻すには、コンテナーを止めて `/path/to/config.bak` を復元し、
 `awesometic/h5ai` をもう一度起動します。
@@ -203,6 +235,7 @@ Ubuntu および Ubuntu Mono フォント（[`@fontsource/ubuntu`][fontsource-ub
 [releases]: https://github.com/awesometic/h5ai-ng/releases
 [issues]: https://github.com/awesometic/h5ai-ng/issues
 [docker-h5ai]: https://github.com/awesometic/docker-h5ai
+[options]: https://github.com/awesometic/h5ai-ng/blob/main/src/_h5ai/private/conf/options.json
 [node]: https://nodejs.org
 [material-design-icons]: https://github.com/google/material-design-icons
 [fontsource-ubuntu]: https://www.npmjs.com/package/@fontsource/ubuntu

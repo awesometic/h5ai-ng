@@ -47,8 +47,8 @@ opener = urllib.request.build_opener(
 )
 
 
-def request(path="/", data=None, auth=False):
-    headers = {"User-Agent": "h5ai-smoke"}
+def request(path="/", data=None, auth=False, headers=None):
+    headers = {"User-Agent": "h5ai-smoke", **(headers or {})}
     if auth:
         headers["Authorization"] = "Basic " + base64.b64encode(b"smoke:test-password").decode()
     if data is not None:
@@ -220,6 +220,9 @@ try:
                     # and from an h5ai 0.30.0 application copy, which an upgrade must replace
                     " && cp -a /usr/share/h5ai/_h5ai /config/h5ai/"
                     " && sed -i '1s/v[0-9][^ ]*/v0.30.0/' /config/h5ai/_h5ai/private/conf/options.json"
+                    " /config/h5ai/_h5ai/public/js/scripts.js"
+                    # whose options.json the upgrade keeps, old header included
+                    " && printf '\\n// smoke: kept from 0.30.0\\n' >> /config/h5ai/_h5ai/private/conf/options.json"
                     " && touch /config/h5ai/_h5ai/stale-0.30.0"],
                    input=legacy_conf, text=True, check=True, timeout=60)
     start()
@@ -228,6 +231,7 @@ try:
     assert docker("exec", name, "sh", "-c", "ls /config/*_h5ai.conf.bak"), "Saved Nginx configuration was not backed up"
     docker("exec", name, "test", "!", "-e", "/config/h5ai/_h5ai/stale-0.30.0")
     assert docker("exec", name, "sh", "-c", "ls /config/*_options.json.bak"), "Saved options were not backed up"
+    docker("exec", name, "grep", "-q", "smoke: kept from 0.30.0", "/config/h5ai/_h5ai/private/conf/options.json")
     docker("exec", name, "sh", "-c", "mkdir -p /h5ai/_h5ai/private && printf '<?php echo 42;' > /h5ai/_h5ai/private/probe.php")
     assert request("/_h5ai/private/probe.php")[0] == 403, "PHP under /_h5ai/private/ escapes the deny rule"
     docker("exec", name, "rm", "-r", "/h5ai/_h5ai")
@@ -254,6 +258,11 @@ try:
     # shorter than the 10 second capture point of a longer video
     docker("exec", name, "ffmpeg", "-v", "error", "-f", "lavfi", "-i",
            "color=c=blue:s=320x180:r=1:d=3", "-c:v", "mpeg4", "/h5ai/short.mp4")
+    # written by hand so the fixture does not depend on the PDF support under test
+    docker("exec", name, "sh", "-c", "printf '%s\\n' '%PDF-1.4' '1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj'"
+           " '2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj'"
+           " '3 0 obj<</Type/Page/Parent 2 0 R/MediaBox[0 0 320 180]>>endobj'"
+           " 'trailer<</Root 1 0 R>>' '%%EOF' > /h5ai/document.pdf")
     status, body = request("/runtime.php")
     assert status == 200, ("FPM runtime probe", status)
     runtime = json.loads(body)
@@ -312,9 +321,22 @@ try:
     assert not nested["/up/"]["fetched"] and nested["/up/down/"]["fetched"], nested
     deep = {item["href"] for item in api({"action": "get", "items": {"href": "/up/down/", "what": 2}})["items"]}
     assert {"/up/sibling.txt", "/sample.txt"} <= deep, ("Level 2 keeps the content of parent folders", sorted(deep))
+    # folder redirects stay relative, so a mapped host port survives them
+    status, body = request("/up")
+    assert status == 200 and b"powered by h5ai" in body, ("Folder redirect", status)
+    # a reverse proxy serving h5ai under /share/ names that path in X-Forwarded-Prefix
+    share = {"X-Forwarded-Prefix": "/share"}
+    status, body = request("/up/", headers=share)
+    assert status == 200 and b"/share/_h5ai/public/css/styles.css" in body, ("Forwarded prefix in page", status)
+    status, body = request("/_h5ai/public/index.php", {"action": "get", "items": {"href": "/share/up/", "what": 1}}, headers=share)
+    shared = {item["href"] for item in json.loads(body)["items"]}
+    assert status == 200 and "/share/up/down/" in shared, ("Forwarded prefix in items", status, sorted(shared))
+    status, body = request(headers={"X-Forwarded-Prefix": '/x"><b>'})
+    assert b'x"><b>' not in body and b"/_h5ai/public/css/styles.css" in body, "Unsafe forwarded prefix was used"
     requested_thumbs = [
         {"type": kind, "href": href, "width": 320, "height": 240}
-        for kind, href in [("img", "/image.png"), ("mov", "/movie.mp4"), ("mov", "/short.mp4")]
+        for kind, href in [("img", "/image.png"), ("mov", "/movie.mp4"), ("mov", "/short.mp4"),
+                             ("doc", "/document.pdf")]
     ]
     thumbs = api({"action": "get", "thumbs": requested_thumbs})["thumbs"]
     assert isinstance(thumbs, list) and len(thumbs) == len(requested_thumbs), ("Missing thumbnails", thumbs)
@@ -421,6 +443,8 @@ try:
     setup = api({"action": "get", "setup": True, "refresh": True}, auth=True)["setup"]
     assert setup["AS_ADMIN"] and setup["PHP_VERSION"] == cli, ("Persisted login session", setup)
     assert docker("exec", name, "sha256sum", options) == before
+    assert len(docker("exec", name, "sh", "-c", "ls /config/*_options.json.bak").split()) == 1, (
+        "Recreating the container repeated the upgrade")
     assert docker("exec", name, "stat", "-c", "%u:%g", options) == "1234:2345"
     assert json.loads(request("/runtime.php", auth=True)[1])["timezone"] == "UTC"
     docker("rm", "-f", name)
