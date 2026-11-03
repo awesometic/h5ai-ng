@@ -47,8 +47,8 @@ opener = urllib.request.build_opener(
 )
 
 
-def request(path="/", data=None, auth=False):
-    headers = {"User-Agent": "h5ai-smoke"}
+def request(path="/", data=None, auth=False, headers=None):
+    headers = {"User-Agent": "h5ai-smoke", **(headers or {})}
     if auth:
         headers["Authorization"] = "Basic " + base64.b64encode(b"smoke:test-password").decode()
     if data is not None:
@@ -321,6 +321,18 @@ try:
     assert not nested["/up/"]["fetched"] and nested["/up/down/"]["fetched"], nested
     deep = {item["href"] for item in api({"action": "get", "items": {"href": "/up/down/", "what": 2}})["items"]}
     assert {"/up/sibling.txt", "/sample.txt"} <= deep, ("Level 2 keeps the content of parent folders", sorted(deep))
+    # folder redirects stay relative, so a mapped host port survives them
+    status, body = request("/up")
+    assert status == 200 and b"powered by h5ai" in body, ("Folder redirect", status)
+    # a reverse proxy serving h5ai under /share/ names that path in X-Forwarded-Prefix
+    share = {"X-Forwarded-Prefix": "/share"}
+    status, body = request("/up/", headers=share)
+    assert status == 200 and b"/share/_h5ai/public/css/styles.css" in body, ("Forwarded prefix in page", status)
+    status, body = request("/_h5ai/public/index.php", {"action": "get", "items": {"href": "/share/up/", "what": 1}}, headers=share)
+    shared = {item["href"] for item in json.loads(body)["items"]}
+    assert status == 200 and "/share/up/down/" in shared, ("Forwarded prefix in items", status, sorted(shared))
+    status, body = request(headers={"X-Forwarded-Prefix": '/x"><b>'})
+    assert b'x"><b>' not in body and b"/_h5ai/public/css/styles.css" in body, "Unsafe forwarded prefix was used"
     requested_thumbs = [
         {"type": kind, "href": href, "width": 320, "height": 240}
         for kind, href in [("img", "/image.png"), ("mov", "/movie.mp4"), ("mov", "/short.mp4"),
