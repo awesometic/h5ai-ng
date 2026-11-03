@@ -12,8 +12,8 @@ const settings = Object.assign({
     alwaysVisible: false
 }, allsettings.download);
 const tpl =
-        `<div id="download" class="tool">
-            <img src="${resource.image('download')}" alt="download"/>
+        `<div id="download" class="tool l10n_lb-download">
+            <img src="${resource.image('download')}" alt=""/>
         </div>`;
 let selectedItems = [];
 let $download;
@@ -64,6 +64,7 @@ const init = () => {
     $download = dom(tpl)
         .hide()
         .appTo('#toolbar')
+        .btn()
         .on('click', onClick);
 
     if (settings.alwaysVisible) {

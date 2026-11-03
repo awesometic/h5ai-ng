@@ -2,17 +2,17 @@ const {dom} = require('../util');
 
 const SEL_ROOT = 'body';
 const TPL_TOPBAR =
-        `<div id="topbar">
+        `<header id="topbar">
             <div id="toolbar"></div>
             <div id="flowbar"></div>
-            <a id="backlink" href="https://larsjung.de/h5ai/" title="powered by h5ai - https://larsjung.de/h5ai/">
+            <a id="backlink" href="https://github.com/awesometic/h5ai-ng" title="powered by h5ai-ng - https://github.com/awesometic/h5ai-ng - based on h5ai by Lars Jung (https://larsjung.de/h5ai/)">
                 <div>powered</div>
-                <div>by h5ai</div>
+                <div>by h5ai-ng</div>
             </a>
-        </div>`;
+        </header>`;
 const TPL_MAINROW =
         `<div id="mainrow">
-            <div id="content"></div>
+            <main id="content"></main>
         </div>`;
 
 const init = () => {

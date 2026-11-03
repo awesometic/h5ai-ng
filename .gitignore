@@ -4,3 +4,8 @@
 /local/
 /node_modules/
 /npm-debug.log
+
+# agent working records (local only)
+/docs/loop/
+/docs/decisions/
+/docs/plan/

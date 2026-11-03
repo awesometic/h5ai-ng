@@ -48,6 +48,15 @@ const is_el_doc_win = x => is_el(x) || is_doc(x) || is_win(x);
 const add_listener = (el, type, fn) => el.addEventListener(type, fn);
 const remove_listener = (el, type, fn) => el.removeEventListener(type, fn);
 
+// Enter and Space click the focused stand-in button, like a native <button>
+const on_btn_keydown = ev => {
+    if (ev.key === 'Enter' || ev.key === ' ') {
+        ev.preventDefault();
+        ev.stopPropagation();
+        ev.currentTarget.click();
+    }
+};
+
 const ready_promise = new Promise(resolve => {
     if ((/^(i|c|loade)/).test(doc.readyState)) {
         resolve();
@@ -114,6 +123,11 @@ dom.prototype = {
 
     rmAttr(key) {
         return this.each(el => el.removeAttribute(key));
+    },
+
+    // focusable, keyboard-operable stand-in for a native button
+    btn() {
+        return this.attr('role', 'button').attr('tabindex', '0').on('keydown', on_btn_keydown);
     },
 
     prop(key, value) {

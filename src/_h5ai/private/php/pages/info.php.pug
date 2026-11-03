@@ -1,10 +1,11 @@
 extends ./page.tpl.pug
 
 block init
-    - var title = `h5ai info page - v${pkg.version}`
+    - var title = `h5ai-ng info page - v${pkg.version}`
     - var module = 'info'
 
 block body
     div#content
         h1#header
-            a(href=pkg.homepage) h5ai
+            a(href=pkg.homepage) h5ai-ng
+        p#credit h5ai-ng is a fork of #[a(href='https://larsjung.de/h5ai/') h5ai] by Lars Jung, released under the MIT license.

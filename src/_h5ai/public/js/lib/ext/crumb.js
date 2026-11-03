@@ -9,10 +9,10 @@ const base = require('../view/base');
 const settings = Object.assign({
     enabled: false
 }, allsettings.crumb);
-const crumbbarTpl = '<div id="crumbbar"></div>';
+const crumbbarTpl = '<nav id="crumbbar"></nav>';
 const crumbTpl =
         `<a class="crumb">
-            <img class="sep" src="${resource.image('crumb')}" alt=">"/>
+            <img class="sep" src="${resource.image('crumb')}" alt=""/>
             <span class="label"></span>
         </a>`;
 const pageHintTpl =

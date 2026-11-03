@@ -10,7 +10,8 @@
 
     a, a:active, a.visited {
         display: block;
-        margin-left: 20px;
+        overflow: hidden;
+        text-overflow: ellipsis;
         padding: 3px 0;
         text-decoration: none;
         color: @col-text;
@@ -27,7 +28,8 @@
     .indicator {
         display: block;
         float: left;
-        padding: 3px 0;
+        padding: 3px 2px;
+        margin: 0 -2px;
         position: relative;
         top: -2px;
         cursor: pointer;
@@ -78,7 +80,7 @@
     }
 
     .summary {
-        color: @col-text-disabled-black;
+        color: @col-text-secondary-black;
         padding: 0 0 0 8px;
     }
 }

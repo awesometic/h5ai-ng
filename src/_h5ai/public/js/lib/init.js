@@ -20,4 +20,4 @@ if (name === 'index') {
 
 config._update(query)
     .then(() => awaitReady())
-    .then(() => require(`./main/${name}`));
+    .then(() => require(`./main/${name}.js`));

@@ -1,0 +1,417 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-02T12:00:00Z",
+  "title": "Design System: h5ai-ng",
+  "extensions": {
+    "colorMeta": {
+      "link-sky-deep": {
+        "role": "primary",
+        "displayName": "Link Sky Deep",
+        "canonical": "#176fcb",
+        "tonalRamp": [
+          "oklch(15% 0.022 254)",
+          "oklch(26% 0.054 254)",
+          "oklch(38% 0.092 254)",
+          "oklch(49% 0.13 254)",
+          "oklch(61% 0.13 254)",
+          "oklch(72% 0.092 254)",
+          "oklch(84% 0.054 254)",
+          "oklch(95% 0.022 254)"
+        ]
+      },
+      "highlighter-pink": {
+        "role": "secondary",
+        "displayName": "Highlighter Pink",
+        "canonical": "#ff4081",
+        "tonalRamp": [
+          "oklch(15% 0.034 6)",
+          "oklch(26% 0.083 6)",
+          "oklch(38% 0.141 6)",
+          "oklch(49% 0.199 6)",
+          "oklch(61% 0.199 6)",
+          "oklch(72% 0.141 6)",
+          "oklch(84% 0.083 6)",
+          "oklch(95% 0.034 6)"
+        ]
+      },
+      "paper-white": {
+        "role": "neutral",
+        "displayName": "Paper White",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "oklch(15% 0.0 90)",
+          "oklch(26% 0.0 90)",
+          "oklch(38% 0.0 90)",
+          "oklch(49% 0.0 90)",
+          "oklch(61% 0.0 90)",
+          "oklch(72% 0.0 90)",
+          "oklch(84% 0.0 90)",
+          "oklch(95% 0.0 90)"
+        ]
+      },
+      "panel-mist": {
+        "role": "neutral",
+        "displayName": "Panel Mist",
+        "canonical": "#fafafa",
+        "tonalRamp": [
+          "oklch(15% 0.0 90)",
+          "oklch(26% 0.0 90)",
+          "oklch(38% 0.0 90)",
+          "oklch(49% 0.0 90)",
+          "oklch(61% 0.0 90)",
+          "oklch(72% 0.0 90)",
+          "oklch(84% 0.0 90)",
+          "oklch(95% 0.0 90)"
+        ]
+      },
+      "charcoal": {
+        "role": "neutral",
+        "displayName": "Charcoal",
+        "canonical": "#212121",
+        "tonalRamp": [
+          "oklch(15% 0.0 90)",
+          "oklch(26% 0.0 90)",
+          "oklch(38% 0.0 90)",
+          "oklch(49% 0.0 90)",
+          "oklch(61% 0.0 90)",
+          "oklch(72% 0.0 90)",
+          "oklch(84% 0.0 90)",
+          "oklch(95% 0.0 90)"
+        ]
+      },
+      "slider-track": {
+        "role": "neutral",
+        "displayName": "Slider Track",
+        "canonical": "#e0e0e0",
+        "tonalRamp": [
+          "oklch(15% 0.0 90)",
+          "oklch(26% 0.0 90)",
+          "oklch(38% 0.0 90)",
+          "oklch(49% 0.0 90)",
+          "oklch(61% 0.0 90)",
+          "oklch(72% 0.0 90)",
+          "oklch(84% 0.0 90)",
+          "oklch(95% 0.0 90)"
+        ]
+      },
+      "slider-thumb": {
+        "role": "neutral",
+        "displayName": "Slider Thumb",
+        "canonical": "#616161",
+        "tonalRamp": [
+          "oklch(15% 0.0 90)",
+          "oklch(26% 0.0 90)",
+          "oklch(38% 0.0 90)",
+          "oklch(49% 0.0 90)",
+          "oklch(61% 0.0 90)",
+          "oklch(72% 0.0 90)",
+          "oklch(84% 0.0 90)",
+          "oklch(95% 0.0 90)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "rgba(0,0,0,0.87)"
+      },
+      "ink-secondary": {
+        "role": "neutral",
+        "displayName": "Ink Secondary",
+        "canonical": "rgba(0,0,0,0.54)"
+      },
+      "ink-disabled": {
+        "role": "neutral",
+        "displayName": "Ink Disabled",
+        "canonical": "rgba(0,0,0,0.26)"
+      },
+      "ink-inverse": {
+        "role": "neutral",
+        "displayName": "Ink Inverse",
+        "canonical": "rgba(255,255,255,1)"
+      },
+      "hover-wash": {
+        "role": "neutral",
+        "displayName": "Hover Wash",
+        "canonical": "rgba(0,0,0,0.03)"
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "rgba(0,0,0,0.05)"
+      },
+      "row-rule": {
+        "role": "neutral",
+        "displayName": "Row Rule",
+        "canonical": "rgba(0,0,0,0.07)"
+      },
+      "hairline-strong": {
+        "role": "neutral",
+        "displayName": "Hairline Strong",
+        "canonical": "rgba(0,0,0,0.15)"
+      },
+      "scrim": {
+        "role": "neutral",
+        "displayName": "Scrim",
+        "canonical": "rgba(0,0,0,0.5)"
+      },
+      "viewer-bar": {
+        "role": "neutral",
+        "displayName": "Viewer Bar",
+        "canonical": "rgb(27,27,27)"
+      },
+      "pass-green": {
+        "role": "status",
+        "displayName": "Pass Green",
+        "canonical": "#4caf50",
+        "tonalRamp": [
+          "oklch(15% 0.024 144)",
+          "oklch(26% 0.059 144)",
+          "oklch(38% 0.101 144)",
+          "oklch(49% 0.142 144)",
+          "oklch(61% 0.142 144)",
+          "oklch(72% 0.101 144)",
+          "oklch(84% 0.059 144)",
+          "oklch(95% 0.024 144)"
+        ]
+      },
+      "fail-red": {
+        "role": "status",
+        "displayName": "Fail Red",
+        "canonical": "#f44336",
+        "tonalRamp": [
+          "oklch(15% 0.032 29)",
+          "oklch(26% 0.079 29)",
+          "oklch(38% 0.133 29)",
+          "oklch(49% 0.188 29)",
+          "oklch(61% 0.188 29)",
+          "oklch(72% 0.133 29)",
+          "oklch(84% 0.079 29)",
+          "oklch(95% 0.032 29)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "body": {
+        "displayName": "Body",
+        "purpose": "Rows, tree, sidebar, menus: the working list at every size. Ubuntu is bundled as woff2 (300, 400, 700), split by unicode-range into Latin, Latin Extended, Cyrillic and Greek."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Breadcrumb labels, filter and search fields, info-panel name."
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "Code and preformatted text, including the text preview. Ubuntu Mono is bundled as woff2 (400, 700) with the same subsets."
+      },
+      "hint": {
+        "displayName": "Hint",
+        "purpose": "Empty-folder and no-match messages: 16px bold in Ink Secondary (4.59:1)."
+      },
+      "display": {
+        "displayName": "Display",
+        "purpose": "Admin info page title only."
+      }
+    },
+    "shadows": [
+      {
+        "name": "raised",
+        "value": "0 1px 10px 0 rgba(0,0,0,0.5)",
+        "purpose": "Item hover, preview chrome and media, default button hover."
+      },
+      {
+        "name": "popup",
+        "value": "0 1px 20px 0 rgba(0,0,0,0.5)",
+        "purpose": "Context menu panel only."
+      },
+      {
+        "name": "pressed",
+        "value": "inset 0 0 4px 0 rgba(0,0,0,0.4)",
+        "purpose": "Active view-mode button in the sidebar."
+      },
+      {
+        "name": "thumb-outline",
+        "value": "0 0 1px 0 rgba(0,0,0,0.2)",
+        "purpose": "Thumbnails in the details view."
+      }
+    ],
+    "motion": [
+      {
+        "name": "eased-transition",
+        "value": "all 0.2s ease-in-out",
+        "purpose": "Tool buttons, crumbs, sidebar buttons, header cells, default button."
+      },
+      {
+        "name": "overlay-fade",
+        "value": "background-color 0.3s ease-in-out",
+        "purpose": "Preview overlay background."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "mobile-switch",
+        "value": "700px"
+      },
+      {
+        "name": "view-narrow",
+        "value": "480px"
+      },
+      {
+        "name": "view-narrowest",
+        "value": "320px"
+      },
+      {
+        "name": "hover-none",
+        "value": "(hover: none)"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Tool Button",
+      "kind": "button",
+      "refersTo": "tool-button",
+      "description": "Icon-only 48px top-bar tool, a keyboard button (Enter and Space) with a tooltip name; hover is a 3% black wash, keyboard focus a 2px Link Sky Deep ring.",
+      "html": "<div class=\"ds-tool\" role=\"button\" tabindex=\"0\" aria-label=\"sidebar\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M3 18h18v-2h-18v2zm0-5h18v-2h-18v2zm0-7v2h18v-2h-18z\" fill=\"#555\"/></svg></div>",
+      "css": ".ds-tool { display: inline-block; cursor: pointer; transition: all 0.2s ease-in-out; } .ds-tool svg { display: block; padding: 12px; } .ds-tool:hover { background: rgba(0,0,0,0.03); } .ds-tool:focus-visible { outline: 2px solid #176fcb; outline-offset: -2px; transition: none; }"
+    },
+    {
+      "name": "Breadcrumb",
+      "kind": "nav",
+      "refersTo": "crumb",
+      "description": "16px crumbs on a 48px line; the active crumb is bold, hover is Link Sky Deep.",
+      "html": "<div class=\"ds-crumbbar\"><a class=\"ds-crumb\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M10 6l-1.4 1.4 4.6 4.6-4.6 4.6 1.4 1.4 6-6z\" fill=\"#555\"/></svg><span>releases</span></a><a class=\"ds-crumb ds-active\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M10 6l-1.4 1.4 4.6 4.6-4.6 4.6 1.4 1.4 6-6z\" fill=\"#555\"/></svg><span>2026</span></a></div>",
+      "css": ".ds-crumbbar { font-family: 'Ubuntu', 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 13px; line-height: 1.4; height: 48px; font-size: 16px; padding: 0 8px; background: #fafafa; border-bottom: 1px solid rgba(0,0,0,0.05); white-space: nowrap; } .ds-crumb { display: inline-block; color: rgba(0,0,0,0.87); cursor: pointer; text-decoration: none; transition: all 0.2s ease-in-out; } .ds-crumb svg { display: inline-block; vertical-align: top; padding: 12px 0; } .ds-crumb:first-of-type svg { width: 0; } .ds-crumb span { display: inline-block; vertical-align: top; line-height: 48px; padding: 0 8px; } .ds-crumb.ds-active { font-weight: bold; } .ds-crumb:hover { color: #176fcb; }"
+    },
+    {
+      "name": "Details Row",
+      "kind": "custom",
+      "refersTo": "row",
+      "description": "Signature component: ruled white row that turns Panel Mist, Link Sky Deep, and raised on hover; 34px at the smallest step, 44px under 700px.",
+      "html": "<div class=\"ds-row\"><span class=\"ds-row-icon\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\"><path fill=\"#555\" d=\"M2 3v14h16V5h-8L8 3z\"/></svg></span><span class=\"ds-row-label\">releases</span><span class=\"ds-row-date\">2026-11-02 10:04</span><span class=\"ds-row-size\">134 B</span></div>",
+      "css": ".ds-row { font-family: 'Ubuntu', 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 13px; line-height: 1.4; position: relative; white-space: nowrap; overflow: hidden; background: #fff; color: rgba(0,0,0,0.87); border-bottom: 1px solid rgba(0,0,0,0.07); line-height: 34px; width: 420px; cursor: pointer; } .ds-row-icon { position: absolute; left: 16px; top: 7px; line-height: 0; } .ds-row-label { display: block; margin: 0 246px 0 52px; padding: 0 8px; overflow: hidden; text-overflow: ellipsis; } .ds-row-date { position: absolute; right: 116px; top: 0; width: 130px; padding: 0 8px; text-align: right; } .ds-row-size { position: absolute; right: 16px; top: 0; width: 80px; padding: 0 8px; text-align: right; } .ds-row:hover { color: #176fcb; background: #fafafa; box-shadow: 0 1px 10px 0 rgba(0,0,0,0.5); z-index: 1; }"
+    },
+    {
+      "name": "Selected Row",
+      "kind": "custom",
+      "refersTo": "row-selected",
+      "description": "Selection fills the row with Link Sky Deep and white text (5.03:1); the corner badge shows a white check on the same fill (24px where the device cannot hover).",
+      "html": "<div class=\"ds-row-sel\"><span class=\"ds-sel-badge\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\"><path d=\"M9 16.2l-4.2-4.2-1.4 1.4 5.6 5.6 12-12-1.4-1.4z\" fill=\"#fff\"/></svg></span><span class=\"ds-sel-label\">app-1.0.zip</span></div>",
+      "css": ".ds-row-sel { font-family: 'Ubuntu', 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 13px; line-height: 1.4; position: relative; width: 420px; overflow: hidden; line-height: 34px; background: #176fcb; color: #fff; } .ds-sel-badge { position: absolute; left: 0; top: 0; width: 22px; height: 22px; background: #176fcb; border-radius: 0 0 2px 0; opacity: 1; line-height: 0; } .ds-sel-label { display: block; padding: 0 8px 0 52px; }"
+    },
+    {
+      "name": "Selector Badge",
+      "kind": "custom",
+      "refersTo": "selector-badge",
+      "description": "Box that starts a selection. With a hover-capable pointer it appears in the top-left corner of an unselected item as a Link Sky Deep square at 0.8 alpha with a white check (3.57:1), full opacity on the badge itself. Where the device cannot hover it is always shown as an empty 24px box with a 1px Ink Secondary outline (4.59:1) and a 2px radius, set beside the item's content (centred on the row in details, at the right edge of a grid tile, in the label line of an icons tile) with at least 8px of clear space to the icon and label; a tap fills it with Link Sky Deep and shows the check.",
+      "html": "<div class=\"ds-badges\"><span class=\"ds-badge-hover\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\"><path d=\"M9 16.2l-4.2-4.2-1.4 1.4 5.6 5.6 12-12-1.4-1.4z\" fill=\"#fff\"/></svg></span><span class=\"ds-badge-touch\"></span><span class=\"ds-badge-touch ds-on\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\"><path d=\"M9 16.2l-4.2-4.2-1.4 1.4 5.6 5.6 12-12-1.4-1.4z\" fill=\"#fff\"/></svg></span></div>",
+      "css": ".ds-badges { display: flex; gap: 16px; align-items: flex-start; } .ds-badge-hover { display: block; width: 22px; height: 22px; background: #176fcb; border-radius: 0 0 2px 0; opacity: 0.8; line-height: 0; } .ds-badge-touch { display: block; box-sizing: border-box; width: 24px; height: 24px; border: 1px solid rgba(0,0,0,0.54); border-radius: 2px; background: #fff; line-height: 0; } .ds-badge-touch.ds-on { background: #176fcb; border-color: #176fcb; }"
+    },
+    {
+      "name": "Grid Tile",
+      "kind": "card",
+      "refersTo": "tile",
+      "description": "2px-radius white tile with a square icon and 180px label; lifts on hover.",
+      "html": "<div class=\"ds-tile\"><span class=\"ds-tile-sq\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\"><path fill=\"#555\" d=\"M2 3v14h16V5h-8L8 3z\"/></svg></span><span class=\"ds-tile-lbl\">photos</span></div>",
+      "css": ".ds-tile { font-family: 'Ubuntu', 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 13px; line-height: 1.4; display: inline-block; overflow: hidden; margin: 8px; border-radius: 2px; background: #fff; color: rgba(0,0,0,0.87); cursor: pointer; white-space: nowrap; } .ds-tile-sq { display: inline-block; vertical-align: top; width: 40px; height: 40px; text-align: center; line-height: 40px; } .ds-tile-lbl { display: inline-block; vertical-align: top; width: 180px; padding: 0 8px; line-height: 40px; } .ds-tile:hover { color: #176fcb; background: #fafafa; box-shadow: 0 1px 10px 0 rgba(0,0,0,0.5); }"
+    },
+    {
+      "name": "Sidebar Mode Button",
+      "kind": "button",
+      "refersTo": "sidebar-button",
+      "description": "48px view-mode button on the sidebar, which is a column in the main row above 700px and covers the full width below; the active button is pressed (aria-pressed) with an inset shadow.",
+      "html": "<div class=\"ds-side\"><div class=\"ds-mode ds-on\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"m4 4 0 4 16 0 0-4zm0 6 0 4 16 0 0-4zm0 6 0 4 16 0 0-4z\" fill=\"#555\"/></svg></div><div class=\"ds-mode\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"m4 4 0 4 7 0 0-4zm9 0 0 4 7 0 0-4zm-9 6 0 4 7 0 0-4zm9 0 0 4 7 0 0-4zm-9 6 0 4 7 0 0-4zm9 0 0 4 7 0 0-4z\" fill=\"#555\"/></svg></div></div>",
+      "css": ".ds-side { background: #fafafa; border-right: 1px solid rgba(0,0,0,0.05); padding: 16px; display: inline-block; } .ds-mode { display: inline-block; margin: 4px; border-radius: 2px; cursor: pointer; transition: all 0.2s ease-in-out; } .ds-mode svg { display: block; padding: 12px; } .ds-mode:hover { background: rgba(0,0,0,0.03); } .ds-mode.ds-on { background: rgba(0,0,0,0.03); box-shadow: inset 0 0 4px 0 rgba(0,0,0,0.4); }"
+    },
+    {
+      "name": "Context Menu",
+      "kind": "custom",
+      "refersTo": "context-menu",
+      "description": "White 2px-radius popup with the 20px-blur shadow; entry hover is Link Sky Deep text on a wash. Off by default (`contextmenu.enabled` is false, no key in options.json), so a fresh install shows none; recorded from source, never rendered.",
+      "html": "<ul class=\"ds-menu\"><li class=\"ds-mlabel\">releases</li><li class=\"ds-sep\"></li><li class=\"ds-entry\">Open</li><li class=\"ds-entry\">Download</li></ul>",
+      "css": ".ds-menu { font-family: 'Ubuntu', 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 13px; line-height: 1.4; margin: 0; padding: 0; list-style: none; min-width: 200px; display: inline-block; border-radius: 2px; background: #fff; color: rgba(0,0,0,0.87); box-shadow: 0 1px 20px 0 rgba(0,0,0,0.5); } .ds-mlabel { padding: 8px 16px; font-weight: bold; white-space: nowrap; } .ds-entry { padding: 8px 16px; white-space: nowrap; cursor: pointer; } .ds-entry:hover { color: #176fcb; background: rgba(0,0,0,0.03); } .ds-sep { height: 1px; margin: 8px 0; border-top: 1px solid rgba(0,0,0,0.08); }"
+    },
+    {
+      "name": "Default Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one button style (admin info page): Link Sky Deep fill, white text (5.03:1), raised on hover.",
+      "html": "<span class=\"ds-btn\">Login</span>",
+      "css": ".ds-btn { font-family: 'Ubuntu', 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 13px; line-height: 1.4; display: inline-block; padding: 0 12px; line-height: 28px; border-radius: 2px; color: #fff; background: #176fcb; cursor: pointer; transition: all 0.2s ease-in-out; } .ds-btn:hover { box-shadow: 0 1px 10px 0 rgba(0,0,0,0.5); }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Admin info page field: Panel Mist fill, hairline border, 2px radius, named with aria-label, placeholder in Ink Secondary (4.54:1).",
+      "html": "<input class=\"ds-input\" type=\"password\" aria-label=\"password\" placeholder=\"password\" />",
+      "css": ".ds-input { font-family: 'Ubuntu', 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 13px; line-height: 1.4; box-sizing: content-box; width: 200px; padding: 0 12px; line-height: 28px; border-radius: 2px; border: 1px solid rgba(0,0,0,0.05); background: #fafafa; color: rgba(0,0,0,0.87); -webkit-appearance: none; appearance: none; } .ds-input::placeholder { color: rgba(0,0,0,0.54); opacity: 1; }"
+    },
+    {
+      "name": "Notification",
+      "kind": "custom",
+      "description": "Top-centered toast: white text on 20% black with rounded bottom corners.",
+      "html": "<div class=\"ds-note\">Loading…</div>",
+      "css": ".ds-note { font-family: 'Ubuntu', 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 13px; line-height: 1.4; width: 200px; padding: 3px 6px 6px 6px; color: #fff; background: rgba(0,0,0,0.2); border-radius: 0 0 4px 4px; text-align: center; overflow: hidden; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Quiet Ledger",
+    "overview": "**Creative North Star: \"The Quiet Ledger\"**\n\nThe interface is a ruled ledger of files: white rows separated by hairlines, a pale panel for chrome, and one blue for everything that can be acted on.\nThe files are the content, so the index recedes.\nIt reads as the Material-2014 era it descends from: flat at rest, 13px type, 48px bars, 2px corners, and shadows only as a response to the pointer.\n\nDensity is compact by default and adjustable by the visitor.\nThree views (details, grid, icons) share one palette and one hover grammar, and a size slider changes only the icon and row scale.\nThe interface has no light and dark pair; it is one light surface.\n\nThe visual anti-references are file-manager chrome that implies write actions (the product is read-only) and marketing-style heroes, gradients, or decorative color.",
+    "keyCharacteristics": [
+      "Flat at rest; shadow appears only on hover, in the preview, and in popups.",
+      "One chromatic accent, Link Sky Deep, for links, hover text, selection, the selector badge, and the single button style; the lighter Link Sky stays defined and paints nothing.",
+      "Hairline borders at 5% to 7% black instead of boxes or fills.",
+      "Icon-only 48px tool targets that are keyboard buttons with a name and tooltip; section labels live in the sidebar and context menu.",
+      "A 2px focus ring that appears for the keyboard only.",
+      "A plain server-rendered list when JavaScript or the browser is missing."
+    ],
+    "rules": [
+      {
+        "name": "The One Voice Rule",
+        "body": "Link Sky Deep is the only chromatic accent in the browsing interface. Hover is blue text or a 3% black wash, selection is a blue fill; nothing else carries color. It carries every text, every fill that holds white text, and every glyph that must reach 3:1.",
+        "section": "colors"
+      },
+      {
+        "name": "The Pink Selection Rule",
+        "body": "Highlighter Pink belongs to `::selection` and nothing else.",
+        "section": "colors"
+      },
+      {
+        "name": "The Weight, Not Size Rule",
+        "body": "Emphasis is bold (active crumb, active tree folder, menu labels) or opacity, never a larger size inside the working list.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-By-Default Rule",
+        "body": "Surfaces carry no shadow at rest. A shadow appears because the pointer is on the thing, or because the thing floats above the page (preview, menu).",
+        "section": "elevation"
+      },
+      {
+        "name": "The Visible Focus Rule",
+        "body": "Keyboard focus shows a 2px solid ring (`:focus-visible`), Link Sky Deep on light surfaces and white on the viewer bar and on selected rows. Mouse clicks do not show it. Nothing removes an outline without putting a visible focus style in its place.",
+        "section": "colors"
+      }
+    ],
+    "dos": [
+      "**Do** keep surfaces flat at rest and use the Raised shadow (`0 1px 10px 0 rgba(0,0,0,0.5)`) only in response to hover or for floating layers.",
+      "**Do** reserve Link Sky Deep (#176fcb) for what can be acted on and carries text or a glyph: links, hover text, selection, the selector badge, the one button.",
+      "**Do** build clickable tool targets as 48px squares (24px icon, 12px padding).",
+      "**Do** separate rows and panels with 1px hairlines at 5% to 7% black.",
+      "**Do** use the 2px radius for new surfaces; reach for 4px or 8px only where the code already does.",
+      "**Do** keep hover to a 3% black wash or blue text with the shared `all 0.2s ease-in-out` transition.",
+      "**Do** keep every layout change working at the 700px switch and in the no-JavaScript list.",
+      "**Do** keep the `<theme>/<type>.<ext>` icon layout and the `default` theme as the fallback.",
+      "**Do** build a new clickable element as a native control, or with `dom.btn()` and a name from an `l10n_lb-<key>` class, so it works from the keyboard.",
+      "**Do** give anything the phone layout shows a target of at least 24px on both sides (44px for rows), and never make a function depend on hover: show it under `@media (hover: none)`."
+    ],
+    "donts": [
+      "**Don't** add a second accent hue, a gradient, or decorative color to the browsing UI.",
+      "**Don't** use Highlighter Pink anywhere except native text selection.",
+      "**Don't** draw resting borders with shadows or add boxes around rows.",
+      "**Don't** add write-action chrome (upload, rename, delete) to the interface; the product is read-only.",
+      "**Don't** enlarge type inside the working list to create emphasis; use weight or opacity.",
+      "**Don't** break icon-theme compatibility: existing theme folders must keep rendering.",
+      "**Don't** write `outline: none` or `outline: 0` without a visible `:focus-visible` replacement, and don't use an image's `alt` for an internal id."
+    ]
+  }
+}

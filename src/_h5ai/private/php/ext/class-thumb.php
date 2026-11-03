@@ -1,8 +1,10 @@
 <?php
 
 class Thumb {
-    private static $FFMPEG_CMDV = ['ffmpeg', '-ss', '0:00:10', '-i', '[SRC]', '-an', '-vframes', '1', '[DEST]'];
-    private static $AVCONV_CMDV = ['avconv', '-ss', '0:00:10', '-i', '[SRC]', '-an', '-vframes', '1', '[DEST]'];
+    private static $FFMPEG_CMDV = ['ffmpeg', '-ss', '[SEEK]', '-i', '[SRC]', '-an', '-vframes', '1', '[DEST]'];
+    private static $AVCONV_CMDV = ['avconv', '-ss', '[SEEK]', '-i', '[SRC]', '-an', '-vframes', '1', '[DEST]'];
+    private static $FFPROBE_CMDV = ['ffprobe', '-v', 'quiet', '-show_entries', 'format=duration', '-of', 'default=noprint_wrappers=1:nokey=1', '[SRC]'];
+    private static $VIDEO_SEEK = 10;
     private static $CONVERT_CMDV = ['convert', '-density', '200', '-quality', '100', '-strip', '[SRC][0]', '[DEST]'];
     private static $GM_CONVERT_CMDV = ['gm', 'convert', '-density', '200', '-quality', '100', '[SRC][0]', '[DEST]'];
     private static $THUMB_CACHE = 'thumbs';
@@ -88,15 +90,29 @@ class Thumb {
         $capture_path = $this->thumbs_path . '/capture-' . sha1($source_path) . '.jpg';
 
         if (!file_exists($capture_path) || filemtime($source_path) >= filemtime($capture_path)) {
+            $seek = in_array('[SEEK]', $cmdv) ? $this->video_seek($source_path) : '';
             foreach ($cmdv as &$arg) {
-                $arg = str_replace('[SRC]', $source_path, $arg);
-                $arg = str_replace('[DEST]', $capture_path, $arg);
+                $arg = str_replace(['[SRC]', '[DEST]', '[SEEK]'], [$source_path, $capture_path, $seek], $arg);
             }
 
             Util::exec_cmdv($cmdv);
         }
 
         return file_exists($capture_path) ? $capture_path : null;
+    }
+
+    // Seconds into the video to capture: 10, or half of a video shorter than 20 seconds,
+    // because seeking past the end captures no frame. Without a duration (no ffprobe) it stays 10.
+    private function video_seek($source_path) {
+        $cmdv = Thumb::$FFPROBE_CMDV;
+        foreach ($cmdv as &$arg) {
+            $arg = str_replace('[SRC]', $source_path, $arg);
+        }
+
+        $duration = trim(Util::exec_cmdv($cmdv));
+        $seek = is_numeric($duration) && $duration > 0 ? min(Thumb::$VIDEO_SEEK, $duration / 2) : Thumb::$VIDEO_SEEK;
+
+        return sprintf('%.2F', $seek);
     }
 }
 

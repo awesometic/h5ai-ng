@@ -14,13 +14,14 @@ const settings = Object.assign({
 }, allsettings.filter);
 const tpl =
         `<div id="filter" class="tool">
-            <img src="${resource.image('filter')}" alt="filter"/>
-            <input class="l10n_ph-filter" type="text" value=""/>
+            <img class="l10n_lb-filter" src="${resource.image('filter')}" alt="filter"/>
+            <input class="l10n_ph-filter l10n_lb-filter" type="text" value=""/>
         </div>`;
 let inputIsVisible = false;
 let prevPattern = '';
 let $filter;
 let $input;
+let $btn;
 
 
 const filterItems = (pattern = '') => {
@@ -47,11 +48,13 @@ const filterItems = (pattern = '') => {
 const update = () => {
     if (inputIsVisible) {
         $filter.addCls('active');
+        $btn.attr('aria-expanded', 'true');
         $input[0].focus();
         filterItems(parsePattern($input.val(), settings.advanced));
     } else {
         filterItems();
         $filter.rmCls('active');
+        $btn.attr('aria-expanded', 'false');
     }
 };
 
@@ -74,7 +77,7 @@ const init = () => {
     $filter = dom(tpl).appTo('#toolbar');
     $input = $filter.find('input');
 
-    $filter.find('img').on('click', toggle);
+    $btn = $filter.find('img').btn().attr('aria-expanded', 'false').on('click', toggle);
     $input.on('keyup', debounce(update, settings.debounceTime));
     event.sub('location.changed', reset);
 };

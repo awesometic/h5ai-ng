@@ -1,7 +1,6 @@
 const {dom} = require('../util');
 const config = require('../config');
 const server = require('../server');
-const resource = require('../core/resource');
 
 
 const testsTpl =
@@ -14,23 +13,12 @@ const testTpl =
         </li>`;
 const loginTpl =
         `<div id="login-wrapper">
-            <input id="pass" type="password" placeholder="password"/>
+            <input id="pass" type="password" aria-label="password" placeholder="password"/>
             <span id="login">login</span>
             <span id="logout">logout</span>
             <div id="hint">
                 The preset password is the empty string, just click login.
                 Change it in '_h5ai/private/conf/options.json'.
-            </div>
-        </div>`;
-const supportTpl =
-        `<div id="support">
-            Show your support with a donation!
-            <div class="paypal">
-                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
-                    <input type="hidden" name="cmd" value="_s-xclick"/>
-                    <input type="hidden" name="hosted_button_id" value="8WSPKWT7YBTSQ"/>
-                    <input type="image" src="${resource.image('paypal')}" name="submit" alt="PayPal"/>
-                </form>
             </div>
         </div>`;
 const setup = config.setup;
@@ -53,7 +41,7 @@ const addTests = () => {
     dom(testsTpl).appTo('#content');
 
     addTest(
-        'h5ai version', 'Only green if this is an official h5ai release',
+        'h5ai-ng version', 'Only green if this is an official release',
         (/^\d+\.\d+\.\d+$/).test(setup.VERSION), setup.VERSION
     );
 
@@ -156,10 +144,6 @@ const onKeydown = ev => {
     }
 };
 
-const addSupport = () => {
-    dom(supportTpl).appTo('#content');
-};
-
 const addLogin = () => {
     dom(loginTpl).appTo('#content');
 
@@ -178,7 +162,6 @@ const addLogin = () => {
 };
 
 const init = () => {
-    addSupport();
     addLogin();
     addTests();
 };

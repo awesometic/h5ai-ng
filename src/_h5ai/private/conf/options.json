@@ -21,9 +21,7 @@
     */
     "resources": {
         "scripts": [],
-        "styles": [
-            "//fonts.googleapis.com/css?family=Ubuntu:300,400,700%7CUbuntu+Mono:400,700"
-        ]
+        "styles": []
     },
 
 
@@ -147,7 +145,7 @@
     - ignorecase: boolean, ignore case
     */
     "filter": {
-        "enabled": false,
+        "enabled": true,
         "advanced": true,
         "debounceTime": 100,
         "ignorecase": true

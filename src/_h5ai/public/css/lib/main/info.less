@@ -30,18 +30,17 @@
         }
     }
 
-    #support {
-        margin: 24px auto;
-        padding: 18px 0 6px 0;
-        width: 292px;
-        background: @col-back-panel;
-        border: 1px solid @col-border;
-        border-radius: 4px;
+    #credit {
+        margin: 12px auto 24px auto;
+        max-width: 320px;
+        color: @col-text-secondary-black;
 
-        input[type="image"] {
-            border: 0;
-            width: 100px;
-            padding: 12px 48px;
+        a {
+            color: @col-link;
+
+            &:hover {
+                color: @col-link-hover;
+            }
         }
     }
 
@@ -53,6 +52,11 @@
         line-height: 28px;
         width: 200px;
         vertical-align: top;
+
+        &::placeholder {
+            color: @col-text-secondary-black;
+            opacity: 1;
+        }
     }
 
     #login, #logout {

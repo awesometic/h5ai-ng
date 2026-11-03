@@ -1,0 +1,27 @@
+name: Feature request
+description: A change that would help visitors browse and download, or operators run h5ai-ng.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        h5ai-ng is a read-only index: uploads, renames and deletes stay out of scope.
+        A change must keep existing `options.json` files, URLs and the `default` and `comity` icon themes working.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to do?
+      description: The task a visitor or operator cannot do today, and where it gets stuck.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would help?
+      description: The behavior you have in mind. A sketch or a screenshot of another tool is welcome.
+  - type: input
+    id: upstream
+    attributes:
+      label: Upstream pull request
+      description: If an open pull request on lrsjng/h5ai already does this, link it. Those are reviewed here one at a time.
+      placeholder: https://github.com/lrsjng/h5ai/pull/123

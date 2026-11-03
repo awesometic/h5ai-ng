@@ -7,13 +7,27 @@
             width: 0;
         }
     }
-    #view.view-details {
-        // .header .label, .item .label {
-        //     margin-right: 80px !important;
-        // }
-        // .header .date, .item .date {
-        //     display: none;
-        // }
+    // the sidebar covers the whole width instead of cutting the list or grid at its edge
+    #sidebar {
+        position: absolute;
+        top: 48px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1;
+        border-right: 0;
+    }
+    // 44px rows for the smallest step; date and size keep their place in the taller row
+    #view.view-details.view-size-20 {
+        .item a {
+            padding: 5px 0;
+        }
+        .item .date, .item .size {
+            top: 5px;
+        }
+        .square {
+            top: 4px;
+        }
     }
     #tree, #info {
         display: none !important;

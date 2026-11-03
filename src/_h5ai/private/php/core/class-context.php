@@ -9,6 +9,10 @@ class Context {
         'pt-br', 'pt-pt', 'ro', 'ru', 'sk', 'sl', 'sr', 'sv', 'tr', 'uk',
         'zh-cn', 'zh-tw'
     );
+    private static $GENERIC_FONT_FAMILIES = array(
+        'serif', 'sans-serif', 'monospace', 'cursive', 'fantasy',
+        'system-ui', 'ui-sans-serif', 'ui-serif', 'ui-monospace'
+    );
 
     private $session;
     private $request;
@@ -197,9 +201,20 @@ class Context {
         }
 
         // add content of this folder and all parent folders
-        while ($what >= 1 && $folder !== null) {
+        while ($what >= 2 && $folder !== null) {
             $folder->get_content($cache);
             $folder = $folder->get_parent($cache);
+        }
+
+        // add content of this folder, and the parent folders without theirs: the breadcrumb
+        // needs the folders, reading their content costs an fstat per entry and the tree
+        // asks for it when it shows them
+        if ($what == 1 && $folder !== null) {
+            $folder->get_content($cache);
+            $parent = $folder->get_parent($cache);
+            while ($parent !== null) {
+                $parent = $parent->get_parent($cache);
+            }
         }
 
         uasort($cache, ['Item', 'cmp']);
@@ -246,9 +261,21 @@ class Context {
     }
 
     public function get_thumbs($requests) {
+        // only the sizes the interface requests, so clients cannot fill the cache with arbitrary sizes
+        $size = intval($this->query_option('thumbnails.size', 100));
+        $sizes = [[$size, $size], [intval(round($size * 4 / 3)), $size]];
+        $sample = intval($this->query_option('preview-img.size', 0));
+        if ($sample > 0) {
+            $sizes[] = [$sample, 0];
+        }
+
         $hrefs = [];
 
         foreach ($requests as $req) {
+            if (!in_array([intval($req['width'] ?? 0), intval($req['height'] ?? 0)], $sizes, true)) {
+                $hrefs[] = null;
+                continue;
+            }
             $thumb = new Thumb($this);
             $hrefs[] = $thumb->thumb($req['type'], $req['href'], $req['width'], $req['height']);
         }
@@ -264,6 +291,18 @@ class Context {
         return $this->setup->get('PUBLIC_HREF') . 'ext/' . $href;
     }
 
+    // generic family keywords must stay unquoted, a quoted one names a font
+    private function get_font_family_css($fonts) {
+        $css = [];
+
+        foreach ($fonts as $font) {
+            $generic = strtolower($font);
+            $css[] = in_array($generic, Context::$GENERIC_FONT_FAMILIES, true) ? $generic : '"' . $font . '"';
+        }
+
+        return implode(',', $css);
+    }
+
     private function get_fonts_html() {
         $fonts = $this->query_option('view.fonts', []);
         $fonts_mono = $this->query_option('view.fontsMono', []);
@@ -271,11 +310,11 @@ class Context {
         $html = '<style class="x-head">';
 
         if (sizeof($fonts) > 0) {
-            $html .= '#root,input,select{font-family:"' . implode('","', $fonts) . '"!important}';
+            $html .= '#root,input,select{font-family:' . $this->get_font_family_css($fonts) . '!important}';
         }
 
         if (sizeof($fonts_mono) > 0) {
-            $html .= 'pre,code{font-family:"' . implode('","', $fonts_mono) . '"!important}';
+            $html .= 'pre,code{font-family:' . $this->get_font_family_css($fonts_mono) . '!important}';
         }
 
         $html .= '</style>';

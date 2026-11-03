@@ -1,4 +1,4 @@
-const {each, isFn, dom, includes, compact} = require('../../util');
+const {each, isFn, dom, includes, compact, touchGesture} = require('../../util');
 const event = require('../../core/event');
 const resource = require('../../core/resource');
 const allsettings = require('../../core/settings');
@@ -9,19 +9,19 @@ const settings = Object.assign({
     enabled: true
 }, allsettings.preview);
 const overlayTpl =
-        `<div id="pv-overlay">
+        `<div id="pv-overlay" role="dialog" aria-modal="true" tabindex="-1">
             <div id="pv-container"></div>
-            <div id="pv-spinner"><img class="back"/><img class="spinner" src="${resource.image('spinner')}"/></div>
-            <div id="pv-prev-area" class="hof"><img src="${resource.image('preview-prev')}"/></div>
-            <div id="pv-next-area" class="hof"><img src="${resource.image('preview-next')}"/></div>
+            <div id="pv-spinner"><img class="back" alt=""/><img class="spinner" src="${resource.image('spinner')}" alt=""/></div>
+            <div id="pv-prev-area" class="hof" aria-hidden="true"><img src="${resource.image('preview-prev')}" alt=""/></div>
+            <div id="pv-next-area" class="hof" aria-hidden="true"><img src="${resource.image('preview-next')}" alt=""/></div>
             <div id="pv-bottombar" class="clearfix hof">
-                <ul id="pv-buttons">
-                    <li id="pv-bar-close" class="bar-right bar-button"><img src="${resource.image('preview-close')}"/></li>
-                    <li id="pv-bar-raw" class="bar-right"><a class="bar-button" target="_blank"><img src="${resource.image('preview-raw')}"/></a></li>
-                    <li id="pv-bar-fullscreen" class="bar-right bar-button"><img src="${resource.image('preview-fullscreen')}"/></li>
-                    <li id="pv-bar-next" class="bar-right bar-button"><img src="${resource.image('preview-next')}"/></li>
-                    <li id="pv-bar-idx" class="bar-right bar-label"></li>
-                    <li id="pv-bar-prev" class="bar-right bar-button"><img src="${resource.image('preview-prev')}"/></li>
+                <ul id="pv-buttons" role="toolbar">
+                    <li id="pv-bar-prev" class="bar-button l10n_lb-previous"><img src="${resource.image('preview-prev')}" alt=""/></li>
+                    <li id="pv-bar-idx" class="bar-label"></li>
+                    <li id="pv-bar-next" class="bar-button l10n_lb-next"><img src="${resource.image('preview-next')}" alt=""/></li>
+                    <li id="pv-bar-fullscreen" class="bar-button l10n_lb-fullscreen"><img src="${resource.image('preview-fullscreen')}" alt=""/></li>
+                    <li id="pv-bar-raw"><a class="bar-button l10n_lb-raw" target="_blank"><img src="${resource.image('preview-raw')}" alt=""/></a></li>
+                    <li id="pv-bar-close" class="bar-button l10n_lb-close"><img src="${resource.image('preview-close')}" alt=""/></li>
                 </ul>
             </div>
         </div>`;
@@ -32,6 +32,9 @@ let userAliveTimeoutId = null;
 let spinnerIsVisible = false;
 let spinnerTimeoutId = null;
 let session = null;
+let focusBeforeEnter = null;
+let touchStart = null;
+let lastTap = 0;
 
 const centerContent = () => {
     const $container = dom('#pv-container');
@@ -74,10 +77,10 @@ const updateGui = () => {
 
     if (isFullscreen) {
         dom('#pv-overlay').addCls('fullscreen');
-        dom('#pv-bar-fullscreen').find('img').attr('src', resource.image('preview-no-fullscreen'));
+        dom('#pv-bar-fullscreen').attr('aria-pressed', 'true').find('img').attr('src', resource.image('preview-no-fullscreen'));
     } else {
         dom('#pv-overlay').rmCls('fullscreen');
-        dom('#pv-bar-fullscreen').find('img').attr('src', resource.image('preview-fullscreen'));
+        dom('#pv-bar-fullscreen').attr('aria-pressed', 'false').find('img').attr('src', resource.image('preview-fullscreen'));
     }
 
     centerContent();
@@ -131,6 +134,15 @@ const dropEvent = ev => {
     ev.preventDefault();
 };
 
+// Tab keeps its default so focus can move along the bar
+const dropKeydown = ev => {
+    if (ev.keyCode === 9) {
+        ev.stopPropagation();
+    } else {
+        dropEvent(ev);
+    }
+};
+
 const onKeydown = ev => {
     const key = ev.keyCode;
 
@@ -149,10 +161,48 @@ const onKeydown = ev => {
     }
 };
 
+// Swipe left or right for next and previous, double-tap for fullscreen.
+// Only touchstart and touchend are watched and nothing is cancelled while the finger moves,
+// so scrolling a text preview and pinch-zoom stay with the browser.
+const onTouchstart = ev => {
+    const {pageX, pageY} = ev.changedTouches[0];
+    // a second finger is a pinch, and a media element keeps its own seek and volume gestures
+    touchStart = ev.touches.length === 1 && !ev.target.closest('video, audio') ? {pageX, pageY, time: Date.now()} : null;
+};
+
+const onTouchend = ev => {
+    const start = touchStart;
+    touchStart = null;
+    const viewport = win.visualViewport;
+    if (!start || ev.touches.length || viewport && viewport.scale > 1) {
+        return;
+    }
+
+    const {pageX, pageY} = ev.changedTouches[0];
+    const now = Date.now();
+    const gesture = touchGesture(pageX - start.pageX, pageY - start.pageY, now - start.time);
+    if (gesture === 'tap') {
+        const isDoubleTap = now - lastTap <= 300;
+        lastTap = isDoubleTap ? 0 : now;
+        if (isDoubleTap) {
+            dropEvent(ev); // no click, no browser zoom
+            toggleFullscreen();
+        }
+    } else if (gesture) {
+        lastTap = 0;
+        dropEvent(ev);
+        (gesture === 'next' ? next : prev)();
+    }
+};
+
 const enter = () => {
+    focusBeforeEnter = win.document.activeElement;
     setLabels([]);
     dom('#pv-container').clr();
     dom('#pv-overlay').show();
+    // keeps Tab inside the overlay where supported, older browsers ignore it
+    dom('#topbar, #mainrow').attr('inert', '');
+    dom('#pv-overlay')[0].focus();
     dom(win).on('keydown', onKeydown);
     updateGui();
 };
@@ -161,6 +211,11 @@ const exit = () => {
     setLabels([]);
     dom('#pv-container').clr();
     dom('#pv-overlay').hide();
+    dom('#topbar, #mainrow').rmAttr('inert');
+    if (focusBeforeEnter) {
+        focusBeforeEnter.focus();
+        focusBeforeEnter = null;
+    }
     dom(win).off('keydown', onKeydown);
 };
 
@@ -203,6 +258,7 @@ Session.prototype = {
         setIndex(this.idx + 1, this.items.length);
         setRawLink(this.item.absHref);
         setLabels([this.item.label]);
+        dom('#pv-overlay').attr('aria-label', this.item.label);
 
         const item = this.item;
         Promise.resolve()
@@ -270,14 +326,18 @@ const init = () => {
         })
         .on('mousedown', dropEvent)
         .on('mousemove', dropEvent)
-        .on('keydown', dropEvent)
+        .on('keydown', dropKeydown)
         .on('keypress', dropEvent);
 
+    dom('#pv-container').on('touchstart', onTouchstart).on('touchend', onTouchend);
     dom('#pv-spinner').hide();
     dom('#pv-bar-prev, #pv-prev-area').on('click', prev);
     dom('#pv-bar-next, #pv-next-area').on('click', next);
     dom('#pv-bar-close').on('click', exit);
     dom('#pv-bar-fullscreen').on('click', toggleFullscreen);
+    dom('#pv-buttons li.bar-button').btn();
+    // the overlay turns Enter and Space into next, a focused link keeps its own
+    dom('#pv-bar-raw a').on('keydown', ev => ev.stopPropagation());
 
     dom(win)
         .on('resize', updateGui)

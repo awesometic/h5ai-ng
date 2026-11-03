@@ -1,6 +1,41 @@
 # Changelog
 
 
+## v0.31.0 - *unreleased*
+
+First h5ai-ng release, forked from h5ai v0.30.0.
+
+* now require PHP 8.3.0+
+* require Chrome/Edge 91, Firefox 90 or Safari 15 for the interface; older browsers get the fallback list
+* replace `ghu` build with `esbuild`, `less` and `pug` (Node 24)
+* add Docker image (Nginx, PHP 8.5) and CI workflow
+* add `H5AI_ROOT_PATH` environment override for the served root
+* Docker: deny `/_h5ai/private/` in Nginx, also in saved configurations
+* interface refinement:
+  * toolbar, sidebar and preview buttons work from the keyboard, show a focus ring and carry a name and tooltip
+  * darker blue for links, hover text and selection, and readable empty-folder and no-match hints
+  * phone layout: the sidebar covers the full width, rows are at least 44px high, a tap box selects items and the no-JavaScript list fits 390px without sideways scrolling
+  * the filter tool is on in a fresh `options.json`; an invalid `re:` pattern matches its text literally instead of failing
+  * bundle Ubuntu and Ubuntu Mono (Ubuntu Font Licence 1.0) and drop the Google Fonts request from the default `options.json`; an existing `options.json` keeps its `resources.styles` entry until you remove it
+  * name the product h5ai-ng in the backlink, page titles and admin page, with credit to h5ai by Lars Jung
+  * remove the PayPal donation form from the admin page and label its password field
+  * `view.fonts` entries such as `sans-serif` and `monospace` are written as CSS generic families
+* upstream pull requests and fixes:
+  * thumbnails: refuse sizes the interface never requests, so requests cannot fill the cache (lrsjng/h5ai#777)
+  * thumbnails: capture videos shorter than 20 seconds at half their length (lrsjng/h5ai#765)
+  * preview: swipe to the previous or next item and double-tap for fullscreen on touch (lrsjng/h5ai#837)
+  * preview: wrap long lines in text previews (lrsjng/h5ai#855)
+  * preview: start audio and video in Chrome when `autoplay` is on (lrsjng/h5ai#786)
+  * load only the requested folder's content, not that of every parent folder (lrsjng/h5ai#771)
+  * match browser languages such as `zh-CN` and `pt-BR` with `useBrowserLang` (lrsjng/h5ai#863)
+  * update languages (`cs`, `it`, `sk`) (lrsjng/h5ai#815, lrsjng/h5ai#838)
+  * Docker: compare versions component-wise when replacing a saved h5ai copy
+* publish the Docker image as `awesometic/h5ai-ng` for amd64, arm64, armv7 and armv6
+* rewrite the README with Docker, install and docker-h5ai migration guides, and translate it into Korean, Spanish, Japanese and Simplified Chinese
+
+
+## v0.30.0 - *2021-01-24*
+
 * now require PHP 7.0.0+
 * fix archive-single-item problem
 * add header/footer search stop condition
