@@ -88,9 +88,9 @@ location /share/ {
 }
 ~~~
 
-A `/config/nginx/h5ai.conf` saved before 0.31.1 ignores that header; remove it
-and recreate the container (`docker rm -f`, then `docker run`) to get the
-current default.
+A `/config/nginx/h5ai.conf` saved before 0.31.1 ignores that header; see
+[Moving from docker-h5ai](#moving-from-docker-h5ai) for how to get the current
+default.
 
 
 ## Install on your own server
@@ -155,7 +155,8 @@ only the image name.
    `cp -a /path/to/config /path/to/config.bak`
 2. Remove the old container and start `awesometic/h5ai-ng` with the same
    `-v` and `-e` options:
-   `docker rm -f h5ai`, then the `docker run` command above.
+   `docker rm -f h5ai`, then the `docker run` command above. With Compose,
+   change `image:` and run `docker compose up -d`.
 3. Read `docker logs h5ai`. On the first start the container:
    * replaces `/config/h5ai/_h5ai` with the new version but keeps your
      `options.json`, and saves a copy of it as
@@ -170,8 +171,29 @@ compare it with the [new defaults][options] if you want those changes. Other
 files you changed in `_h5ai`, such as `types.json`, a theme or a translation,
 are replaced by the new version; copy them back from the backup of step 1.
 
-To go back, stop the container, restore `/path/to/config.bak` and start
-`awesometic/h5ai` again.
+The first start adds only that block to a saved `h5ai.conf`. To also get the
+current default, which keeps a mapped port in folder redirects and reads
+`X-Forwarded-Prefix`, remove the container, then the file, and run the
+`docker run` command above again:
+
+~~~sh
+docker rm -f h5ai
+rm /path/to/config/nginx/h5ai.conf
+~~~
+
+If you changed that file, make your changes again in the new one. Removing the
+file while the container exists and restarting it makes nginx fail with
+`Symbolic link loop`, and recreating the container does not fix that. Run the
+same two commands, then the `docker run` command again.
+
+To go back, remove the container, put the backup in place and start
+`awesometic/h5ai` again:
+
+~~~sh
+docker rm -f h5ai
+mv /path/to/config /path/to/config.ng
+cp -a /path/to/config.bak /path/to/config
+~~~
 
 
 ## Build

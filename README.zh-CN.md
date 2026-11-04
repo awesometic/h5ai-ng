@@ -81,8 +81,8 @@ location /share/ {
 }
 ~~~
 
-0.31.1 之前保存的 `/config/nginx/h5ai.conf` 不会读取该请求头；删除它并重新创建容器
-（先 `docker rm -f`，再 `docker run`），即可获得当前的默认配置。
+0.31.1 之前保存的 `/config/nginx/h5ai.conf` 不会读取该请求头；获取当前默认配置的
+方法见[从 docker-h5ai 迁移](#从-docker-h5ai-迁移)。
 
 
 ## 安装到自己的服务器
@@ -142,7 +142,8 @@ printf '%s' '你的密码' | sha512sum    # macOS: shasum -a 512
 1. 备份配置文件夹：
    `cp -a /path/to/config /path/to/config.bak`
 2. 删除旧容器，用相同的 `-v` 和 `-e` 选项启动 `awesometic/h5ai-ng`：
-   先执行 `docker rm -f h5ai`，再执行上面的 `docker run` 命令。
+   先执行 `docker rm -f h5ai`，再执行上面的 `docker run` 命令。使用 Compose 时，
+   修改 `image:` 后执行 `docker compose up -d`。
 3. 查看 `docker logs h5ai`。首次启动时，容器会：
    * 用新版本替换 `/config/h5ai/_h5ai`，但保留你的 `options.json`，并把它的副本
      保存为 `/config/<date>_options.json.bak`；
@@ -155,7 +156,26 @@ printf '%s' '你的密码' | sha512sum    # macOS: shasum -a 512
 合并。你在 `_h5ai` 中改过的其他文件（如 `types.json`、主题或翻译）会被新版本替换，
 请从第 1 步的备份中重新复制。
 
-如需回退，停止容器，恢复 `/path/to/config.bak`，然后重新启动 `awesometic/h5ai`。
+首次启动只会在已保存的 `h5ai.conf` 中加入这条屏蔽规则。如果还想使用当前的默认配置
+（文件夹重定向保留映射端口，并读取 `X-Forwarded-Prefix`），请先删除容器，再删除该
+文件，然后重新执行上面的 `docker run` 命令：
+
+~~~sh
+docker rm -f h5ai
+rm /path/to/config/nginx/h5ai.conf
+~~~
+
+如果你改过该文件，请在新文件中重新修改。如果在容器还存在时删除文件并重启，nginx 会
+因 `Symbolic link loop` 而失败，仅重新创建容器无法解决。请再执行这两条命令，然后
+重新执行 `docker run`。
+
+如需回退，删除容器，用备份替换配置文件夹，然后重新启动 `awesometic/h5ai`：
+
+~~~sh
+docker rm -f h5ai
+mv /path/to/config /path/to/config.ng
+cp -a /path/to/config.bak /path/to/config
+~~~
 
 
 ## 构建
