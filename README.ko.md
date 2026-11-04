@@ -89,8 +89,8 @@ location /share/ {
 }
 ~~~
 
-0.31.1 이전에 저장된 `/config/nginx/h5ai.conf`는 이 헤더를 읽지 않습니다. 파일을
-지우고 컨테이너를 새로 만들면(`docker rm -f` 후 `docker run`) 현재 기본값이 생깁니다.
+0.31.1 이전에 저장된 `/config/nginx/h5ai.conf`는 이 헤더를 읽지 않습니다. 현재
+기본값으로 바꾸는 방법은 [docker-h5ai에서 옮겨 오기](#docker-h5ai에서-옮겨-오기)를 보세요.
 
 
 ## 직접 운영하는 서버에 설치하기
@@ -155,6 +155,7 @@ printf '%s' '비밀번호' | sha512sum    # macOS: shasum -a 512
    `cp -a /path/to/config /path/to/config.bak`
 2. 기존 컨테이너를 지우고 같은 `-v`와 `-e` 옵션으로 `awesometic/h5ai-ng`를
    실행합니다. `docker rm -f h5ai`를 실행한 뒤 위의 `docker run` 명령을 씁니다.
+   Compose를 쓴다면 `image:`를 바꾸고 `docker compose up -d`를 실행합니다.
 3. `docker logs h5ai`로 로그를 확인합니다. 처음 시작할 때 컨테이너가 하는 일은
    다음과 같습니다.
    * `/config/h5ai/_h5ai`를 새 버전으로 바꾸되 `options.json`은 그대로 두고,
@@ -169,8 +170,29 @@ printf '%s' '비밀번호' | sha512sum    # macOS: shasum -a 512
 번역 파일처럼 `_h5ai` 안에서 고친 다른 파일은 새 버전으로 바뀌므로 1단계에서
 만든 백업에서 다시 복사하세요.
 
-되돌리려면 컨테이너를 멈추고 `/path/to/config.bak`을 복원한 뒤
-`awesometic/h5ai`를 다시 실행합니다.
+이미 있는 `h5ai.conf`에는 처음 시작할 때 이 차단 규칙만 추가됩니다. 현재 기본값은
+폴더 리다이렉트에서 매핑한 포트를 유지하고 `X-Forwarded-Prefix`를 읽습니다. 이
+기본값을 쓰려면 컨테이너를 지운 다음 파일을 지우고 위의 `docker run` 명령을 다시
+실행하세요.
+
+~~~sh
+docker rm -f h5ai
+rm /path/to/config/nginx/h5ai.conf
+~~~
+
+이 파일을 직접 고쳤다면 새 파일에 같은 변경을 다시 적용하세요. 컨테이너를 지우지
+않고 파일만 지운 뒤 재시작하면 nginx가 `Symbolic link loop` 오류로 멈춥니다.
+컨테이너만 다시 만들어서는 해결되지 않으니 위 두 명령을 실행한 뒤 `docker run`
+명령을 다시 실행하세요.
+
+되돌리려면 컨테이너를 지우고 백업을 제자리에 놓은 뒤 `awesometic/h5ai`를 다시
+실행합니다.
+
+~~~sh
+docker rm -f h5ai
+mv /path/to/config /path/to/config.ng
+cp -a /path/to/config.bak /path/to/config
+~~~
 
 
 ## 빌드

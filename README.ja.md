@@ -90,8 +90,8 @@ location /share/ {
 ~~~
 
 0.31.1 より前に保存された `/config/nginx/h5ai.conf` はこのヘッダーを読みません。
-ファイルを削除してコンテナーを作り直すと（`docker rm -f` の後に `docker run`）、
-現在の既定の設定になります。
+現在の既定の設定にする方法は [docker-h5ai からの移行](#docker-h5ai-からの移行) を
+参照してください。
 
 
 ## 自分のサーバーにインストールする
@@ -156,6 +156,7 @@ printf '%s' 'パスワード' | sha512sum    # macOS: shasum -a 512
    `cp -a /path/to/config /path/to/config.bak`
 2. 古いコンテナーを削除し、同じ `-v` と `-e` オプションで `awesometic/h5ai-ng` を
    起動します。`docker rm -f h5ai` を実行してから、上の `docker run` コマンドを使います。
+   Compose の場合は `image:` を変更して `docker compose up -d` を実行します。
 3. `docker logs h5ai` を確認します。初回起動時、コンテナーは次のことを行います。
    * `/config/h5ai/_h5ai` を新しいバージョンに置き換えますが、`options.json` は
      そのまま残し、そのコピーを `/config/<date>_options.json.bak` として保存します。
@@ -169,8 +170,29 @@ printf '%s' 'パスワード' | sha512sum    # macOS: shasum -a 512
 テーマ、翻訳など `_h5ai` 内で変更したほかのファイルは新しいバージョンに置き換わる
 ので、手順 1 のバックアップからコピーし直してください。
 
-元に戻すには、コンテナーを止めて `/path/to/config.bak` を復元し、
+初回起動で保存済みの `h5ai.conf` に追加されるのは、このブロックだけです。
+フォルダーのリダイレクトでマッピングしたポートを保ち、
+`X-Forwarded-Prefix` を読む現在の既定の設定にするには、コンテナーを削除してから
+ファイルを削除し、上の `docker run` コマンドをもう一度実行します。
+
+~~~sh
+docker rm -f h5ai
+rm /path/to/config/nginx/h5ai.conf
+~~~
+
+このファイルを変更していた場合は、新しいファイルに変更を入れ直してください。
+コンテナーが残ったままファイルを削除して再起動すると、nginx は
+`Symbolic link loop` で失敗し、コンテナーを作り直すだけでは直りません。同じ 2 つの
+コマンドを実行してから、`docker run` をもう一度実行してください。
+
+元に戻すには、コンテナーを削除し、バックアップを元の場所に戻してから、
 `awesometic/h5ai` をもう一度起動します。
+
+~~~sh
+docker rm -f h5ai
+mv /path/to/config /path/to/config.ng
+cp -a /path/to/config.bak /path/to/config
+~~~
 
 
 ## ビルド

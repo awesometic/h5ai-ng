@@ -9,7 +9,7 @@ docker pull awesometic/h5ai-ng:{{version}}
 ~~~
 
 Images for `linux/amd64`, `linux/arm64`, `linux/arm/v7` and `linux/arm/v6`.
-Coming from docker-h5ai? Follow [Moving from docker-h5ai](https://github.com/awesometic/h5ai-ng#moving-from-docker-h5ai): back up `/config`, change the image name, then restore your `options.json`.
+Coming from docker-h5ai? Follow [Moving from docker-h5ai](https://github.com/awesometic/h5ai-ng#moving-from-docker-h5ai): back up `/config` and change the image name. `options.json` is kept; other files you changed in `_h5ai` are replaced.
 
 **Your own server**
 

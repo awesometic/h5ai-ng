@@ -92,8 +92,8 @@ location /share/ {
 ~~~
 
 Un `/config/nginx/h5ai.conf` guardado antes de 0.31.1 ignora esa cabecera;
-elimínelo y vuelva a crear el contenedor (`docker rm -f` y después
-`docker run`) para obtener el valor por defecto actual.
+consulte [Migrar desde docker-h5ai](#migrar-desde-docker-h5ai) para obtener el
+valor por defecto actual.
 
 
 ## Instalación en su propio servidor
@@ -158,7 +158,8 @@ solo cambia el nombre de la imagen.
    `cp -a /path/to/config /path/to/config.bak`
 2. Elimine el contenedor antiguo y arranque `awesometic/h5ai-ng` con las
    mismas opciones `-v` y `-e`:
-   `docker rm -f h5ai` y después el comando `docker run` de arriba.
+   `docker rm -f h5ai` y después el comando `docker run` de arriba. Con
+   Compose, cambie `image:` y ejecute `docker compose up -d`.
 3. Lea `docker logs h5ai`. En el primer arranque, el contenedor:
    * sustituye `/config/h5ai/_h5ai` por la nueva versión pero conserva su
      `options.json` y guarda una copia como `/config/<date>_options.json.bak`;
@@ -174,8 +175,30 @@ cambios. Los demás archivos que modificara en `_h5ai`, como `types.json`, un
 tema o una traducción, se sustituyen por la nueva versión; cópielos de nuevo
 desde la copia del paso 1.
 
-Para volver atrás, detenga el contenedor, restaure `/path/to/config.bak` y
-arranque de nuevo `awesometic/h5ai`.
+El primer arranque solo añade ese bloqueo a un `h5ai.conf` guardado. Para
+obtener también el valor por defecto actual, que conserva el puerto publicado
+en las redirecciones de carpetas y lee `X-Forwarded-Prefix`, elimine el
+contenedor, después el archivo, y ejecute de nuevo el comando `docker run` de
+arriba:
+
+~~~sh
+docker rm -f h5ai
+rm /path/to/config/nginx/h5ai.conf
+~~~
+
+Si modificó ese archivo, repita sus cambios en el nuevo. Si elimina el archivo
+mientras el contenedor existe y lo reinicia, nginx falla con
+`Symbolic link loop`, y recrear el contenedor no lo soluciona. Ejecute esos
+mismos dos comandos y después `docker run` de nuevo.
+
+Para volver atrás, elimine el contenedor, ponga la copia en su lugar y arranque
+de nuevo `awesometic/h5ai`:
+
+~~~sh
+docker rm -f h5ai
+mv /path/to/config /path/to/config.ng
+cp -a /path/to/config.bak /path/to/config
+~~~
 
 
 ## Compilación
