@@ -142,8 +142,16 @@ def create_archive_fixture(age_days, content):
 
 
 def run_log_tick(success=True):
-    result = subprocess.run(["docker", "exec", name, "/usr/local/bin/h5ai-logs", "tick"],
-                            capture_output=True, text=True, timeout=15)
+    # cron runs the same tick every minute; a tick that finds the lock taken exits 1 without output
+    deadline = time.monotonic() + 30
+    while True:
+        result = subprocess.run(["docker", "exec", name, "/usr/local/bin/h5ai-logs", "tick"],
+                                capture_output=True, text=True, timeout=15)
+        busy = result.returncode == 1 and not result.stdout and not result.stderr
+        if not busy or time.monotonic() >= deadline:
+            break
+        print("Log tick lock is busy; retrying")
+        time.sleep(1)
     assert (result.returncode == 0) is success, (result.returncode, result.stdout, result.stderr)
     return result
 
