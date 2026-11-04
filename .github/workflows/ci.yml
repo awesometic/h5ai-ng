@@ -55,12 +55,24 @@ jobs:
         include:
           - platform: linux/amd64
             runner: ubuntu-24.04
+            qemu: false
           - platform: linux/arm64
             runner: ubuntu-24.04-arm
+            qemu: false
+          - platform: linux/arm/v7
+            runner: ubuntu-24.04
+            qemu: true
+          - platform: linux/arm/v6
+            runner: ubuntu-24.04
+            qemu: true
     steps:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
+      - uses: docker/setup-qemu-action@v4
+        if: matrix.qemu
+        with:
+          platforms: arm
       - uses: docker/setup-buildx-action@v4
       - uses: docker/build-push-action@v7
         with:
@@ -97,7 +109,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-      # arm/v7 and arm/v6 are built here only; the smoke test covers amd64 and arm64
       - uses: docker/build-push-action@v7
         with:
           context: .
