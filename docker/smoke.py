@@ -186,7 +186,6 @@ def assert_logs_read_only_as_service_user():
 
 
 def start(auth=False, timezone="Asia/Seoul", rotate_interval=None):
-    global url
     command = ["run", "-d", "--platform", platform, "--name", name,
            "-p", "127.0.0.1::80", "-v", volumes[0] + ":/config",
            "-v", volumes[1] + ":/h5ai", "-v", volumes[2] + ":/logs",
@@ -196,6 +195,11 @@ def start(auth=False, timezone="Asia/Seoul", rotate_interval=None):
     if rotate_interval is not None:
         command.extend(["-e", "LOG_ROTATE_INTERVAL_DAYS=" + str(rotate_interval)])
     docker(*command, image)
+    wait_ready(auth)
+
+
+def wait_ready(auth=False):
+    global url
     url = "http://" + docker("port", name, "80/tcp")
     deadline = time.monotonic() + 45
     while True:
@@ -226,7 +230,7 @@ try:
                     "--entrypoint", "sh", image, "-c", "mkdir -p /config/nginx /config/h5ai"
                     " && cat > /config/nginx/h5ai.conf"
                     # and from an h5ai 0.30.0 application copy, which an upgrade must replace
-                    " && cp -a /usr/share/h5ai/_h5ai /config/h5ai/"
+                    " && cp -a /usr/share/h5ai-default/_h5ai /config/h5ai/"
                     " && sed -i '1s/v[0-9][^ ]*/v0.30.0/' /config/h5ai/_h5ai/private/conf/options.json"
                     " /config/h5ai/_h5ai/public/js/scripts.js"
                     # whose options.json the upgrade keeps, old header included
@@ -458,6 +462,22 @@ try:
     docker("rm", "-f", name)
     start()
     assert request("/sample.txt") == (200, b"h5ai smoke\n")
+
+    conf_file, app_dir = "/config/nginx/h5ai.conf", "/config/h5ai/_h5ai"
+    restored = f"test -f {conf_file} && test ! -L {conf_file} && test -d {app_dir} && test ! -L {app_dir}"
+    # a saved file removed while the container exists comes back from the image's default on restart
+    docker("exec", name, "rm", "-r", conf_file, app_dir)
+    docker("restart", name, timeout=120)
+    wait_ready()
+    docker("exec", name, "sh", "-c", restored)
+    assert request("/sample.txt") == (200, b"h5ai smoke\n")
+    # a link to itself left in /config by an older image goes away when the new image starts
+    docker("exec", name, "sh", "-c", f"rm -r {conf_file} {app_dir}"
+           f" && ln -s {conf_file} {conf_file} && ln -s {app_dir} {app_dir}")
+    docker("rm", "-f", name)
+    start()
+    docker("exec", name, "sh", "-c", restored)
+    assert request("/_h5ai/private/conf/options.json")[0] == 403, "Private h5ai files are served"
     print(json.dumps({"image": image, "platform": platform, "php": cli,
                       "jit": runtime["opcache"].get("jit"), "result": "PASS"}))
 except BaseException:

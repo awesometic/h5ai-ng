@@ -186,10 +186,7 @@ docker rm -f h5ai
 rm /path/to/config/nginx/h5ai.conf
 ~~~
 
-Si modificó ese archivo, repita sus cambios en el nuevo. Si elimina el archivo
-mientras el contenedor existe y lo reinicia, nginx falla con
-`Symbolic link loop`, y recrear el contenedor no lo soluciona. Ejecute esos
-mismos dos comandos y después `docker run` de nuevo.
+Si modificó ese archivo, repita sus cambios en el nuevo.
 
 Para volver atrás, elimine el contenedor, ponga la copia en su lugar y arranque
 de nuevo `awesometic/h5ai`:
