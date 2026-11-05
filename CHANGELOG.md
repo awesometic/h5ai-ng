@@ -1,6 +1,11 @@
 # Changelog
 
 
+## v0.31.2 - *unreleased*
+
+* Docker: restore the default `h5ai.conf` or `_h5ai` when a saved copy was removed and the container restarted; the restart wrote a link to itself into `/config`, which stopped the site even after recreating the container, and the next start now also repairs such a link
+
+
 ## v0.31.1 - *2026-11-03*
 
 * Docker: add PDF thumbnails, which 0.31.0 announced but could not make (the image lacked ImageMagick's PDF support)

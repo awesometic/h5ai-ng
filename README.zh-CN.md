@@ -165,9 +165,7 @@ docker rm -f h5ai
 rm /path/to/config/nginx/h5ai.conf
 ~~~
 
-如果你改过该文件，请在新文件中重新修改。如果在容器还存在时删除文件并重启，nginx 会
-因 `Symbolic link loop` 而失败，仅重新创建容器无法解决。请再执行这两条命令，然后
-重新执行 `docker run`。
+如果你改过该文件，请在新文件中重新修改。
 
 如需回退，删除容器，用备份替换配置文件夹，然后重新启动 `awesometic/h5ai`：
 
