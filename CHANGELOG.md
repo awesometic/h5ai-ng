@@ -8,6 +8,7 @@
 * Docker: stop adding the php-fpm logging settings to `www.conf` again on every `docker restart`
 * README: describe the files under `/logs`, their rotation and `LOG_READ_GID`; this was only in the docker-h5ai README
 * update the bundled marked from 1.2.7, which has known ReDoS issues, to 18.1.3; rendered Markdown headings no longer get an `id` and email links are no longer entity-encoded. Also update kjua to 0.10.0 and lolight to 1.4.1
+* update the development tools to eslint 10.14.0 with a flat config, jsdom 30.1.3 and scar 2.3.4; `npm audit` goes from 24 reports to 3 moderate ones in eslint's own `minimatch`
 
 
 ## v0.31.1 - *2026-11-03*
