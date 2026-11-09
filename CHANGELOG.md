@@ -1,6 +1,16 @@
 # Changelog
 
 
+## v0.31.2 - *2026-11-09*
+
+* Docker: restore the default `h5ai.conf` or `_h5ai` when a saved copy was removed and the container restarted; the restart wrote a link to itself into `/config`, which stopped the site even after recreating the container, and the next start now also repairs such a link
+* shell-tar and shell-zip downloads show `packaging failed` when the command fails before sending anything, for example without the `zip` tool; they saved an empty package
+* Docker: stop adding the php-fpm logging settings to `www.conf` again on every `docker restart`
+* README: describe the files under `/logs`, their rotation and `LOG_READ_GID`; this was only in the docker-h5ai README
+* update the bundled marked from 1.2.7, which has known ReDoS issues, to 18.1.3; rendered Markdown headings no longer get an `id` and email links are no longer entity-encoded. Also update kjua to 0.10.0 and lolight to 1.4.1
+* update the development tools to eslint 10.14.0 with a flat config, jsdom 30.1.3 and scar 2.3.4; `npm audit` goes from 24 reports to 3 moderate ones in eslint's own `minimatch`
+
+
 ## v0.31.1 - *2026-11-03*
 
 * Docker: add PDF thumbnails, which 0.31.0 announced but could not make (the image lacked ImageMagick's PDF support)

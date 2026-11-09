@@ -68,6 +68,17 @@ tar와 zip 다운로드, 폴더 크기 표시가 바로 동작합니다. 정보 
 | `HTPASSWD` | `false` | `true`이면 모든 방문자에게 로그인을 요구합니다. |
 | `HTPASSWD_USER`, `HTPASSWD_PW` | `guest`, 빈 값 | 로그인 계정. 비밀번호를 비워 두었다면 처음 한 번은 `-it`로 실행해 직접 입력하세요. |
 | `LOG_ROTATE_INTERVAL_DAYS`, `LOG_RETENTION_DAYS` | `1`, `30` | `/logs` 아래 파일의 교체 주기와 보관 기간(일). |
+| `LOG_READ_GID` | `PGID` 값 | `/logs` 아래 파일을 읽을 수 있는 호스트 그룹 ID(숫자). |
+
+`docker logs h5ai`로 nginx 요청·오류와 PHP 오류를 볼 수 있습니다. `/logs`를
+마운트하면 같은 기록이 그 안의 `nginx/access.log`, `nginx/error.log`,
+`php/error.log`에도 남습니다. 로그 파일은 `TZ` 기준 자정이 지나면
+`LOG_ROTATE_INTERVAL_DAYS`일마다 교체됩니다. 교체된 파일은 다음 교체 때 압축되고
+교체 후 `LOG_RETENTION_DAYS`일이 지나면 삭제됩니다. 두 값은 1부터 36500까지이고
+보관 기간은 교체 주기보다 짧을 수 없습니다. 파일 소유자는 root이며
+`LOG_READ_GID` 그룹은 읽기만 할 수 있습니다. `/logs`는 쓰기 가능하게 마운트하고
+컨테이너마다 폴더를 따로 쓰세요. 교체 일정은 `/logs/.state`에 저장되므로 이 폴더를 지우지
+않으면 컨테이너를 다시 만들어도 일정이 이어집니다.
 
 이미지는 암호화하지 않은 HTTP로 응답합니다. 앞단에 TLS를 적용한 리버스
 프록시를 두세요. `HTPASSWD`를 쓴다면 더욱 그렇습니다.
@@ -180,10 +191,7 @@ docker rm -f h5ai
 rm /path/to/config/nginx/h5ai.conf
 ~~~
 
-이 파일을 직접 고쳤다면 새 파일에 같은 변경을 다시 적용하세요. 컨테이너를 지우지
-않고 파일만 지운 뒤 재시작하면 nginx가 `Symbolic link loop` 오류로 멈춥니다.
-컨테이너만 다시 만들어서는 해결되지 않으니 위 두 명령을 실행한 뒤 `docker run`
-명령을 다시 실행하세요.
+이 파일을 직접 고쳤다면 새 파일에 같은 변경을 다시 적용하세요.
 
 되돌리려면 컨테이너를 지우고 백업을 제자리에 놓은 뒤 `awesometic/h5ai`를 다시
 실행합니다.

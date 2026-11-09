@@ -67,6 +67,17 @@ thumbnails, tar and zip downloads and folder sizes. Log in to its info page
 | `HTPASSWD` | `false` | `true` asks every visitor for a login. |
 | `HTPASSWD_USER`, `HTPASSWD_PW` | `guest`, empty | The login. Without a password, start once with `-it` to type it. |
 | `LOG_ROTATE_INTERVAL_DAYS`, `LOG_RETENTION_DAYS` | `1`, `30` | Rotation of the files under `/logs`. |
+| `LOG_READ_GID` | `PGID` | Numeric host group that can read the files under `/logs`. |
+
+`docker logs h5ai` shows nginx requests and errors and PHP errors. With `/logs`
+mounted, they are also written to `nginx/access.log`, `nginx/error.log` and
+`php/error.log` there. The files rotate every `LOG_ROTATE_INTERVAL_DAYS` days
+after midnight in `TZ`, are compressed one rotation later and are deleted
+`LOG_RETENTION_DAYS` days after rotation. Both values range from 1 to 36500,
+and retention must be at least the interval. Root owns the files and the
+`LOG_READ_GID` group can only read them. Mount `/logs` read-write, give each
+container its own folder and keep `/logs/.state`, which holds the rotation
+schedule across recreations.
 
 The image serves plain HTTP. Put a reverse proxy with TLS in front of it,
 especially with `HTPASSWD`.
@@ -181,10 +192,7 @@ docker rm -f h5ai
 rm /path/to/config/nginx/h5ai.conf
 ~~~
 
-If you changed that file, make your changes again in the new one. Removing the
-file while the container exists and restarting it makes nginx fail with
-`Symbolic link loop`, and recreating the container does not fix that. Run the
-same two commands, then the `docker run` command again.
+If you changed that file, make your changes again in the new one.
 
 To go back, remove the container, put the backup in place and start
 `awesometic/h5ai` again:

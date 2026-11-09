@@ -32,8 +32,10 @@ groupmod -o -g "$PGID" abc
 usermod -o -u "$PUID" abc
 
 # Locations of configuration files
-orig_nginx="/etc/nginx/conf.d/h5ai.conf"
-orig_h5ai="/usr/share/h5ai/_h5ai"
+default_nginx="/etc/nginx/h5ai.conf.default"
+default_h5ai="/usr/share/h5ai-default/_h5ai"
+link_nginx="/etc/nginx/conf.d/h5ai.conf"
+link_h5ai="/usr/share/h5ai/_h5ai"
 conf_nginx="/config/nginx/h5ai.conf"
 conf_h5ai="/config/h5ai/_h5ai"
 conf_htpwd="/config/nginx/.htpasswd"
@@ -44,10 +46,11 @@ version_file="/public/js/scripts.js"
 msg "Check configuration files for Nginx..."
 if [ ! -f "$conf_nginx" ]; then
     msg "Copy original setup files to /config folder..."
-    cp -arf $orig_nginx $conf_nginx
+    # older images could leave a link to itself here
+    rm -f "$conf_nginx"
+    cp -af "$default_nginx" "$conf_nginx"
 else
     msg "User setup files found: $conf_nginx"
-    msg "Remove image's default setup files and copy the previous version..."
 
     # Configurations saved by older images let nginx serve /_h5ai/private/
     # (options.json holds the admin password hash; the .htaccess guard is Apache-only)
@@ -73,18 +76,19 @@ else
         cat "$conf_nginx.tmp" > "$conf_nginx" && rm "$conf_nginx.tmp"
     fi
 fi
-rm -f $orig_nginx
-ln -s $conf_nginx $orig_nginx
+ln -sfn "$conf_nginx" "$link_nginx"
 
 msg "Check configuration files for h5ai..."
 if [ ! -d "$conf_h5ai" ]; then
     msg "Copy original setup files to /config folder..."
-    cp -arf $orig_h5ai $conf_h5ai
+    # older images could leave a link to itself here
+    rm -f "$conf_h5ai"
+    cp -arf "$default_h5ai" "$conf_h5ai"
 else
     msg "User setup files found: $conf_h5ai"
 
     msg "Check if h5ai version updated..."
-    new_ver=$(head -n 1 $orig_h5ai$version_file | awk '{print $3}' | sed 's/[^0-9.]//g')
+    new_ver=$(head -n 1 $default_h5ai$version_file | awk '{print $3}' | sed 's/[^0-9.]//g')
     pre_ver=$(head -n 1 $conf_h5ai$version_file | awk '{print $3}' | sed 's/[^0-9.]//g')
     if [ "$new_ver" != "$pre_ver" ] && [ "$(printf '%s\n' "$pre_ver" "$new_ver" | sort -V | tail -n 1)" = "$new_ver" ]; then
 		msg "New version detected. Make existing options.json backup file..."
@@ -95,14 +99,12 @@ else
 		rm -rf $conf_h5ai
 
 		msg "Copy the new version and keep the existing options.json..."
-		cp -arf $orig_h5ai $conf_h5ai
+		cp -arf "$default_h5ai" "$conf_h5ai"
 		cp "$options_bak" $conf_h5ai$options_file
 	fi
-
-    msg "Remove image's default setup files and copy the existing version..."
 fi
-rm -rf $orig_h5ai
-ln -s $conf_h5ai $orig_h5ai
+mkdir -p "$(dirname "$link_h5ai")"
+ln -sfn "$conf_h5ai" "$link_h5ai"
 
 msg "Set permission for caching..."
 chmod -R 777 $conf_h5ai/public/cache
@@ -144,10 +146,6 @@ sed -i "s#group = nobody.*#group = abc#g" /etc/php85/php-fpm.d/www.conf
 
 msg "Set ownership to the configuration files..."
 chown -R abc:abc /config
-
-sed -i '/^\[www\]$/a catch_workers_output = yes' /etc/php85/php-fpm.d/www.conf
-sed -i '/^\[www\]$/a php_admin_value[error_log] = /proc/self/fd/2' /etc/php85/php-fpm.d/www.conf
-sed -i '/^\[www\]$/a php_admin_flag[log_errors] = on' /etc/php85/php-fpm.d/www.conf
 
 msg "Start supervisord..."
 exec supervisord -c /etc/supervisor/conf.d/supervisord.conf

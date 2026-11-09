@@ -70,6 +70,18 @@ comprobaciones aparecen superadas:
 | `HTPASSWD` | `false` | Con `true`, se pide usuario y contraseña a cada visitante. |
 | `HTPASSWD_USER`, `HTPASSWD_PW` | `guest`, vacío | Los datos de acceso. Sin contraseña, arranque una vez con `-it` para escribirla. |
 | `LOG_ROTATE_INTERVAL_DAYS`, `LOG_RETENTION_DAYS` | `1`, `30` | Rotación de los archivos en `/logs`, en días. |
+| `LOG_READ_GID` | `PGID` | Grupo numérico del host que puede leer los archivos de `/logs`. |
+
+`docker logs h5ai` muestra las peticiones y los errores de nginx y los errores
+de PHP. Si monta `/logs`, también se escriben allí en `nginx/access.log`,
+`nginx/error.log` y `php/error.log`. Los archivos rotan cada
+`LOG_ROTATE_INTERVAL_DAYS` días tras la medianoche de `TZ`, se comprimen en la
+rotación siguiente y se borran `LOG_RETENTION_DAYS` días después de rotar.
+Ambos valores van de 1 a 36500 y la retención no puede ser menor que el
+intervalo. Los archivos pertenecen a root y el grupo `LOG_READ_GID` solo puede
+leerlos. Monte `/logs` con permiso de escritura, use una carpeta para cada
+contenedor y conserve `/logs/.state`, que guarda el calendario de rotación
+cuando se recrea el contenedor.
 
 La imagen sirve HTTP sin cifrar. Ponga delante un proxy inverso con TLS,
 sobre todo si usa `HTPASSWD`.
@@ -186,10 +198,7 @@ docker rm -f h5ai
 rm /path/to/config/nginx/h5ai.conf
 ~~~
 
-Si modificó ese archivo, repita sus cambios en el nuevo. Si elimina el archivo
-mientras el contenedor existe y lo reinicia, nginx falla con
-`Symbolic link loop`, y recrear el contenedor no lo soluciona. Ejecute esos
-mismos dos comandos y después `docker run` de nuevo.
+Si modificó ese archivo, repita sus cambios en el nuevo.
 
 Para volver atrás, elimine el contenedor, ponga la copia en su lugar y arranque
 de nuevo `awesometic/h5ai`:

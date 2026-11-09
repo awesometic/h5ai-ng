@@ -25,7 +25,8 @@ ENV HTPASSWD_USER='guest'
 ENV HTPASSWD_PW=''
 
 # Copy configuration files
-COPY docker/h5ai.conf /etc/nginx/conf.d/h5ai.conf
+# init.sh copies the defaults to /config and links conf.d/h5ai.conf to the copy
+COPY docker/h5ai.conf /etc/nginx/h5ai.conf.default
 COPY docker/php_set_timezone.ini /etc/php85/conf.d/00_timezone.ini
 COPY docker/php_set_jit.ini /etc/php85/conf.d/00_jit.ini
 COPY docker/php_set_memory_limit.ini /etc/php85/conf.d/00_memlimit.ini
@@ -33,8 +34,13 @@ COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY --chmod=0755 docker/logs.sh /usr/local/bin/h5ai-logs
 
 # Copy h5ai; it lives outside the served /h5ai root, so tell PHP where the root is
-COPY --from=build /src/build/_h5ai /usr/share/h5ai/_h5ai
+# init.sh handles it like the Nginx default; nginx serves /usr/share/h5ai, so the default stays outside that
+COPY --from=build /src/build/_h5ai /usr/share/h5ai-default/_h5ai
 RUN echo 'env[H5AI_ROOT_PATH] = /h5ai' >> /etc/php85/php-fpm.d/www.conf
+# send PHP errors to the container log
+RUN sed -i '/^\[www\]$/a catch_workers_output = yes' /etc/php85/php-fpm.d/www.conf \
+    && sed -i '/^\[www\]$/a php_admin_value[error_log] = /proc/self/fd/2' /etc/php85/php-fpm.d/www.conf \
+    && sed -i '/^\[www\]$/a php_admin_flag[log_errors] = on' /etc/php85/php-fpm.d/www.conf
 
 # Configure Nginx server
 RUN sed --in-place=.bak 's/worker_processes  1/worker_processes  auto/g' /etc/nginx/nginx.conf

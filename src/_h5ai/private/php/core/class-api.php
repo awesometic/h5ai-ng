@@ -37,6 +37,10 @@ class Api {
         header('Connection: close');
         $ok = $archive->output($type, $base_href, $hrefs);
 
+        // nothing was sent, so show the error instead of saving it as the package
+        if (!$ok) {
+            header_remove('Content-Disposition');
+        }
         Util::json_fail(Util::ERR_FAILED, 'packaging failed', !$ok);
         exit;
     }

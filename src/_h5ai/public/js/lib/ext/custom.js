@@ -1,4 +1,4 @@
-const marked = require('marked');
+const {marked} = require('marked');
 const {each, dom} = require('../util');
 const server = require('../server');
 const event = require('../core/event');
