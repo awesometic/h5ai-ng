@@ -1,7 +1,7 @@
 # Changelog
 
 
-## v0.31.2 - *unreleased*
+## v0.31.2 - *2026-11-09*
 
 * Docker: restore the default `h5ai.conf` or `_h5ai` when a saved copy was removed and the container restarted; the restart wrote a link to itself into `/config`, which stopped the site even after recreating the container, and the next start now also repairs such a link
 * shell-tar and shell-zip downloads show `packaging failed` when the command fails before sending anything, for example without the `zip` tool; they saved an empty package
