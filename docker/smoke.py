@@ -482,6 +482,8 @@ try:
     wait_ready()
     docker("exec", name, "sh", "-c", restored)
     assert request("/sample.txt") == (200, b"h5ai smoke\n")
+    fpm_lines = docker("exec", name, "grep", "-c", r"^catch_workers_output\|^php_admin_", "/etc/php85/php-fpm.d/www.conf")
+    assert fpm_lines == "3", ("A restart repeated the php-fpm settings", fpm_lines)
     # a link to itself left in /config by an older image goes away when the new image starts
     docker("exec", name, "sh", "-c", f"rm -r {conf_file} {app_dir}"
            f" && ln -s {conf_file} {conf_file} && ln -s {app_dir} {app_dir}")

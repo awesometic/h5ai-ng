@@ -37,6 +37,10 @@ COPY --chmod=0755 docker/logs.sh /usr/local/bin/h5ai-logs
 # init.sh handles it like the Nginx default; nginx serves /usr/share/h5ai, so the default stays outside that
 COPY --from=build /src/build/_h5ai /usr/share/h5ai-default/_h5ai
 RUN echo 'env[H5AI_ROOT_PATH] = /h5ai' >> /etc/php85/php-fpm.d/www.conf
+# send PHP errors to the container log
+RUN sed -i '/^\[www\]$/a catch_workers_output = yes' /etc/php85/php-fpm.d/www.conf \
+    && sed -i '/^\[www\]$/a php_admin_value[error_log] = /proc/self/fd/2' /etc/php85/php-fpm.d/www.conf \
+    && sed -i '/^\[www\]$/a php_admin_flag[log_errors] = on' /etc/php85/php-fpm.d/www.conf
 
 # Configure Nginx server
 RUN sed --in-place=.bak 's/worker_processes  1/worker_processes  auto/g' /etc/nginx/nginx.conf
