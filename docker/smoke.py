@@ -378,6 +378,17 @@ try:
         with archive:
             content = archive.read("sample.txt") if kind == "shell-zip" else archive.extractfile("sample.txt").read()
             assert content == b"h5ai smoke\n", kind
+    # without the zip tool the download reports the failure instead of sending an empty package
+    docker("exec", name, "mv", "/usr/bin/zip", "/usr/bin/zip.off")
+    try:
+        with opener.open(urllib.request.Request(url + "/_h5ai/public/index.php", json.dumps({
+            "action": "download", "type": "shell-zip", "as": "sample", "baseHref": "/",
+            "hrefs": ["/sample.txt"],
+        }).encode(), {"User-Agent": "h5ai-smoke", "Content-Type": "application/json"}), timeout=20) as response:
+            disposition, body = response.headers.get("Content-Disposition"), response.read()
+    finally:
+        docker("exec", name, "mv", "/usr/bin/zip.off", "/usr/bin/zip")
+    assert disposition is None and json.loads(body)["err"] == "ERR_FAILED", ("Failed shell-zip", disposition, body[:200])
 
     options = "/config/h5ai/_h5ai/private/conf/options.json"
     docker("exec", name, "sh", "-c", "printf '\\n// smoke: preserve custom config\\n' >> " + options)

@@ -49,12 +49,8 @@ class Archive {
         $cmd = str_replace('[ROOTDIR]', escapeshellarg($this->base_path), $cmd);
         $cmd = str_replace('[DIRS]', count($this->dirs) ? implode(' ', array_map('escapeshellarg', $this->dirs)) : '', $cmd);
         $cmd = str_replace('[FILES]', count($this->files) ? implode(' ', array_map('escapeshellarg', $this->files)) : '', $cmd);
-        try {
-            Util::passthru_cmd($cmd);
-        } catch (Exeption $err) {
-            return false;
-        }
-        return true;
+        // a failure after output has started cannot be reported anymore
+        return Util::passthru_cmd($cmd) === 0 || headers_sent() || ob_get_length();
     }
 
     private function php_tar($dirs, $files) {
