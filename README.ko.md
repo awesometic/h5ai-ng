@@ -9,11 +9,12 @@
 [![docker pulls][pulls-img]][docker-hub]
 [![docker stars][stars-img]][docker-hub]
 
-Apache httpd, lighttpd, nginx에서 쓰는 파일 목록 페이지입니다. 방문자는 폴더를
-둘러보고, 이미지·동영상·오디오·텍스트를 미리 보고, 이름으로 걸러 내고, 고른
-파일을 압축 파일 하나로 내려받습니다. 파일은 원래 자리에 그대로 있습니다.
+h5ai-ng는 Apache httpd, lighttpd, nginx에서 쓰는 파일 목록 페이지입니다.
+방문자는 폴더를 둘러보고, 이미지·동영상·오디오·텍스트를 미리 보고, 이름으로 걸러
+내고, 고른 파일을 압축 파일 하나로 내려받습니다. 파일은 원래 자리에 그대로
+있습니다.
 
-h5ai-ng는 Lars Jung이 만든 [h5ai][h5ai]의 포크입니다. 원본은 2021년 이후 새
+이 프로젝트는 Lars Jung이 만든 [h5ai][h5ai]의 포크입니다. 원본은 2021년 이후 새
 버전이 나오지 않아 이곳에서 이어서 관리합니다.
 
 원본 사이트는 h5ai를 이렇게 소개합니다.
@@ -33,6 +34,42 @@ h5ai-ng는 Lars Jung이 만든 [h5ai][h5ai]의 포크입니다. 원본은 2021�
   서버 밖으로 나가는 요청이 없습니다.
 * **쓰던 h5ai 설정을 그대로 씁니다.** `options.json`, URL, `default`와 `comity`
   아이콘 테마가 그대로 동작합니다.
+
+
+## h5ai, docker-h5ai, h5ai-ng 비교
+
+| | h5ai | docker-h5ai | h5ai-ng |
+| --- | --- | --- | --- |
+| 설명 | Lars Jung이 만든 원본 파일 목록 페이지 | h5ai 0.30.0을 담은 Docker 이미지 `awesometic/h5ai` | 이 포크와 Docker 이미지 `awesometic/h5ai-ng` |
+| 상태 | 2021년 1월 0.30.0 이후 릴리스 없음 | 지원 중단. 2026년 11월 저장소 보관 처리(archive). 이미지는 계속 동작하지만 보안 수정을 포함해 업데이트 없음 | 관리 중. 2026년 11월 0.31.0부터 새 버전 배포 |
+| PHP | 7.0 이상 | 이미지에 8.5 포함 | 8.3 이상, 이미지에 8.5 포함 |
+| 설치 | 웹 서버용 zip | Docker | 웹 서버용 zip 또는 amd64·arm64·arm/v7·arm/v6용 Docker |
+
+### h5ai는 아직 관리되나요?
+
+원본 h5ai는 2021년 1월 0.30.0 이후 릴리스가 없습니다. h5ai-ng는 이를 이어
+관리하는 포크로 2026년 11월 0.31.0부터 새 버전을 내고 있으며 PHP 8.3 이상이
+필요합니다. `options.json`과 URL, `default`와 `comity` 아이콘 테마는 그대로
+동작합니다. `types.json`, 테마, 번역 파일처럼 `_h5ai` 안에서 고친 다른 파일은
+h5ai-ng로 옮길 때 다시 복사해 넣어야 합니다.
+
+### h5ai용 Docker 이미지는 무엇을 쓰면 되나요?
+
+`awesometic/h5ai-ng`를 쓰세요. linux/amd64, linux/arm64, linux/arm/v7,
+linux/arm/v6용으로 배포되며 썸네일, 압축 다운로드, 폴더 크기 표시에 필요한
+도구가 이미 들어 있습니다. 예전 `awesometic/h5ai` 이미지는 계속 동작하지만 보안
+수정을 포함해 더는 업데이트되지 않습니다. 옮기려면 `/config`를 백업하고
+`docker run` 명령이나 Compose 파일에서 이미지 이름을 바꾸세요. `docker run`을
+쓴다면 먼저 기존 컨테이너를 지우세요. 자세한 내용은
+[docker-h5ai에서 옮겨 오기](#docker-h5ai에서-옮겨-오기)를 보세요.
+
+### Docker 없이 쓸 수 있나요?
+
+네. [릴리스][releases]마다 zip 파일이 있습니다. PHP 8.3 이상이 동작하는 Apache
+httpd, lighttpd, nginx의 웹 루트에 압축을 푸세요. 그다음 디렉터리 인덱스의
+마지막 항목으로 `/_h5ai/public/index.php`를 추가하고 `options.json`과 비밀번호
+해시가 들어 있는 `/_h5ai/private/` 접근을 막으세요.
+[직접 운영하는 서버에 설치하기](#직접-운영하는-서버에-설치하기)를 보세요.
 
 
 ## Docker로 바로 시작하기

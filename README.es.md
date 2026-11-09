@@ -9,13 +9,13 @@
 [![docker pulls][pulls-img]][docker-hub]
 [![docker stars][stars-img]][docker-hub]
 
-Un índice de archivos para Apache httpd, lighttpd y nginx. Los visitantes
-recorren carpetas, previsualizan imágenes, vídeo, audio y texto, filtran por
-nombre y descargan una selección completa como un solo archivo comprimido. Sus
-archivos se quedan donde están.
+h5ai-ng es un índice de archivos para Apache httpd, lighttpd y nginx. Los
+visitantes recorren carpetas, previsualizan imágenes, vídeo, audio y texto,
+filtran por nombre y descargan una selección completa como un solo archivo
+comprimido. Sus archivos se quedan donde están.
 
-h5ai-ng es un fork mantenido de [h5ai][h5ai], de Lars Jung, que dejó de
-publicar versiones en 2021.
+Es un fork mantenido de [h5ai][h5ai], de Lars Jung, que dejó de publicar
+versiones en 2021.
 
 El sitio original lo describe así:
 
@@ -34,6 +34,44 @@ El sitio original lo describe así:
   cargar la página no sale de su servidor.
 * **Su configuración de h5ai sigue valiendo.** `options.json`, las URL y los
   temas de iconos `default` y `comity` siguen funcionando.
+
+
+## h5ai, docker-h5ai y h5ai-ng
+
+| | h5ai | docker-h5ai | h5ai-ng |
+| --- | --- | --- | --- |
+| Qué es | El índice de archivos original de Lars Jung | Una imagen Docker de h5ai 0.30.0, `awesometic/h5ai` | Este fork, con la imagen Docker `awesometic/h5ai-ng` |
+| Estado | Sin versiones desde la 0.30.0, de enero de 2021 | En desuso; repositorio archivado en noviembre de 2026. La imagen sigue funcionando, pero sin actualizaciones, tampoco de seguridad | Mantenido; versiones desde la 0.31.0, de noviembre de 2026 |
+| PHP | 7.0 o posterior | 8.5 en la imagen | 8.3 o posterior; 8.5 en la imagen |
+| Instalación | Zip para su servidor web | Docker | Zip para su servidor web, o Docker para amd64, arm64, arm/v7 y arm/v6 |
+
+### ¿Sigue manteniéndose h5ai?
+
+El h5ai original no publica versiones desde la 0.30.0, de enero de 2021.
+h5ai-ng es su fork mantenido, con versiones desde la 0.31.0, de noviembre de
+2026, y requiere PHP 8.3 o posterior. `options.json`, las URL y los temas de
+iconos `default` y `comity` siguen funcionando. Los demás archivos que haya
+modificado en `_h5ai`, como `types.json`, un tema o una traducción, hay que
+copiarlos de nuevo al pasar a h5ai-ng.
+
+### ¿Qué imagen Docker debo usar para h5ai?
+
+Use `awesometic/h5ai-ng`. Se publica para linux/amd64, linux/arm64,
+linux/arm/v7 y linux/arm/v6, con las herramientas para miniaturas, descargas
+comprimidas y tamaño de carpetas ya instaladas. La imagen anterior,
+`awesometic/h5ai`, sigue funcionando, pero ya no recibe actualizaciones,
+tampoco de seguridad. Para cambiar, haga una copia de `/config` y cambie el
+nombre de la imagen en su comando `docker run` o en su archivo de Compose; con
+`docker run`, elimine antes el contenedor anterior. Vea
+[Migrar desde docker-h5ai](#migrar-desde-docker-h5ai).
+
+### ¿Puedo usar h5ai-ng sin Docker?
+
+Sí. Cada [versión][releases] incluye un zip. Descomprímalo en la raíz web de
+Apache httpd, lighttpd o nginx con PHP 8.3 o posterior, añada
+`/_h5ai/public/index.php` como último índice de directorio y bloquee
+`/_h5ai/private/`, que contiene `options.json` y el hash de la contraseña. Vea
+[Instalación en su propio servidor](#instalación-en-su-propio-servidor).
 
 
 ## Inicio rápido con Docker

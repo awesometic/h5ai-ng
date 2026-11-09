@@ -9,10 +9,11 @@
 [![docker pulls][pulls-img]][docker-hub]
 [![docker stars][stars-img]][docker-hub]
 
-适用于 Apache httpd、lighttpd 和 nginx 的文件索引页面。访客可以浏览文件夹，预览图片、
+h5ai-ng 是适用于 Apache httpd、lighttpd 和 nginx 的文件索引页面。
+访客可以浏览文件夹，预览图片、
 视频、音频和文本，按名称筛选，并把选中的文件打包成一个压缩包下载。文件始终留在原处。
 
-h5ai-ng 是 Lars Jung 所作 [h5ai][h5ai] 的维护分支。原项目自 2021 年起不再发布新版本。
+它是 Lars Jung 所作 [h5ai][h5ai] 的维护分支。原项目自 2021 年起不再发布新版本。
 
 原项目网站这样介绍 h5ai：
 
@@ -28,6 +29,38 @@ h5ai-ng 是 Lars Jung 所作 [h5ai][h5ai] 的维护分支。原项目自 2021 �
 * **不请求第三方服务。** 字体随界面一起分发，打开页面时只访问你自己的服务器。
 * **沿用原有 h5ai 配置。** `options.json`、URL 以及 `default` 和 `comity`
   图标主题都可以继续使用。
+
+
+## h5ai、docker-h5ai 与 h5ai-ng
+
+| | h5ai | docker-h5ai | h5ai-ng |
+| --- | --- | --- | --- |
+| 是什么 | Lars Jung 所作的原版文件索引 | 封装 h5ai 0.30.0 的 Docker 镜像 `awesometic/h5ai` | 本分支及其 Docker 镜像 `awesometic/h5ai-ng` |
+| 状态 | 自 2021 年 1 月的 0.30.0 起没有新版本 | 已弃用，2026 年 11 月仓库已归档。镜像仍可运行，但不再更新，包括安全修复 | 持续维护，自 2026 年 11 月的 0.31.0 起发布新版本 |
+| PHP | 7.0 及以上 | 镜像内为 8.5 | 8.3 及以上，镜像内为 8.5 |
+| 安装方式 | 用于 Web 服务器的 zip | Docker | 用于 Web 服务器的 zip，或适用于 amd64、arm64、arm/v7、arm/v6 的 Docker |
+
+### h5ai 还在维护吗？
+
+原版 h5ai 自 2021 年 1 月的 0.30.0 起没有发布新版本。
+h5ai-ng 是它的维护分支，自 2026 年 11 月的 0.31.0 起持续发布，需要 PHP 8.3 及以上。
+`options.json`、URL 以及 `default` 和 `comity` 图标主题都能继续使用。
+你在 `_h5ai` 中改过的其他文件（如 `types.json`、主题或翻译）需要在迁移到 h5ai-ng 时重新复制。
+
+### h5ai 应该用哪个 Docker 镜像？
+
+请使用 `awesometic/h5ai-ng`。
+它为 linux/amd64、linux/arm64、linux/arm/v7 和 linux/arm/v6 发布，已装好缩略图、打包下载和文件夹大小所需的工具。
+旧的 `awesometic/h5ai` 镜像仍可运行，但不再更新，包括安全修复。
+如需切换，请备份 `/config`，并在 `docker run` 命令或 Compose 文件中更改镜像名称；使用 `docker run` 时，请先删除旧容器。
+详见[从 docker-h5ai 迁移](#从-docker-h5ai-迁移)。
+
+### 不用 Docker 可以运行 h5ai-ng 吗？
+
+可以。
+每个[版本][releases]都附带一个 zip。
+把它解压到运行 PHP 8.3 及以上的 Apache httpd、lighttpd 或 nginx 的网站根目录，把 `/_h5ai/public/index.php` 添加为最后一个目录索引，并禁止访问存放 `options.json` 和密码哈希的 `/_h5ai/private/`。
+详见[安装到自己的服务器](#安装到自己的服务器)。
 
 
 ## 使用 Docker 快速开始

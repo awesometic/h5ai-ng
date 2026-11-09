@@ -9,11 +9,12 @@
 [![docker pulls][pulls-img]][docker-hub]
 [![docker stars][stars-img]][docker-hub]
 
-Apache httpd、lighttpd、nginx 向けのファイル一覧ページです。訪問者はフォルダーを
+h5ai-ng は Apache httpd、lighttpd、nginx 向けのファイル一覧ページです。
+訪問者はフォルダーを
 たどり、画像・動画・音声・テキストをプレビューし、名前で絞り込み、選んだファイルを
 まとめて 1 つのアーカイブとしてダウンロードできます。ファイルは今ある場所のままです。
 
-h5ai-ng は、2021 年を最後にリリースが止まった Lars Jung 氏の [h5ai][h5ai] を
+2021 年を最後にリリースが止まった Lars Jung 氏の [h5ai][h5ai] を
 引き継いで保守するフォークです。
 
 公式サイトでは次のように紹介されています。
@@ -33,6 +34,39 @@ h5ai-ng は、2021 年を最後にリリースが止まった Lars Jung 氏の [
   ページの読み込みは自分のサーバー内で完結します。
 * **h5ai の設定をそのまま使えます。** `options.json`、URL、`default` と `comity`
   のアイコンテーマはそのまま動きます。
+
+
+## h5ai、docker-h5ai、h5ai-ng の違い
+
+| | h5ai | docker-h5ai | h5ai-ng |
+| --- | --- | --- | --- |
+| 概要 | Lars Jung 氏による元のファイル一覧ページ | h5ai 0.30.0 を収めた Docker イメージ `awesometic/h5ai` | このフォークと Docker イメージ `awesometic/h5ai-ng` |
+| 状況 | 2021 年 1 月の 0.30.0 以降リリースなし | 非推奨。2026 年 11 月にリポジトリをアーカイブ。イメージは動作するが、セキュリティ修正を含め更新なし | 保守中。2026 年 11 月の 0.31.0 から継続してリリース |
+| PHP | 7.0 以降 | イメージに 8.5 | 8.3 以降、イメージに 8.5 |
+| 導入方法 | Web サーバー用の zip | Docker | Web サーバー用の zip、または amd64・arm64・arm/v7・arm/v6 向けの Docker |
+
+### h5ai は今も保守されていますか?
+
+元の h5ai は 2021 年 1 月の 0.30.0 以降リリースがありません。
+h5ai-ng はそれを引き継いで保守するフォークで、2026 年 11 月の 0.31.0 からリリースを続けており、PHP 8.3 以降が必要です。
+`options.json`、URL、`default` と `comity` のアイコンテーマはそのまま動作します。
+`types.json`、テーマ、翻訳など `_h5ai` 内で変更したほかのファイルは、h5ai-ng に移行するときにコピーし直す必要があります。
+
+### h5ai にはどの Docker イメージを使えばよいですか?
+
+`awesometic/h5ai-ng` を使ってください。
+linux/amd64、linux/arm64、linux/arm/v7、linux/arm/v6 向けに公開され、サムネイル、アーカイブのダウンロード、フォルダーサイズの表示に必要なツールがあらかじめ入っています。
+以前の `awesometic/h5ai` イメージは動作し続けますが、セキュリティ修正を含めて更新されません。
+移行するには `/config` をバックアップし、`docker run` コマンドまたは Compose ファイルのイメージ名を変えます。
+`docker run` の場合は、先に古いコンテナーを削除してください。
+詳しくは [docker-h5ai からの移行](#docker-h5ai-からの移行) を参照してください。
+
+### Docker なしで使えますか?
+
+はい。
+各[リリース][releases]に zip があります。
+PHP 8.3 以降が動く Apache httpd、lighttpd、nginx の Web ルートに展開し、ディレクトリインデックスの最後に `/_h5ai/public/index.php` を追加して、`options.json` とパスワードハッシュを含む `/_h5ai/private/` へのアクセスを禁止してください。
+[自分のサーバーにインストールする](#自分のサーバーにインストールする) を参照してください。
 
 
 ## Docker ですぐに使う
