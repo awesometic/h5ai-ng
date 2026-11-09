@@ -6,6 +6,7 @@
 * Docker: restore the default `h5ai.conf` or `_h5ai` when a saved copy was removed and the container restarted; the restart wrote a link to itself into `/config`, which stopped the site even after recreating the container, and the next start now also repairs such a link
 * shell-tar and shell-zip downloads show `packaging failed` when the command fails before sending anything, for example without the `zip` tool; they saved an empty package
 * Docker: stop adding the php-fpm logging settings to `www.conf` again on every `docker restart`
+* README: describe the files under `/logs`, their rotation and `LOG_READ_GID`; this was only in the docker-h5ai README
 
 
 ## v0.31.1 - *2026-11-03*

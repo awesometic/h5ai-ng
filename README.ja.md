@@ -68,6 +68,18 @@ docker run -d --name h5ai -p 80:80 \
 | `HTPASSWD` | `false` | `true` にすると、すべての訪問者にログインを求めます。 |
 | `HTPASSWD_USER`, `HTPASSWD_PW` | `guest`、空 | ログイン情報。パスワードが空なら、一度 `-it` 付きで起動して入力してください。 |
 | `LOG_ROTATE_INTERVAL_DAYS`, `LOG_RETENTION_DAYS` | `1`、`30` | `/logs` 以下のファイルのローテーション間隔と保存期間（日）。 |
+| `LOG_READ_GID` | `PGID` の値 | `/logs` 以下のファイルを読めるホストのグループ ID（数値）。 |
+
+`docker logs h5ai` で nginx のリクエストとエラー、PHP のエラーを確認できます。
+`/logs` をマウントすると、同じ記録がその中の `nginx/access.log`、
+`nginx/error.log`、`php/error.log` にも書き込まれます。ファイルは `TZ` の
+午前 0 時を過ぎると `LOG_ROTATE_INTERVAL_DAYS` 日ごとにローテーションされ、
+次のローテーションで圧縮され、ローテーションから `LOG_RETENTION_DAYS` 日後に
+削除されます。どちらの値も 1 から 36500 までで、保存期間はローテーション間隔より
+短くできません。ファイルの所有者は root で、`LOG_READ_GID` のグループは読み取り
+だけができます。`/logs` は書き込み可能でマウントし、コンテナーごとに別の
+フォルダーを使ってください。`/logs/.state` にローテーションの予定が保存されるので、
+残しておけばコンテナーを作り直しても予定が引き継がれます。
 
 イメージは暗号化されていない HTTP で応答します。前段に TLS 対応のリバースプロキシを
 置いてください。`HTPASSWD` を使う場合は特に必要です。

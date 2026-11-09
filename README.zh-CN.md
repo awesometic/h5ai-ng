@@ -62,6 +62,15 @@ docker run -d --name h5ai -p 80:80 \
 | `HTPASSWD` | `false` | 设为 `true` 后，所有访客都需要登录。 |
 | `HTPASSWD_USER`, `HTPASSWD_PW` | `guest`、空 | 登录账号。未设置密码时，请先用 `-it` 启动一次并输入密码。 |
 | `LOG_ROTATE_INTERVAL_DAYS`, `LOG_RETENTION_DAYS` | `1`、`30` | `/logs` 下文件的轮转间隔和保留天数。 |
+| `LOG_READ_GID` | `PGID` 的值 | 可以读取 `/logs` 下文件的主机组 ID（数字）。 |
+
+`docker logs h5ai` 会显示 nginx 的请求和错误以及 PHP 的错误。挂载 `/logs` 后，这些
+记录也会写入其中的 `nginx/access.log`、`nginx/error.log` 和 `php/error.log`。这些
+文件在 `TZ` 时区的午夜之后每 `LOG_ROTATE_INTERVAL_DAYS` 天轮转一次，在下一次轮转时
+压缩，并在轮转 `LOG_RETENTION_DAYS` 天后删除。两个值的范围都是 1 到 36500，保留天数
+不能小于轮转间隔。文件属于 root，`LOG_READ_GID` 组只能读取。请以可写方式挂载
+`/logs`，每个容器使用单独的文件夹，并保留 `/logs/.state`：它保存轮转计划，重新创建
+容器后计划仍会延续。
 
 镜像只提供未加密的 HTTP。请在前面放一个带 TLS 的反向代理，启用 `HTPASSWD` 时尤其如此。
 
