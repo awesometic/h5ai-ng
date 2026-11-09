@@ -7,6 +7,7 @@
 * shell-tar and shell-zip downloads show `packaging failed` when the command fails before sending anything, for example without the `zip` tool; they saved an empty package
 * Docker: stop adding the php-fpm logging settings to `www.conf` again on every `docker restart`
 * README: describe the files under `/logs`, their rotation and `LOG_READ_GID`; this was only in the docker-h5ai README
+* update the bundled marked from 1.2.7, which has known ReDoS issues, to 18.1.3; rendered Markdown headings no longer get an `id` and email links are no longer entity-encoded. Also update kjua to 0.10.0 and lolight to 1.4.1
 
 
 ## v0.31.1 - *2026-11-03*

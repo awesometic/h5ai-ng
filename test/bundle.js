@@ -17,7 +17,9 @@ const responses = {
         theme: {},
         langs: {}
     },
-    items: {items: [{href: '/', time: 0, size: 0, managed: true, fetched: true}]}
+    items: {items: [{href: '/', time: 0, size: 0, managed: true, fetched: true}]},
+    // a markdown header goes through the bundled marked
+    custom: {custom: {header: {content: '# Header', type: 'md'}, footer: {content: null}}}
 };
 
 const errors = [];
@@ -48,7 +50,7 @@ const {window} = new JSDOM(html, {
                 const query = JSON.parse(body);
                 requests.push(query);
                 this.readyState = 4;
-                this.responseText = JSON.stringify(query.setup ? responses.setup : responses.items);
+                this.responseText = JSON.stringify(query.setup ? responses.setup : query.custom ? responses.custom : responses.items);
                 setTimeout(() => this.onreadystatechange(), 0);
             }
         };
@@ -66,6 +68,7 @@ setTimeout(() => {
     assert.deepStrictEqual(errors, [], 'bundle raised errors');
     assert.ok(requests.length && requests[0].setup, 'bundle did not request its setup');
     assert.ok(window.document.querySelector('#view'), 'bundle did not render #view');
+    assert.ok(window.document.querySelector('#content-header h1'), 'bundle did not render the markdown header');
     console.log('bundle boots');
     window.close();
 }, 500);
