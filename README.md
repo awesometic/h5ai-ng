@@ -20,7 +20,7 @@ The [original site][h5ai] describes h5ai like this:
 
 > h5ai is a modern file indexer for HTTP web servers with focus on your files. Directories are displayed in a appealing way and browsing them is enhanced by different views, a breadcrumb and a tree overview. Initially h5ai was an acronym for HTML5 Apache Index but now it supports other web servers too.
 
-![h5ai-ng listing a folder in the details view](docs/screenshot.png)
+![h5ai-ng showing a Photos folder with thumbnails of NASA photos, two videos and a PDF](docs/screenshot.png)
 
 
 ## Why h5ai-ng

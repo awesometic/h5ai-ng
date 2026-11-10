@@ -21,7 +21,7 @@ h5ai-ng는 Apache httpd, lighttpd, nginx에서 쓰는 파일 목록 페이지입
 
 > h5ai is a modern file indexer for HTTP web servers with focus on your files. Directories are displayed in a appealing way and browsing them is enhanced by different views, a breadcrumb and a tree overview. Initially h5ai was an acronym for HTML5 Apache Index but now it supports other web servers too.
 
-![h5ai-ng의 자세히 보기 화면](docs/screenshot.png)
+![NASA 사진과 영상 2개, PDF의 썸네일이 보이는 h5ai-ng의 Photos 폴더](docs/screenshot.png)
 
 
 ## h5ai-ng를 쓰는 이유

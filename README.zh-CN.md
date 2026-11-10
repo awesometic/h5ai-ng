@@ -19,7 +19,7 @@ h5ai-ng 是适用于 Apache httpd、lighttpd 和 nginx 的文件索引页面。
 
 > h5ai is a modern file indexer for HTTP web servers with focus on your files. Directories are displayed in a appealing way and browsing them is enhanced by different views, a breadcrumb and a tree overview. Initially h5ai was an acronym for HTML5 Apache Index but now it supports other web servers too.
 
-![h5ai-ng 以详细视图列出一个文件夹](docs/screenshot.png)
+![h5ai-ng 显示 Photos 文件夹，其中有 NASA 照片、两个视频和一个 PDF 的缩略图](docs/screenshot.png)
 
 
 ## 为什么选择 h5ai-ng
