@@ -6,7 +6,7 @@ RUN npm ci --no-audit --no-fund
 COPY . .
 RUN npm run build && node test/bundle.js
 
-FROM nginx:1.30.6-alpine3.24
+FROM nginx:1.30.7-alpine3.24
 LABEL maintainer="Deokgyu Yang <secugyu@gmail.com>" \
       description="h5ai with Nginx & PHP 8.5.12+ based on Alpine Linux 3.24."
 

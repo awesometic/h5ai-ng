@@ -1,6 +1,11 @@
 # Changelog
 
 
+## v0.31.3 - *2026-11-19*
+
+* Docker: Update the runtime base image to nginx 1.30.7 on Alpine 3.24, which includes the [nginx security fixes](https://nginx.org/en/CHANGES-1.30) released November 18, 2026, notably for the HTTP/2 vulnerabilities CVE-2026-123007 and CVE-2026-123633.
+
+
 ## v0.31.2 - *2026-11-09*
 
 * Docker: restore the default `h5ai.conf` or `_h5ai` when a saved copy was removed and the container restarted; the restart wrote a link to itself into `/config`, which stopped the site even after recreating the container, and the next start now also repairs such a link
