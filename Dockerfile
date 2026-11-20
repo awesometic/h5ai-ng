@@ -8,11 +8,11 @@ RUN npm run build && node test/bundle.js
 
 FROM nginx:1.30.7-alpine3.24
 LABEL maintainer="Deokgyu Yang <secugyu@gmail.com>" \
-      description="h5ai with Nginx & PHP 8.5.12+ based on Alpine Linux 3.24."
+      description="h5ai with Nginx & PHP 8.5.13+ based on Alpine Linux 3.24."
 
 RUN apk add --no-cache \
     bash bash-completion supervisor tzdata shadow logrotate \
-    'php85>=8.5.12' php85-fpm php85-session php85-json php85-xml php85-mbstring php85-exif \
+    'php85>=8.5.13' php85-fpm php85-session php85-json php85-xml php85-mbstring php85-exif \
     php85-intl php85-gd php85-pecl-imagick php85-zip \
     ffmpeg imagemagick imagemagick-pdf zip apache2-utils patch
 

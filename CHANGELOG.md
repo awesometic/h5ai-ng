@@ -1,6 +1,11 @@
 # Changelog
 
 
+## v0.31.4 - *2026-11-20*
+
+* Docker: The Alpine 3.24 image now requires PHP 8.5.13 or later and includes the [PHP 8.5.13 security fixes](https://www.php.net/ChangeLog-8.php#8.5.13), among them CVE-2026-115560 and CVE-2026-126714.
+
+
 ## v0.31.3 - *2026-11-19*
 
 * Docker: Update the runtime base image to nginx 1.30.7 on Alpine 3.24, which includes the [nginx security fixes](https://nginx.org/en/CHANGES-1.30) released November 18, 2026, notably for the HTTP/2 vulnerabilities CVE-2026-123007 and CVE-2026-123633.

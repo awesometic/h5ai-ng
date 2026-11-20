@@ -38,7 +38,7 @@ if not __debug__:
 if len(sys.argv) != 3:
     raise SystemExit("Usage: python3 tests/smoke.py IMAGE PLATFORM")
 image, platform = sys.argv[1:]
-MIN_PHP_VERSION_ID = 80512  # Minimum patched runtime for the October 21, 2026 release.
+MIN_PHP_VERSION_ID = 80513
 name = "h5ai-smoke-" + uuid.uuid4().hex[:10]
 volumes = [name + "-config", name + "-files", name + "-logs"]
 opener = urllib.request.build_opener(
